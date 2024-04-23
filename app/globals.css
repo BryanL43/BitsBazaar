@@ -1,107 +1,530 @@
-:root {
-  --max-width: 1100px;
-  --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
-    "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
-    "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+@import url('https://fonts.googleapis.com/css?family=Inria%20Sans:700|Inria%20Sans:400');
 
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-
-  --primary-glow: conic-gradient(
-    from 180deg at 50% 50%,
-    #16abff33 0deg,
-    #0885ff33 55deg,
-    #54d6ff33 120deg,
-    #0071ff33 160deg,
-    transparent 360deg
-  );
-  --secondary-glow: radial-gradient(
-    rgba(255, 255, 255, 1),
-    rgba(255, 255, 255, 0)
-  );
-
-  --tile-start-rgb: 239, 245, 249;
-  --tile-end-rgb: 228, 232, 233;
-  --tile-border: conic-gradient(
-    #00000080,
-    #00000040,
-    #00000030,
-    #00000020,
-    #00000010,
-    #00000010,
-    #00000080
-  );
-
-  --callout-rgb: 238, 240, 241;
-  --callout-border-rgb: 172, 175, 176;
-  --card-rgb: 180, 185, 188;
-  --card-border-rgb: 131, 134, 135;
+:root[data-theme="light"] {
+    --text: #111018;
+    --background: #fbfbfd;
+    --background-reverse: #222228;
+    --primary: #5043c5;
+    --secondary: #978eea;
+    --accent: #6758f1;
+    --accent-reverse: #1d0da5;
+    --search-icon: #978eea;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-
-    --primary-glow: radial-gradient(rgba(1, 65, 255, 0.4), rgba(1, 65, 255, 0));
-    --secondary-glow: linear-gradient(
-      to bottom right,
-      rgba(1, 65, 255, 0),
-      rgba(1, 65, 255, 0),
-      rgba(1, 65, 255, 0.3)
-    );
-
-    --tile-start-rgb: 2, 13, 46;
-    --tile-end-rgb: 2, 5, 19;
-    --tile-border: conic-gradient(
-      #ffffff80,
-      #ffffff40,
-      #ffffff30,
-      #ffffff20,
-      #ffffff10,
-      #ffffff10,
-      #ffffff80
-    );
-
-    --callout-rgb: 20, 20, 20;
-    --callout-border-rgb: 108, 108, 108;
-    --card-rgb: 100, 100, 100;
-    --card-border-rgb: 200, 200, 200;
-  }
+:root[data-theme="dark"] {
+    --text: #e8e7ef;
+    --background: #222228;
+    --background-reverse: #fbfbfd;;
+    --primary: #5043c5;
+    --secondary: #1e1570;
+    --accent: #1d0da5;
+    --accent-reverse: #6758f1;
+    --search-icon: #fbfbfd;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+main {
+    background-color: var(--background);
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+/* Navbar */
+header {
+    position: -webkit-sticky;
+    background-color: var(--primary);
+	position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.navBar {
+    display: flex;
+    align-items: center;
+    background-color: var(--primary);
+    top: 0;
+    width: 100%;
+    padding: 10px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.navBar > * {
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+#logo {
+    float: left;
+    cursor: pointer;
+    color: var(--text);
+}
+
+.searchBar {
+    width: 25%;
+    height: 34px;
+    padding: 12px;
+    line-height: 1.42857143;
+    border: 1px solid;
+    border-radius: 5px;
+    outline: none;
+    background-color: var(--background);
+    border-color: var(--accent-reverse);
+    color: var(--text);
+    transition: ease-in-out border-color 300ms;
+    margin-left: auto;
+}
+
+.searchBar::placeholder {
+    font-size: 14px;
+    font-family: "Inria Sans";
+}
+
+.searchBar[type=text]:focus {
+    box-shadow: 0 0 5px var(--text);
+    border: 1px solid var(--text);
+    color: var(--text);
+}
+
+#searchIcon {
+    color: var(--search-icon);
+    font-size: 19px;
+    border: none;
+    margin-left: -37.5px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#searchIcon:hover {
+    color: var(--primary);
+    transition: ease-in-out color 300ms;
+}
+
+#themeToggleBtn {
+    background-color: transparent;
+    color: var(--background-reverse);
+    font-size: 19px;
+    border: none;
+    margin-left: 7.5px;
+    margin-right: 10.5px;
+    width: 31px;
+    height: 29.14px;
+}
+
+#themeToggleBtn:hover {
+    color: var(--secondary);
+}
+
+#userBtn {
+    background-color: transparent;
+    color: #fbfbfd;
+    font-size: 19px;
+    border: none;
+}
+
+#userBtn:hover {
+    color: var(--secondary);
+}
+
+.userDropDown {
+    position: relative;
+    display: inline-block;
+    z-index: 1000;
+}
+
+.userDropDown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--background-reverse);
+    min-width: 200px;
+    right: 0;
+    margin-top: 12px;
+    margin-right: -10px;
+}
+
+.userDropDown-content a {
+    color: var(--background);
+    padding: 1px 16px;
+    display: block;
+}
+
+.userDropDown-content > a > h5 {
+    font-size: 14px;
+    font-family: "Inria Sans";
+}
+
+.userDropDown-content > a > p {
+    font-size: 12px;
+    font-family: "Inria Sans";
+}
+
+#dropDown-A {
+    text-decoration: none;
+}
+
+.userDropDown-content a:hover {
+    background-color: rgb(35,35,35);
+    color: var(--primary);
+}
+
+#userDropDownOpaque {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255, 0.05);
+    z-index: -1;
+}
+
+#cartBtn {
+    background-color: transparent;
+    color: #fbfbfd;
+    font-size: 19px;
+    border: none;
+}
+
+#cartBtn:hover {
+    color: var(--secondary);
+}
+
+.cartDropDown {
+    position: relative;
+    display: inline-block;
+    z-index: 1000;
+}
+
+.cartDropDown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--background-reverse);
+    min-width: 175px;
+    right: 0;
+    margin-top: 12px;
+    margin-right: -10px;
+}
+
+.cartDropDown-content a {
+    color: var(--background);
+    padding: 1px 16px;
+    display: block;
+}
+
+.cartDropDown-content > a > h5 {
+    font-size: 14px;
+    font-family: "Inria Sans";
+}
+
+.cartDropDown-content > a > p {
+    font-size: 12px;
+    font-family: "Inria Sans";
+}
+
+#dropDown-B {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+}
+
+#dropDown-B p {
+    display: flex;
+    align-items: center;
+}
+
+.subtotal-amount {
+    margin-left: auto;
+}
+
+.cartDropDown-content a:hover {
+    background-color: rgb(35,35,35);
+    color: var(--primary);
+}
+
+#cartDropDownOpaque {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255, 0.05);
+    z-index: -2;
+}
+
+/* Landing Page */
+
+/* Login Page & Register Page & Forgot Password Page & Error Page */
+.signin-screen, .register-screen, .forgotpwd-screen, .error404-screen {
+    background-color: var(--background);
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signin-container, .register-container, .error404-container {
+    background-color: var(--secondary);
+    width: 500px;
+    min-height: 550px;
+    margin:  auto;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.forgotpwd-container {
+    background-color: var(--secondary);
+    width: 500px;
+    margin:  auto;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.signin-container > h1, .register-container > h1, .forgotpwd-container > h1 {
+    font-size: 40px;
+    font-weight: 300;
+    line-height: 48px;
+    color: var(--text);
+    font-family: "Inria Sans";
+    margin-top: 5%;
+}
+
+.signin-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 2.5%;
+    margin-bottom: 10%;
+}
+
+#emailBar, #passwordBar {
+    height: 50px;
+    width: 80%;
+    margin: 15px auto;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 12px;
+    font-size: 16px;
+    font-family: "Inria Sans";
+    border: 1px solid;
+    border-radius: 5px;
+    outline: none;
+    background-color: var(--background);
+    border-color: var(--accent-reverse);
+    color: var(--text);
+    transition: ease-in-out border-color 300ms;
+    z-index: 1;
+}
+
+.nameBars-container {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#firstNameBar, #lastNameBar {
+    height: 50px;
+    width: 47.5%;
+    padding: 12px;
+    font-size: 16px;
+    font-family: "Inria Sans";
+    border: 1px solid;
+    border-radius: 5px;
+    outline: none;
+    background-color: var(--background);
+    border-color: var(--accent-reverse);
+    color: var(--text);
+    transition: ease-in-out border-color 300ms;
+}
+
+#emailBar[type=email]:focus,
+#passwordBar[type=password]:focus {
+    box-shadow: 0 0 5px var(--text);
+    border: 1px solid var(--text);
+    color: var(--text);
+}
+
+.password-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#passwordVis {
+    position: absolute;
+    font-size: 19px;
+    border: none;
+    background-color: transparent;
+    z-index: 2;
+    margin-left: 82.5%;
+    padding-top: 5px;
+    color: var(--search-icon);
+}
+
+#passwordVis:hover {
+    color: var(--primary);
+    transition: ease-in-out color 300ms;
+}
+
+.signin-form > p, .register-container > p {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--text);
+    font-family: "Inria Sans";
+}
+
+#submitBtn, #returnToHome {
+    height: 50px;
+    width: 80%;
+    background-color: var(--accent);
+    color: var(--text);
+    border-radius: .125rem;
+    border-color: var(--primary);
+    margin: 15px 0;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#submitBtn:hover, #returnToHome:hover {
+    background-color: var(--primary);
+}
+
+#extra-signin-text {
+    width: 80%;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--text);
+    font-family: "Inria Sans";
+}
+
+#alrHaveAccP {
+    margin-bottom: 5%;
+}
+
+#registerNote {
+    color: var(--text);
+    font-family: "Inria Sans";
+    width: 80%;
+    font-size: 14px;
+}
+
+.progressBar {
+    height: 8px;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 2%;
+}
+
+.redPWDStrength {
+    height: 100%;
+    width: 15%;
+    background-color: #f04124;
+    border: 1px solid grey;
+}
+
+.yellowPWDStrength {
+    height: 100%;
+    width: 15%;
+    background-color: #e99002;
+    border: 1px solid grey;
+}
+
+.greenPWDStrength {
+    height: 100%;
+    width: 15%;
+    background-color: #43ac6a;
+    border: 1px solid grey;
+}
+
+#pwdStatus {
+    color: var(--text);
+    font-family: "Inria Sans";
+    height: 8px;
+    margin-left: 10px;
+}
+
+.emailNotFound {
+    width: 80%;
+    background-color: #ffecee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    visibility: "hidden";
+}
+
+.emailNotFound > p {
+    text-align: center;
+    font-size: 16px;
+    font-family: "Inria Sans";
+    line-height: 24px;
+    color: #590a0f;
+    font-weight: bold;
+    margin: 8px 0px;
+}
+
+#emailNotFoundIcons, #emailNotFoundIconsClose {
+    height: 24px;
+    width: 24px;
+    font-size: 19px;
+    border: none;
+    background-color: transparent;
+    z-index: 2;
+    padding-top: 2px;
+    color: #590a0f;
+    margin: 0px 15px;
+    line-height: 19px;
+    display: block;
+    text-align: center;
+}
+
+#emailNotFoundIconsClose {
+    cursor: pointer;
+}
+
+.Error404Logo {
+    width: 100%;
+}
+
+#returnToHome > a {
+    text-decoration: none;
+    color: var(--text);
+    font-size: 16px;
+}
+
+/* Product Page */
+.product-screen {
+    display: flex;
+    justify-content: row;
+    background-color: grey;
+    height: 100vh;
+    width: 100%;
+}
+
+.product-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 90%;
+    height: 90%;
+    background-color: white;
+
+}
+
+.image-carousel {
+    width: 10%;
+    height: 90%;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
