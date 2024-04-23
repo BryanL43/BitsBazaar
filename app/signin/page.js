@@ -30,9 +30,9 @@ const Signin = () => {
                   </div>
                   <p>Forgot your password? <Link href="/forgotpassword">Click here</Link></p>
                   <button id="submitBtn" type="submit">Sign In</button>
-                  <p>Don`&apos;`t have a BitsBazaar account? <Link href="/register">Create an account</Link></p>
+                  <p>Don&apos;t have a BitsBazaar account? <Link href="/register">Create an account</Link></p>
               </form>
-              <p id="extra-signin-text">By continuing, you agree to BitBazaar`&apos;`s Conditions of Use and Privacy Notice.</p>
+              <p id="extra-signin-text">By continuing, you agree to BitBazaar&apos;s Conditions of Use and Privacy Notice.</p>
           </div>
         </div>
       </main>
