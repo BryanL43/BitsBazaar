@@ -114,7 +114,7 @@ const Register = () => {
                             <p id="registerNote">{registerNoteText}</p>
                             <button id="submitBtn" type="submit">Create Account</button>
                             <p><br></br></p>
-                            <p id="extra-signin-text">By continuing, you agree to BitBazaar's Conditions of Use and Privacy Notice.</p>
+                            <p id="extra-signin-text">By continuing, you agree to BitBazaar&apos;s Conditions of Use and Privacy Notice.</p>
                         </form>
                     </div>
                 </div>
