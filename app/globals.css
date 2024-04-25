@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Inria%20Sans:700|Inria%20Sans:400');
-
 :root[data-theme="light"] {
     --text: #111018;
     --background: #fbfbfd;
@@ -102,10 +100,8 @@ header {
     color: var(--background-reverse);
     font-size: 19px;
     border: none;
-    margin-left: 7.5px;
-    margin-right: 10.5px;
-    width: 31px;
-    height: 29.14px;
+    width: 49px;
+    padding-right: 5px;
 }
 
 #themeToggleBtn:hover {
@@ -148,6 +144,7 @@ header {
 .userDropDown-content > a > h5 {
     font-size: 14px;
     font-family: "Inria Sans";
+    margin-top: 10%;
 }
 
 .userDropDown-content > a > p {
@@ -210,6 +207,7 @@ header {
 .cartDropDown-content > a > h5 {
     font-size: 14px;
     font-family: "Inria Sans";
+    margin-top: 10%;
 }
 
 .cartDropDown-content > a > p {
@@ -300,6 +298,14 @@ header {
     margin-bottom: 10%;
 }
 
+.signin-form > p > a {
+    text-decoration: none;
+}
+
+.signin-form > p > a:hover {
+    text-decoration: underline;
+}
+
 #emailBar, #passwordBar {
     height: 50px;
     width: 80%;
@@ -362,8 +368,20 @@ header {
     background-color: transparent;
     z-index: 2;
     margin-left: 82.5%;
-    padding-top: 5px;
     color: var(--search-icon);
+    display: flex;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+}
+
+#passwordVis svg {
+    width: 20px;
+    height: 20px;
+}
+
+#passwordVis.scale-up svg.fa-eye-slash {
+    transform: scale(1.5);
 }
 
 #passwordVis:hover {

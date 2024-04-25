@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-// import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeProvider';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faCircleHalfStroke, faCartShopping, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
 const Navbar = () => {
-    //const { toggleTheme } = useTheme();
+    const { toggleTheme } = useTheme();
 
     //Handle Drop Down Buttons
     const [isUserDropOpen, setIsUserDropOpen] = useState("none");
@@ -25,14 +27,13 @@ const Navbar = () => {
         <nav className="navBar">
             <Link href="/"><img src='/logo.png' style={{ height: '34px' }} alt="BitBazaar Logo" /></Link>
             <input className="searchBar" type="text" placeholder="Search" autoComplete="off" />
-            <Link id="searchIcon" href="/"><i className="glyphicon glyphicon-search"></i></Link>
-            {/* <button id="themeToggleBtn" onClick={toggleTheme}> */}
-            <button id="themeToggleBtn">
-                <i className="glyphicon glyphicon-blackboard"></i>
+            <Link id="searchIcon" href="/"><FontAwesomeIcon icon={faMagnifyingGlass} /></Link>
+            <button id="themeToggleBtn" onClick={toggleTheme}>
+                <FontAwesomeIcon icon={faCircleHalfStroke} />
             </button>
             <div className="userDropDown">
                 <button id="userBtn" onClick={handleUserDropDown}>
-                    <i className="glyphicon glyphicon-user"></i>
+                    <FontAwesomeIcon icon={faUser} />
                 </button>
                 <div className="userDropDown-content" style={{display: `${isUserDropOpen}`}}>
                     <div id="userDropDownOpaque" onClick={handleUserDropDown}></div>
@@ -48,7 +49,7 @@ const Navbar = () => {
             </div>
             <div className="cartDropDown">
                 <button id="cartBtn" onClick={handleCartDropDown}>
-                    <i className="glyphicon glyphicon-shopping-cart"></i>
+                    <FontAwesomeIcon icon={faCartShopping} />
                 </button>
                 <div className="cartDropDown-content" style={{display: `${isCartDropOpen}`}}>
                     <div id="cartDropDownOpaque" onClick={handleCartDropDown}></div>

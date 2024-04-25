@@ -1,8 +1,10 @@
-import { Inter } from "next/font/google";
+import { Inria_Sans } from "next/font/google";
+import 'bootstrap/dist/css/bootstrap.css';
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import { ThemeProvider } from "./components/ThemeProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inria_Sans({ subsets: ["latin"], weight: ["300", "400", "700"] });
 
 export const metadata = {
   title: "Create Next App",
@@ -13,8 +15,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
-        {children}
+        <ThemeProvider>
+          <Navbar />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

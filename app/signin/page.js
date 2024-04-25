@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import React, { useState } from 'react'
-//import Navbar from '../components/Navbar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
 const Signin = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,6 @@ const Signin = () => {
 
   return (
     <div>
-      {/* <Navbar /> */}
       <main>
         <div className="signin-screen">
             <div className="signin-container">
@@ -25,7 +25,7 @@ const Signin = () => {
                   <div className="password-container">
                       <input id="passwordBar" type={pwdVis ? "text" : "password"} placeholder="Password" required />
                       <button id="passwordVis" type="button" onClick={togglePwdVis}>
-                        <i id="visIcon" className={`glyphicon glyphicon-eye-${pwdVis ? 'close' : 'open'}`}></i>
+                        <FontAwesomeIcon icon={pwdVis ? faEyeSlash : faEye} />
                       </button>
                   </div>
                   <p>Forgot your password? <Link href="/forgotpassword">Click here</Link></p>
