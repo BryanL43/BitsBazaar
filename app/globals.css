@@ -397,6 +397,14 @@ header {
     font-family: "Inria Sans";
 }
 
+#alrHaveAccP > a {
+    text-decoration: none;
+}
+
+#alrHaveAccP > a:hover {
+    text-decoration: underline;
+}
+
 #submitBtn, #returnToHome {
     height: 50px;
     width: 80%;
