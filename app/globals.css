@@ -498,8 +498,8 @@ header {
 }
 
 #emailNotFoundIcons, #emailNotFoundIconsClose {
-    height: 24px;
-    width: 24px;
+    height: 20px;
+    width: 20px;
     font-size: 19px;
     border: none;
     background-color: transparent;

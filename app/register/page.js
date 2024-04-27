@@ -17,7 +17,7 @@ const Register = () => {
     const [passwordStrength, setPasswordStrength] = useState('');
 
     const handlePasswordChange = (event) => {
-    const newPassword = event.target.value;
+        const newPassword = event.target.value;
         setPassword(newPassword);
         updatePWDStrength(newPassword);
     };
@@ -69,6 +69,11 @@ const Register = () => {
             return false;
         }
 
+        if (password.includes(" ")) {
+            setRegisterNoteText("Password cannot contain spaces.");
+            return false;
+        }
+
         if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password)) {
             setRegisterNoteText("Passwords must be at least 8 characters in length and contain 1 upper case letter, 1 lower case letter, and 1 number.");
             return false;
@@ -77,9 +82,33 @@ const Register = () => {
         return true;
     };
 
-    const handleFormSubmission = (event) => {
+    const registerFormSubmission = async(event) => {
         event.preventDefault(); // Prevent default form submission
         if (validateRegistrationForm()) {
+            try {
+                const url = "/api?type=register";
+
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        password: password
+                    })
+                })
+
+                if (response.ok) {
+                    console.log("Registeration Successful!");
+                } else {
+                    console.log("Registeration failed");
+                }
+            } catch (error) {
+                console.log("Error occured during registeration:", error)
+            }
             document.querySelector(".signin-form").submit();
         }
     };
@@ -95,7 +124,7 @@ const Register = () => {
                             <input id="firstNameBar" type="text" placeholder="First Name" autoComplete="off" value={firstName} onChange={handleFirstNameChange} required />
                             <input id="lastNameBar" type="text" placeholder="Last Name" autoComplete="off" value={lastName} onChange={handleLastNameChange} required />
                         </div>
-                        <form className="signin-form" action="/register" method="POST" onSubmit={handleFormSubmission}>
+                        <form className="signin-form" action="/register" method="POST" onSubmit={registerFormSubmission}>
                             <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={handleEmailChange} required />
                             <div className="password-container">
                                 <input id="passwordBar" type={pwdVis ? "text" : "password"} placeholder="Password" value={password} onChange={handlePasswordChange} required />
