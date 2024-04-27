@@ -38,7 +38,23 @@ export async function GET(req) {
             })
     
             if (foundEmail) {
+
+                try {
+                    const randomCode = String(Math.floor(Math.random() * 900000) + 100000);
+                    const newCode = await prisma.ResetCode.create({
+                        data: {
+                            code: randomCode
+                        }
+                    });
+                    console.log(newCode);
+            
+                    return NextResponse.json(newCode);
+                } catch (error) {
+                    console.error("Error occurred during reset code creation:", error);
+                    return NextResponse.error("Error occurred during reset code creation", 500);
+                }
                 
+                /*
                 (async function () {
                     const { data, error } = await resend.emails.send({
                         from: 'Acme <onboarding@resend.dev>',
@@ -53,7 +69,7 @@ export async function GET(req) {
                     }
                   
                     console.log({ data });
-                  })();
+                  })();*/
 
                 return NextResponse.json({email: email});
             } else {

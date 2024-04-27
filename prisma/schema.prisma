@@ -20,3 +20,9 @@ model User {
   email         String?   @unique
   password      String?
 }
+
+model ResetCode {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  code          String?   @unique
+  createdAt_text    DateTime  @default(now())
+}
