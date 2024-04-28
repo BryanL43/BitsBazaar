@@ -41,12 +41,14 @@ export async function GET(req) {
 
                 try {
                     const randomCode = String(Math.floor(Math.random() * 900000) + 100000);
+                    const expirationTime = new Date();
+                    expirationTime.setMinutes(expirationTime.getMinutes() + 5);
                     const newCode = await prisma.ResetCode.create({
                         data: {
-                            code: randomCode
+                            code: randomCode,
+                            expiresAt: expirationTime
                         }
                     });
-                    console.log(newCode);
             
                     return NextResponse.json(newCode);
                 } catch (error) {

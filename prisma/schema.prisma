@@ -24,5 +24,6 @@ model User {
 model ResetCode {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   code          String?   @unique
-  createdAt_text    DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  expiresAt     DateTime?
 }

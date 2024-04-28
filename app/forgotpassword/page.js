@@ -7,7 +7,7 @@ import { faXmark, faCircleExclamation } from '@fortawesome/free-solid-svg-icons'
 
 const Forgotpassword = () => {
     const [email, setEmail] = useState("");
-    const [isEmailNotFound, setIsEmailNotFound] = useState(true);
+    const [isEmailNotFound, setIsEmailNotFound] = useState(false);
 
     const forgotPwdFormSubmission = async(event) => {
         event.preventDefault(); // Prevent default form submission
@@ -22,11 +22,16 @@ const Forgotpassword = () => {
             })
 
             if (response.ok) {
-                console.log("Email Found Successful!");
                 const responseData = await response.json();
-                console.log("Response:", responseData.email);
+                
+                if (responseData.email == "Not found") {
+                    setIsEmailNotFound(true);
+                } else {
+                    setIsEmailNotFound(false);
+                    document.querySelector(".signin-form").submit();
+                }
             } else {
-                console.log("Email Found failed");
+                console.log("Error when reading response");
             }
         } catch (error) {
             console.log("Error occured when searching for email:", error)
@@ -40,11 +45,13 @@ const Forgotpassword = () => {
                     <h1>Account Verification</h1>
                     <form className="signin-form" action="/forgotpassword" method="GET" onSubmit={forgotPwdFormSubmission}>
                         <p>Enter your BitsBazaar-associated email for a password reset</p>
-                        <div className="emailNotFound" {...(isEmailNotFound === true ? {hidden: true} : {})}>
-                            <FontAwesomeIcon icon={faCircleExclamation} id="emailNotFoundIcons" />
-                            <p>Email is not found in our records</p>
-                            <FontAwesomeIcon icon={faXmark} id="emailNotFoundIconsClose" onClick={() => setIsEmailNotFound(false)} />
-                        </div>
+                        {isEmailNotFound && (
+                            <div className="emailNotFound" {...(isEmailNotFound ? {} : {hidden: true})}>
+                                <FontAwesomeIcon icon={faCircleExclamation} id="emailNotFoundIcons" />
+                                <p>Email is not found in our records</p>
+                                <FontAwesomeIcon icon={faXmark} id="emailNotFoundIconsClose" onClick={() => setIsEmailNotFound(false)} />
+                            </div>
+                        )}
                         <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={(e) => setEmail(e.target.value)} required />
                         <button id="submitBtn" type="submit">Continue</button>
                         <p><br></br></p>
