@@ -26,19 +26,21 @@ const Register = () => {
         let hasUpperCase = /[A-Z]/.test(password);
         let hasLowerCase = /[a-z]/.test(password);
         let hasNumber = /\d/.test(password);
+        let hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
         let hasLength = password.length >= 8;
 
         let strength = 0;
         if (hasUpperCase) strength++;
         if (hasLowerCase) strength++;
         if (hasNumber) strength++;
+        if (hasSpecialChar) strength++;
         if (hasLength) strength++;
 
         if (strength === 0) {
             setPasswordStrength('no password');
-        } else if (strength === 1 || strength === 2) {
+        } else if (strength >= 1 && strength <= 3) {
             setPasswordStrength('weak password');
-        } else if (strength === 3) {
+        } else if (strength === 4) {
             setPasswordStrength('medium password');
         } else {
             setPasswordStrength('strong password');
@@ -49,7 +51,7 @@ const Register = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
-    const [registerNoteText, setRegisterNoteText] = useState("Passwords must be at least 8 characters in length and contain 1 upper case letter, 1 lower case letter, and 1 number.");
+    const [registerNoteText, setRegisterNoteText] = useState("Passwords must be at least 8 characters in length and contain 1 upper case letter, 1 lower case letter, 1 number, and 1 special character.");
 
     const handleFirstNameChange = (event) => {
         setFirstName(event.target.value);
@@ -74,8 +76,14 @@ const Register = () => {
             return false;
         }
 
-        if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password)) {
-            setRegisterNoteText("Passwords must be at least 8 characters in length and contain 1 upper case letter, 1 lower case letter, and 1 number.");
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumber = /\d/.test(password);
+        const hasSpecialChar = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+        const hasLength = password.length >= 8;
+
+        if (!(hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && hasLength)) {
+            setRegisterNoteText("Passwords must be at least 8 characters in length and contain 1 upper case letter, 1 lower case letter, 1 number, and 1 special character.");
             return false;
         }
 

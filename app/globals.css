@@ -247,8 +247,8 @@ header {
 
 /* Landing Page */
 
-/* Login Page & Register Page & Forgot Password Page & Error Page */
-.signin-screen, .register-screen, .forgotpwd-screen, .error404-screen {
+/* Login Page & Register Page & Forgot Password Page */
+.signin-screen, .register-screen, .forgotpwd-screen, .verify-screen, .changepwd-screen, .redirect-screen {
     background-color: var(--background);
     height: 100vh;
     width: 100%;
@@ -257,7 +257,7 @@ header {
     align-items: center;
 }
 
-.signin-container, .register-container, .error404-container {
+.signin-container, .register-container {
     background-color: var(--secondary);
     width: 500px;
     min-height: 550px;
@@ -280,16 +280,28 @@ header {
     align-items: center;
 }
 
-.signin-container > h1, .register-container > h1, .forgotpwd-container > h1 {
+.redirect-container {
+    background-color: var(--secondary);
+    width: 600px;
+    margin:  auto;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.signin-container > h1, .register-container > h1, .forgotpwd-container > h1, .verify-container > h1, .changepwd-container > h1, .redirect-container > h1 {
     font-size: 40px;
     font-weight: 300;
     line-height: 48px;
     color: var(--text);
     font-family: "Inria Sans";
     margin-top: 5%;
+    text-align: center;
 }
 
-.signin-form {
+.signin-form, .verify-form, .changepwd-form {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -417,6 +429,14 @@ header {
     transition: background-color 0.3s ease;
 }
 
+#returnToSignIn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-decoration: none;
+}
+
 #submitBtn:hover, #returnToHome:hover {
     background-color: var(--primary);
 }
@@ -434,10 +454,16 @@ header {
     margin-bottom: 5%;
 }
 
-#registerNote {
+#registerNote, #confirmPwdNote {
     color: var(--text);
     font-family: "Inria Sans";
     width: 80%;
+    font-size: 14px;
+}
+
+#redirectNote {
+    color: var(--text);
+    font-family: "Inria Sans";
     font-size: 14px;
 }
 
@@ -516,14 +542,72 @@ header {
     cursor: pointer;
 }
 
-.Error404Logo {
-    width: 100%;
-}
-
 #returnToHome > a {
     text-decoration: none;
     color: var(--text);
     font-size: 16px;
+}
+
+.verify-container, .changepwd-container {
+    background-color: var(--secondary);
+    width: 500px;
+    margin:  auto;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.verify-form > p {
+    text-align: center;
+    color: var(--text);
+}
+
+.code-input-container {
+    width: 70%;
+    display: flex;
+}
+
+.code-input {
+    height: 55px;
+    width: 40px;
+    margin: 15px auto;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+    font-size: 16px;
+    font-family: "Inria Sans";
+    border: 1px solid;
+    border-radius: 5px;
+    outline: none;
+    background-color: var(--background);
+    border-color: var(--accent-reverse);
+    color: var(--text);
+    transition: ease-in-out border-color 300ms;
+    z-index: 1;
+}
+
+.code-input[type=text]:focus,
+#passwordBar[type=password]:focus {
+    box-shadow: 0 0 5px var(--text);
+    border: 1px solid var(--text);
+    color: var(--text);
+}
+
+.redirectContent {
+    display: flex;
+    align-items: center;
+}
+
+#checkIcon {
+    margin-right: 10px;
+    height: 25px;
+    color: #64ec4f;
+}
+
+#redirectNote {
+    margin: auto;
 }
 
 /* Product Page */
