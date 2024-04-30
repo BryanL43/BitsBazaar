@@ -14,6 +14,7 @@ const Forgotpassword = () => {
     const [changedResponseData, setChangedResponseData] = useState(null);
     const codeInputs = useRef([]);
     const [verificationCode, setVerificationCode] = useState("");
+    const [isCodeNotFound, setIsCodeNotFound] = useState(false);
 
     const forgotPwdFormSubmission = async(event) => {
         event.preventDefault(); // Prevent default form submission
@@ -92,8 +93,9 @@ const Forgotpassword = () => {
 
                 if (responseData.code === "Not found") {
                     console.log("Code not Found");
+                    setIsCodeNotFound(true);
                 } else {
-                    console.log("Code Found: " + responseData.code);
+                    setIsCodeNotFound(false);
                     setCodeResponseData(responseData);
                 }
             } else {
@@ -250,6 +252,13 @@ const Forgotpassword = () => {
                                 <h1>Verify One-Time Code</h1>
                                 <form className="verify-form" action="/forgotpassword" method="GET" onSubmit={verifyFormSubmission}>
                                     <p>Enter the one-time code we sent to <br></br><strong>{emailResponseData.email}</strong></p>
+                                    {isCodeNotFound && (
+                                        <div className="emailNotFound">
+                                            <FontAwesomeIcon icon={faCircleExclamation} id="emailNotFoundIcons" />
+                                            <p>Invalid Code</p>
+                                            <FontAwesomeIcon icon={faXmark} id="emailNotFoundIconsClose" onClick={() => setIsCodeNotFound(false)} />
+                                        </div>
+                                    )}
                                     <div className="code-input-container">
                                         {[...Array(6)].map((_, i) => (
                                             <input

@@ -19,12 +19,10 @@ export async function GET(req) {
             })
     
             if (findUser) {
-                console.log("Found user");
+                return NextResponse.json({user: email});
             } else {
-                console.log("User not found");
+                return NextResponse.json({user: "Not found"});
             }
-    
-            return NextResponse.json({user: "Found"});
         } catch (error) {
             console.error("Error occurred during sign in:", error);
             return NextResponse.error("Error occurred when signing in", 500);
