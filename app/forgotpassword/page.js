@@ -263,7 +263,7 @@ const Forgotpassword = () => {
                                             />
                                         ))}
                                     </div>
-                                    <p><br></br>Didn't receive a one-time code? <Link href="#" onClick={forgotPwdFormSubmission}>Resend now</Link></p>
+                                    <p><br></br>Didn&apos;t receive a one-time code? <Link href="#" onClick={forgotPwdFormSubmission}>Resend now</Link></p>
                                     <button id="submitBtn" type="submit">Verify</button>
                                 </form>
                             </div>
