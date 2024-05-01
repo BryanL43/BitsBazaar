@@ -61,7 +61,34 @@ const Profile = () => {
                         </div>
                     </div>
                     <div className="profile-right-side">
-
+                        <div className="profile-setting-content">
+                            <Image src="/profileEdit.png" alt="Edit login, name, email, and password" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
+                            <div className="profile-setting-content-inner">
+                                <h2>Personal Information</h2>
+                                <p>Edit login credentials, name, and email address</p>
+                            </div>
+                        </div>
+                        <div className="profile-setting-content">
+                            <Image src="/profileOrder.png" alt="Edit login, name, email, and password" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
+                            <div className="profile-setting-content-inner">
+                                <h2>Your Orders</h2>
+                                <p>See purchase history, track, or cancel an order</p>
+                            </div>
+                        </div>
+                        <div className="profile-setting-content">
+                            <Image src="/profileAddress.png" alt="Edit login, name, email, and password" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
+                            <div className="profile-setting-content-inner">
+                                <h2>Your Addresses</h2>
+                                <p>Edit, remove, or set default address</p>
+                            </div>
+                        </div>
+                        <div className="profile-setting-content">
+                            <Image src="/profilePayment.png" alt="Edit login, name, email, and password" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
+                            <div className="profile-setting-content-inner">
+                                <h2>Your Payments</h2>
+                                <p>Edit or add payment method</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

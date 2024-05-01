@@ -620,21 +620,22 @@ header {
 }
 
 .profile-container {
-    max-width: 1000px;
+    width: 70%;
     height: 919px;
     margin: auto;
     display: flex;
     flex-direction: row;
-    align-items: flex-start; /* Align items to the start of the cross axis */
-    justify-content: space-between;
+    align-items: flex-start;
+    justify-content: space-around;
     padding: 14px 18px 18px;
 }
 
 .profile-left-side {
-    width: 49%;
+    width: 472px;
     height: 887px;
     display: flex;
     flex-direction: column;
+    margin-right: 10%;
 }
 
 #yourAccText {
@@ -775,7 +776,48 @@ header {
 }
 
 .profile-right-side {
-    background-color: green;
-    width: 49%;
-    height: 100%;
+    width: 472px;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-top: 10.4%;
+}
+
+.profile-setting-content {
+    width: 100%;
+    height: 110px;
+    background-color: var(--secondary);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    border-radius: 5px;
+    border: 1px solid var(--text);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+.profile-setting-content > img {
+    margin-left: 10%;
+}
+
+.profile-setting-content-inner {
+    padding-left: 5%;
+}
+
+.profile-setting-content-inner > h2 {
+    font-family: "Inria Sans";
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 400;
+	margin: 0 0 0 8;
+}
+
+.profile-setting-content-inner > p {
+    font-family: "Inria Sans";
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 300;
+    margin: 0;
 }
