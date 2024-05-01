@@ -43,7 +43,7 @@ const Signin = () => {
                 } else {
                     setIsLoginNotFound(false);
                     window.sessionStorage.setItem("userData", JSON.stringify(responseData));
-                    //router.push('/profile');
+                    window.location.href = '/profile';
                 }
             } else {
                 console.log("Sign in failed");
@@ -54,35 +54,33 @@ const Signin = () => {
     }
 
     return (
-        <div>
-            <main>
-                <div className="signin-screen">
-                    <div className="signin-container">
-                        <h1>Sign In</h1>
-                        {isLoginNotFound && (
-                            <div className="emailNotFound">
-                                <FontAwesomeIcon icon={faCircleExclamation} id="emailNotFoundIcons" />
-                                <p>Incorrect/Invalid Credentials</p>
-                                <FontAwesomeIcon icon={faXmark} id="emailNotFoundIconsClose" onClick={() => setIsLoginNotFound(false)} />
-                            </div>
-                        )}
-                        <form className="signin-form" action="/signin" method="GET" onSubmit={signInFormSubmission}>
-                            <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                            <div className="password-container">
-                                <input id="passwordBar" type={pwdVis ? "text" : "password"} placeholder="Password" value={password} onChange={handlePasswordChange} required />
-                                <button id="passwordVis" type="button" onClick={togglePwdVis}>
-                                    <FontAwesomeIcon icon={pwdVis ? faEyeSlash : faEye} />
-                                </button>
-                            </div>
-                            <p>Forgot your password? <Link href="/forgotpassword">Click here</Link></p>
-                            <button id="submitBtn" type="submit">Sign In</button>
-                            <p>Don&apos;t have a BitsBazaar account? <Link href="/register">Create an account</Link></p>
-                        </form>
-                        <p id="extra-signin-text">By continuing, you agree to BitBazaar&apos;s Conditions of Use and Privacy Notice.</p>
-                    </div>
+        <main>
+            <div className="signin-screen">
+                <div className="signin-container">
+                    <h1>Sign In</h1>
+                    {isLoginNotFound && (
+                        <div className="emailNotFound">
+                            <FontAwesomeIcon icon={faCircleExclamation} id="emailNotFoundIcons" />
+                            <p>Incorrect/Invalid Credentials</p>
+                            <FontAwesomeIcon icon={faXmark} id="emailNotFoundIconsClose" onClick={() => setIsLoginNotFound(false)} />
+                        </div>
+                    )}
+                    <form className="signin-form" action="/signin" method="GET" onSubmit={signInFormSubmission}>
+                        <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                        <div className="password-container">
+                            <input id="passwordBar" type={pwdVis ? "text" : "password"} placeholder="Password" value={password} onChange={handlePasswordChange} required />
+                            <button id="passwordVis" type="button" onClick={togglePwdVis}>
+                                <FontAwesomeIcon icon={pwdVis ? faEyeSlash : faEye} />
+                            </button>
+                        </div>
+                        <p>Forgot your password? <Link href="/forgotpassword">Click here</Link></p>
+                        <button id="submitBtn" type="submit">Sign In</button>
+                        <p>Don&apos;t have a BitsBazaar account? <Link href="/register">Create an account</Link></p>
+                    </form>
+                    <p id="extra-signin-text">By continuing, you agree to BitBazaar&apos;s Conditions of Use and Privacy Notice.</p>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
     )
 }
 

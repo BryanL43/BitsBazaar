@@ -122,41 +122,40 @@ const Register = () => {
     };
 
     return (
-        <div>
-            <main>
-                <div className="register-screen">
-                    <div className="register-container">
-                        <h1>Create Your Account</h1>
-                        <p id="alrHaveAccP">Already have an account? <Link href="/signin">Sign In</Link></p>
-                        <div className="nameBars-container">
-                            <input id="firstNameBar" type="text" placeholder="First Name" autoComplete="off" value={firstName} onChange={handleFirstNameChange} required />
-                            <input id="lastNameBar" type="text" placeholder="Last Name" autoComplete="off" value={lastName} onChange={handleLastNameChange} required />
-                        </div>
-                        <form className="signin-form" action="/register" method="POST" onSubmit={registerFormSubmission}>
-                            <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={handleEmailChange} required />
-                            <div className="password-container">
-                                <input id="passwordBar" type={pwdVis ? "text" : "password"} placeholder="Password" value={password} onChange={handlePasswordChange} required />
-                                <button id="passwordVis" type="button" onClick={togglePwdVis}>
-                                    <FontAwesomeIcon icon={pwdVis ? faEyeSlash : faEye} />
-                                </button>
-                            </div>
-                            {passwordStrength && (
-                                <div className="progressBar" {...(passwordStrength === "no password" ? {hidden: true} : {})}>
-                                    <div className="redPWDStrength" {...(passwordStrength === "weak password" ? {} : {})}></div>
-                                    <div className="yellowPWDStrength" {...(passwordStrength === "medium password" || passwordStrength === "strong password" ? {} : {hidden: true})}></div>
-                                    <div className="greenPWDStrength" {...(passwordStrength === "strong password" ? {} : {hidden: true})}></div>
-                                    <p id="pwdStatus">{passwordStrength}</p>
-                                </div>
-                            )}
-                            <p id="registerNote">{registerNoteText}</p>
-                            <button id="submitBtn" type="submit">Create Account</button>
-                            <p><br></br></p>
-                            <p id="extra-signin-text">By continuing, you agree to BitBazaar&apos;s Conditions of Use and Privacy Notice.</p>
-                        </form>
+        <main>
+            <div className="register-screen">
+                <div className="register-container">
+                    <h1>Create Your Account</h1>
+                    <p id="alrHaveAccP">Already have an account? <Link href="/signin">Sign In</Link></p>
+                    <div className="nameBars-container">
+                        <input id="firstNameBar" type="text" placeholder="First Name" autoComplete="off" value={firstName} onChange={handleFirstNameChange} required />
+                        <input id="lastNameBar" type="text" placeholder="Last Name" autoComplete="off" value={lastName} onChange={handleLastNameChange} required />
                     </div>
+                    <form className="signin-form" action="/register" method="POST" onSubmit={registerFormSubmission}>
+                        <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={handleEmailChange} required />
+                        <div className="password-container">
+                            <input id="passwordBar" type={pwdVis ? "text" : "password"} placeholder="Password" value={password} onChange={handlePasswordChange} required />
+                            <button id="passwordVis" type="button" onClick={togglePwdVis}>
+                                <FontAwesomeIcon icon={pwdVis ? faEyeSlash : faEye} />
+                            </button>
+                        </div>
+                        {passwordStrength && (
+                            <div className="progressBar" {...(passwordStrength === "no password" ? {hidden: true} : {})}>
+                                <div className="redPWDStrength" {...(passwordStrength === "weak password" ? {} : {})}></div>
+                                <div className="yellowPWDStrength" {...(passwordStrength === "medium password" || passwordStrength === "strong password" ? {} : {hidden: true})}></div>
+                                <div className="greenPWDStrength" {...(passwordStrength === "strong password" ? {} : {hidden: true})}></div>
+                                <p id="pwdStatus">{passwordStrength}</p>
+                            </div>
+                        )}
+                        <p id="registerNote">{registerNoteText}</p>
+                        <button id="submitBtn" type="submit">Create Account</button>
+                        <p><br></br></p>
+                        <p id="extra-signin-text">By continuing, you agree to BitBazaar&apos;s Conditions of Use and Privacy Notice.</p>
+                    </form>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
+
     )
 }
 
