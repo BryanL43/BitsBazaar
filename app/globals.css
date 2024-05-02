@@ -821,3 +821,216 @@ header {
     font-weight: 300;
     margin: 0;
 }
+
+/* Edit Profile Page */
+.edit-container {
+    width: 32.5%;
+    height: 100vh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 1.5%;
+}
+
+.custom-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    margin: 0;
+}
+
+#backToProfile {
+    font-family: "Inria Sans";
+    text-decoration: none;
+    font-weight: 400;
+}
+
+#backToProfile:hover {
+    text-decoration: underline;
+}
+
+#backToProfile::after {
+    content: " >";
+    text-decoration: none !important;
+}
+
+.custom-list li {
+    margin-right: 9px;
+}
+
+.custom-list li:nth-child(2), .custom-list li:nth-child(3) {
+    color: #c45500;
+    font-family: "Inria Sans";
+    font-weight: 400;
+}
+
+.edit-container h1 {
+    font-size: 28px;
+    font-family: "Inria Sans";
+    color: var(--text);
+}
+
+.info-card-container {
+    height: auto;
+    width: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.info-card-container li {
+    height: 84px;
+    width: 100%;
+    border: 1px solid var(--text);
+    border-radius: 0;
+    border-top: none;
+    position: relative;
+}
+
+.info-card-container li:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-top: 1px solid var(--text);
+}
+
+.info-card-container li:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.info-card-padding {
+    height: 70%;
+    width: 95%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.info-card-padding h1 {
+    font-family: "Inria Sans";
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 2px;
+}
+
+.info-card-padding p {
+    font-family: "Inria Sans";
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 1px;
+}
+
+.info-card-padding button {
+    width: 21.7%;
+    height: 29px;
+    position: absolute;
+    top: 3px;
+    right: 0px;
+    font-family: "Inria Sans";
+    border: 1px solid var(--text);
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: var(--background);
+    color: var(--text);
+}
+
+.info-card-padding button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Change Name Edit */
+.change-name-card-container {
+    height: auto;
+    width: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.change-name-card-container li {
+    height: 229px;
+    width: 100%;
+    border: 1px solid var(--text);
+    border-radius: 5px;
+    position: relative;
+}
+
+.change-name-card-padding {
+    height: 80%;
+    width: 95%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.change-name-card-padding p {
+    font-family: "Inria Sans";
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 20px;
+}
+
+.info-card-container li {
+    height: 84px;
+    width: 100%;
+    border: 1px solid var(--text);
+    border-radius: 0;
+    border-top: none;
+    position: relative;
+}
+
+.change-name-card-padding > label {
+    font-family: "Inria Sans";
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 400;
+    display: block;
+}
+
+.new-name-input {
+    height: 31px;
+    width: 25%;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 16px;
+    font-family: "Inria Sans";
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 7px;
+    outline: none;
+    background-color: var(--background);
+    border-color: var(--text);
+    color: var(--text);
+    transition: ease-in-out border-color 300ms;
+    display: block;
+    margin-left: 0;
+    margin-bottom: 20px;
+}
+
+.new-name-input[type=text]:focus {
+    box-shadow: 0 0 5px var(--text);
+    border: 1px solid var(--text);
+    color: var(--text);
+}
+
+.change-name-card-padding button {
+    width: 21.7%;
+    height: 29px;
+    position: absolute;
+    font-family: "Inria Sans";
+    border: 1px solid #FCD200;
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: #FFD814;
+    color: black;
+}
+
+.change-name-card-padding button:hover {
+    background-color: #f0c14b;
+}
