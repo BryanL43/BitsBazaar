@@ -1,7 +1,7 @@
 "use client"
 
 import Link from 'next/link';
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
@@ -12,12 +12,26 @@ const Profile = () => {
     const [openChangeLastName, setOpenChangeLastName] = useState(false);
     const [openChangeEmail, setOpenChangeEmail] = useState(false);
     const [openCodeVerify, setOpenCodeVerify] = useState(false);
-    const [codeResponseData, setCodeResponseData] = useState(null);
     const codeInputs = useRef([]);
     const [verificationCode, setVerificationCode] = useState("");
     const [isCodeNotFound, setIsCodeNotFound] = useState(false);
 
+    const [newFirstName, setNewFirstName] = useState("");
+    const [newLastName, setNewLastName] = useState("");
     const [newEmail, setNewEmail] = useState("");
+
+    //Initial profile load greeting handler
+    const [greetFirstName, setGreetFirstName] = useState("");
+    const [greetLastName, setGreetLastName] = useState("");
+
+    useEffect(() => {
+        const userDataString = window.sessionStorage.getItem("userData");
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+            setGreetFirstName(userData.firstName);
+            setGreetLastName(userData.lastName);
+        }
+    }, []);
 
     //Handle Page Module Navigation
     const bannerRedirect = () => {
@@ -108,7 +122,6 @@ const Profile = () => {
                     console.log("Code Found")
                     window.location.href = '/signin';
                     setIsCodeNotFound(false);
-                    setCodeResponseData(responseData);
                 }
             } else {
                 console.log("Error when reading response");
@@ -173,6 +186,69 @@ const Profile = () => {
         }
     }
 
+    //Change First Name Handler
+    const changeFirstName = async(event) => {
+        event.preventDefault(); // Prevent default form submission
+        try {
+            const url = "/api?type=changefirstname";
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: JSON.parse(window.sessionStorage.getItem("userData")).id,
+                    firstName: newFirstName
+                })
+            })
+
+            if (response.ok) {
+                const responseData = await response.json();
+
+                window.sessionStorage.setItem("userData", JSON.stringify(responseData));
+                console.log("Change First Name Successful!");
+                window.location.href = '/profile';
+            } else {
+                console.log("Change First Name Failed");
+            }
+        } catch (error) {
+            console.log("Error occured when changing first name:", error)
+        }
+    }
+
+    //Change First Name Handler
+    const changeLastName = async(event) => {
+        event.preventDefault(); // Prevent default form submission
+        try {
+            const url = "/api?type=changelastname";
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: JSON.parse(window.sessionStorage.getItem("userData")).id,
+                    lastName: newLastName
+                })
+            })
+
+            if (response.ok) {
+                const responseData = await response.json();
+
+                window.sessionStorage.setItem("userData", JSON.stringify(responseData));
+                console.log("Change Last Name Successful!");
+                window.location.href = '/profile';
+            } else {
+                console.log("Change Last Name Failed");
+            }
+        } catch (error) {
+            console.log("Error occured when changing last name:", error)
+        }
+    }
+
+
     return (
         <main>
             <div className="profile-screen">
@@ -181,7 +257,7 @@ const Profile = () => {
                         <div className="profile-container">
                             <div className="profile-left-side">
                                 <h1 id="yourAccText">Your Account</h1>
-                                <h2 id="yourAccWelcomeText">Welcome, Bryan Lee</h2>
+                                <h2 id="yourAccWelcomeText">Welcome, {greetFirstName} {greetLastName}</h2>
                                 <div className="profile-banner-card">
                                     <div className="profile-banner-top-bar">
                                         <h3>Start Browsing</h3>
@@ -262,21 +338,21 @@ const Profile = () => {
                                 <li>
                                     <div className="info-card-padding">
                                         <h1><strong>First Name</strong></h1>
-                                        <p>Bryan</p>
+                                        <p>{JSON.parse(window.sessionStorage.getItem("userData")).firstName}</p>
                                         <button onClick={gotoChangeFirstNamePg}>Edit</button>
                                     </div>
                                 </li>
                                 <li>
                                     <div className="info-card-padding">
                                         <h1><strong>Last Name</strong></h1>
-                                        <p>Lee</p>
+                                        <p>{JSON.parse(window.sessionStorage.getItem("userData")).lastName}</p>
                                         <button onClick={gotoChangeLastNamePg}>Edit</button>
                                     </div>
                                 </li>
                                 <li>
                                     <div className="info-card-padding">
                                         <h1><strong>Email</strong></h1>
-                                        <p>bryanlee56098@gmail.com</p>
+                                        <p>{JSON.parse(window.sessionStorage.getItem("userData")).user}</p>
                                         <button onClick={gotoChangeEmailPg}>Edit</button>
                                     </div>
                                 </li>
@@ -311,8 +387,8 @@ const Profile = () => {
                                     <div className="change-name-card-padding">
                                         <p>If you want to change the first name associated with your BitsBazaar customer account, you may do so below. be sure to click the <strong>Save</strong> button when you are done.</p>
                                         <label><strong>New first name</strong></label>
-                                        <input type="text" className="new-name-input"></input>
-                                        <button>Save</button>
+                                        <input type="text" className="new-name-input" value={newFirstName} onChange={(e) => setNewFirstName(e.target.value)}></input>
+                                        <button onClick={changeFirstName}>Save</button>
                                     </div>
                                 </li>
                             </ul>
@@ -339,8 +415,8 @@ const Profile = () => {
                                     <div className="change-name-card-padding">
                                         <p>If you want to change the last name associated with your BitsBazaar customer account, you may do so below. be sure to click the <strong>Save</strong> button when you are done.</p>
                                         <label><strong>New last name</strong></label>
-                                        <input type="text" className="new-name-input"></input>
-                                        <button>Save</button>
+                                        <input type="text" className="new-name-input" value={newLastName} onChange={(e) => setNewLastName(e.target.value)}></input>
+                                        <button onClick={changeLastName}>Save</button>
                                     </div>
                                 </li>
                             </ul>
