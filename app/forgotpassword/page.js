@@ -225,21 +225,21 @@ const Forgotpassword = () => {
                 <React.Fragment>
                     <div className="forgotpwd-screen">
                         <div className="forgotpwd-container">
-                                <h1>Account Verification</h1>
-                                <form className="signin-form" action="/forgotpassword" method="GET" onSubmit={forgotPwdFormSubmission}>
-                                    <p>Enter your BitsBazaar-associated email for a password reset</p>
-                                    {isEmailNotFound && (
-                                        <div className="emailNotFound">
-                                            <FontAwesomeIcon icon={faCircleExclamation} id="emailNotFoundIcons" />
-                                            <p>Email is not found in our records</p>
-                                            <FontAwesomeIcon icon={faXmark} id="emailNotFoundIconsClose" onClick={() => setIsEmailNotFound(false)} />
-                                        </div>
-                                    )}
-                                    <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                                    <button id="submitBtn" type="submit">Continue</button>
-                                    <p><br></br></p>
-                                    <p id="alrHaveAccP">Remember your password? <Link href="/signin">Sign In</Link></p>
-                                </form>
+                            <h1>Account Verification</h1>
+                            <form className="signin-form" action="/forgotpassword" method="GET" onSubmit={forgotPwdFormSubmission}>
+                                <p>Enter your BitsBazaar-associated email for a password reset</p>
+                                {isEmailNotFound && (
+                                    <div className="emailNotFound">
+                                        <FontAwesomeIcon icon={faCircleExclamation} id="emailNotFoundIcons" />
+                                        <p>Email is not found in our records</p>
+                                        <FontAwesomeIcon icon={faXmark} id="emailNotFoundIconsClose" onClick={() => setIsEmailNotFound(false)} />
+                                    </div>
+                                )}
+                                <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                                <button id="submitBtn" type="submit">Continue</button>
+                                <p><br></br></p>
+                                <p id="alrHaveAccP">Remember your password? <Link href="/signin">Sign In</Link></p>
+                            </form>
                         </div>
                     </div>
                 </React.Fragment>

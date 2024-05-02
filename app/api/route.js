@@ -7,7 +7,7 @@ const resend = new Resend("re_GMWC3jMX_92c9tR4ex1ZYY8Prmbu22bre");
 
 export async function GET(req) {
     const { query } = parse(req.url, true);
-    const { type, email, password, code } = query;
+    const { type, email, password, code, oldemail } = query;
 
     if (type === "signin") {
         try {
@@ -91,6 +91,59 @@ export async function GET(req) {
                 await prisma.ResetCode.delete({
                     where: {
                         code: code
+                    }
+                });
+
+                return NextResponse.json({code: code});
+            } else {
+                return NextResponse.json({code: "Not found"});
+            }
+
+        } catch (error) {
+            console.error("Error occurred during verifying code:", error);
+            return NextResponse.error("Error occurred when verifying code", 500);
+        }
+    } else if (type === "changeemailcode") {
+        try {
+            const randomCode = String(Math.floor(Math.random() * 900000) + 100000);
+            const expirationTime = new Date();
+            expirationTime.setMinutes(expirationTime.getMinutes() + 5);
+            const newCode = await prisma.ResetCode.create({
+                data: {
+                    code: randomCode,
+                    expiresAt: expirationTime
+                }
+            });
+            await newCode;
+
+            return NextResponse.json({code_sent: "Successful"});
+        } catch (error) {
+            console.error("Error occurred during reset code creation:", error);
+            return NextResponse.error("Error occurred during reset code creation", 500);
+        }
+    } else if (type === "newemailverifycode") {
+        try {
+            const foundCode = await prisma.ResetCode.findUnique({
+                where: {
+                    code: code
+                }
+            })
+
+            if (foundCode) {
+                //Delete consumed reset code
+                await prisma.ResetCode.delete({
+                    where: {
+                        code: code
+                    }
+                });
+                
+                //Update the user's email
+                const updatedUser = await prisma.User.update({
+                    where: {
+                        email: oldemail
+                    },
+                    data: {
+                        email: email
                     }
                 });
 

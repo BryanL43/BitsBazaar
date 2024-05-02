@@ -2,36 +2,41 @@
 
 import Link from 'next/link';
 import React, { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark, faCircleExclamation, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Edit2 = () => {
 
-
     return (
         <main>
-            <div className="profile-screen">
-                <div className="edit-container">
-                    <ol className="custom-list">
-                        <li>
-                            <Link href="/profile" id="backToProfile">Your Account</Link>
-                        </li>
-                        <li>
-                            <Link href="/profile" id="backToProfile">Personal Information</Link>
-                        </li>
-                        <li>
-                            <p>Change your first name</p>
-                        </li>
-                    </ol>
-                    <h1>Change your name</h1>
-                    <ul className="change-name-card-container">
-                        <li>
-                            <div className="change-name-card-padding">
-                                <p>If you want to change the name associated with your BitsBazaar customer account, you may do so below. be sure to click the <strong>Save</strong> button when you are done.</p>
-                                <label><strong>New first name</strong></label>
-                                <input type="text" className="new-name-input"></input>
-                                <button>Save</button>
+            <div className="verify-screen">
+                <div className="verify-container">
+                    <h1>Verify One-Time Code</h1>
+                    <form className="verify-form" action="/forgotpassword" method="GET">
+                        <p>Enter the one-time code we sent to <br></br><strong></strong></p>
+                        {/* {isCodeNotFound && ( */}
+                            <div className="emailNotFound">
+                                <FontAwesomeIcon icon={faCircleExclamation} id="emailNotFoundIcons" />
+                                <p>Invalid Code</p>
+                                <FontAwesomeIcon icon={faXmark} id="emailNotFoundIconsClose" />
                             </div>
-                        </li>
-                    </ul>
+                        {/* )} */}
+                        <div className="code-input-container">
+                            {[...Array(6)].map((_, i) => (
+                                <input
+                                    ref={el => codeInputs.current[i] = el}
+                                    key={i}
+                                    className="code-input"
+                                    type="text"
+                                    maxLength="1"
+                                    onChange={(e) => handleChange(i, e)}
+                                    onPaste={handlePaste}
+                                />
+                            ))}
+                        </div>
+                        <p><br></br>Didn&apos;t receive a one-time code? <Link href="#">Resend now</Link></p>
+                        <button id="submitBtn" type="submit">Verify</button>
+                    </form>
                 </div>
             </div>
         </main>
