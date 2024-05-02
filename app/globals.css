@@ -1029,6 +1029,7 @@ header {
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
     background-color: #FFD814;
     color: black;
+    margin-bottom: 20px;
 }
 
 .change-name-card-padding button:hover {
