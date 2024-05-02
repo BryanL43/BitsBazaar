@@ -19,7 +19,14 @@ export async function GET(req) {
             })
     
             if (findUser) {
-                return NextResponse.json({user: email});
+                const userData = {
+                    id: findUser.id,
+                    firstName: findUser.firstName,
+                    lastName: findUser.lastName,
+                    user: findUser.email,
+                }
+
+                return NextResponse.json(userData);
             } else {
                 return NextResponse.json({user: "Not found"});
             }
@@ -202,6 +209,92 @@ export async function POST(req) {
         } catch (error) {
             console.error("Error occurred during password change:", error);
             return NextResponse.error("Error occurred during password change", 500);
+        }
+    } else if (type === "changefirstname") {
+        try {
+            const data = await req.json();
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            if (!user) {
+                return NextResponse.error("User not found", 404);
+            }
+
+            //Update first name
+            await prisma.user.update({
+                where: {
+                    id: data.id
+                },
+                data: {
+                    firstName: data.firstName
+                }
+            })
+
+            //Return new updated data
+            const findUser = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            const userData = {
+                id: findUser.id,
+                firstName: findUser.firstName,
+                lastName: findUser.lastName,
+                user: findUser.email,
+            }
+
+            return NextResponse.json(userData);
+        } catch (error) {
+            console.error("Error occurred during first name change:", error);
+            return NextResponse.error("Error occurred during first name change", 500);
+        }
+    } else if (type === "changelastname") {
+        try {
+            const data = await req.json();
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            if (!user) {
+                return NextResponse.error("User not found", 404);
+            }
+
+            //Update first name
+            await prisma.user.update({
+                where: {
+                    id: data.id
+                },
+                data: {
+                    lastName: data.lastName
+                }
+            })
+
+            //Return new updated data
+            const findUser = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            const userData = {
+                id: findUser.id,
+                firstName: findUser.firstName,
+                lastName: findUser.lastName,
+                user: findUser.email,
+            }
+
+            return NextResponse.json(userData);
+        } catch (error) {
+            console.error("Error occurred during first name change:", error);
+            return NextResponse.error("Error occurred during first name change", 500);
         }
     }
 }
