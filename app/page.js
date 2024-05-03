@@ -5,7 +5,15 @@ import Link from "next/link";
 export default async function Home() {
   return (
     <main> 
-      <Link href="/signin">Signin</Link>
+      <div className='home'>
+        <div className='intro'>
+            <h1>Welcome to BitsBazaar</h1>
+            <p>We provide high quality computer parts</p>
+            <button>Shop Now</button>
+        </div>
+
+        <img id="slideImg" src='laptop1.jpeg'></img>
+      </div>
     </main>
   );
 }

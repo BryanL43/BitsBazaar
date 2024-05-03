@@ -610,6 +610,220 @@ header {
     margin: auto;
 }
 
+/*Cart css*/
+/*change font*/
+
+.cart {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    margin-bottom: 100px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+.cart p {
+    color: var(--text);
+    font-family: "Inria Sans"
+}
+
+.shoppingCart {
+    width: 30%;
+
+}
+
+.card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    background-color: white;
+    background-color: var(--accent);
+
+}
+
+.card img {
+    width: 50%;
+    height: 50%;
+    margin-right: 10%;
+}
+
+.description {
+    width: 50%;
+    font-family: "Inria Sans";
+}
+
+.checkout {
+    margin-top: 80px;
+    width: 30%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    background-color: gray;
+    font-family: "Inria Sans";
+}
+
+
+.shoppingCart button {
+    background-color: #6758f1;
+}
+
+.checkout button {
+    width: 100%;
+    background-color: #6758f1;
+}
+
+.moreItems {
+    display: flex;
+    justify-content: center;
+    border: #111018;
+    border-style: solid;
+    padding: 3%;
+}
+
+@media (max-width: 1016px) {
+    .description {
+        font-size: 80%;
+    }
+
+    .checkout {
+        font-size: 80%;
+    }
+
+}
+
+@media (max-width: 428px) {
+
+    .card {
+        flex-direction: column;
+    }
+    .description {
+        font-size: 60%;
+    }
+
+    .checkout {
+        font-size: 60%;
+        margin-right: 0px;
+        margin-top: 140px;
+    }
+
+}
+
+
+/*         */
+
+
+/*Checkout Page */
+.checkout-page {
+    display: flex;
+    justify-content: space-evenly;
+    height: 100vh;
+    width: 100%;
+    color: var(--text);
+    font-family: "Inria Sans"
+}
+
+.checkout-detail {
+    width: 30%;
+}
+
+.checkout-detail button {
+    width: 100%;
+    margin-top: 50px;
+}
+
+.order-summary {
+    margin-top: 50px;
+    width: 20%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(202, 202, 202)
+}
+
+.mailing-address {
+    padding: 10px;
+    margin-bottom: 30px;
+    border: 0.3rem solid;
+    border-color: gainsboro;
+}
+
+.mailing-address p {
+    margin: 0px;
+}
+
+
+/*Styling input*/
+.exp {
+    width: 33%;
+}
+
+.cardHolder {
+    width: 100%;
+}
+
+
+.order-summary p {
+    margin: 0px;
+}
+
+
+/*         */
+
+/* Home Page */
+
+.home {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    color: var(--text);
+    font-family: "Inria Sans"
+}
+
+.intro {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.intro button {
+    background-color: #6758f1;
+    width: 60%;
+}
+
+#slideImg {
+    width: 50%;
+    height: 100%;
+}
+
+.intro p{
+    font-size: 100%;
+}
+
+@media (max-width: 710px) {
+    .intro p{
+        font-size: 80%;
+    }
+
+    .home {
+        justify-content: space-between;
+    }
+
+    #slideImg {
+        width: 40%;
+        height: 100%;
+    }
+}
+
 /* Profile Page */
 .profile-screen {
     display: block;
