@@ -131,7 +131,7 @@ const Register = () => {
                         <input id="firstNameBar" type="text" placeholder="First Name" autoComplete="off" value={firstName} onChange={handleFirstNameChange} required />
                         <input id="lastNameBar" type="text" placeholder="Last Name" autoComplete="off" value={lastName} onChange={handleLastNameChange} required />
                     </div>
-                    <form className="signin-form" action="/register" method="POST" onSubmit={registerFormSubmission}>
+                    <form className="signin-form" action="/signin" method="POST" onSubmit={registerFormSubmission}>
                         <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={handleEmailChange} required />
                         <div className="password-container">
                             <input id="passwordBar" type={pwdVis ? "text" : "password"} placeholder="Password" value={password} onChange={handlePasswordChange} required />

@@ -16,6 +16,11 @@ const Forgotpassword = () => {
     const [verificationCode, setVerificationCode] = useState("");
     const [isCodeNotFound, setIsCodeNotFound] = useState(false);
 
+    //Cookie Handler
+    function deleteCookie(name) {
+        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+
     const forgotPwdFormSubmission = async(event) => {
         event.preventDefault(); // Prevent default form submission
         try {
@@ -96,6 +101,7 @@ const Forgotpassword = () => {
                     setIsCodeNotFound(true);
                 } else {
                     setIsCodeNotFound(false);
+                    deleteCookie("userData");
                     setCodeResponseData(responseData);
                 }
             } else {

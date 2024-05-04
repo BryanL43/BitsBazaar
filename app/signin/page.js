@@ -23,6 +23,18 @@ const Signin = () => {
         setPassword(newPassword);
     };
 
+    //Cookie handler:
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 5 * 60 * 1000)); //Changed to 5 minutes for testing
+            // date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
     const signInFormSubmission = async(event) => {
         event.preventDefault(); // Prevent default form submission
         try {
@@ -42,7 +54,7 @@ const Signin = () => {
                     setIsLoginNotFound(true);
                 } else {
                     setIsLoginNotFound(false);
-                    window.sessionStorage.setItem("userData", JSON.stringify(responseData));
+                    setCookie("userData", JSON.stringify(responseData), 1); //Expire time of 1 day
                     window.location.href = '/profile';
                 }
             } else {

@@ -52,14 +52,45 @@ const Profile = () => {
         default: false
     });
 
-    //Initial profile load greeting handler
+    //Cookie Handler:
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 5 * 60 * 1000)); //Changed to 5 minutes for testing
+            // date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+        var nameEQ = name + "=";
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            while (cookie.charAt(0) === ' ') {
+                cookie = cookie.substring(1, cookie.length);
+            }
+            if (cookie.indexOf(nameEQ) === 0) {
+                return cookie.substring(nameEQ.length, cookie.length);
+            }
+        }
+        return null;
+    }
+
+    function deleteCookie(name) {
+        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+
+    //Initial DOM Loaded data acquisition
     const [isDataExist, setIsDataExist] = useState(false);
     const [greetFirstName, setGreetFirstName] = useState("");
     const [greetLastName, setGreetLastName] = useState("");
     const [currEmail, setCurrEmail] = useState("");
 
     useEffect(() => {
-        const userDataString = window.sessionStorage.getItem("userData");
+        const userDataString = getCookie("userData");
         if (userDataString) {
             const userData = JSON.parse(userDataString);
 
@@ -182,7 +213,7 @@ const Profile = () => {
 
     useEffect(() => {
         if (openStates['addressEdit']) {
-            const userDataString = window.sessionStorage.getItem("userData");
+            const userDataString = getCookie("userData");
 
             //Parse the JSON string into a JavaScript object
             const userData = JSON.parse(userDataString);
@@ -227,39 +258,6 @@ const Profile = () => {
             [pageName]: true
         }));
     };
-
-    //Verify Change email code
-    const verifyFormSubmission = async(event) => {
-        event.preventDefault(); // Prevent default form submission
-        try {
-            const userData = JSON.parse(window.sessionStorage.getItem("userData"));
-            const url = `/api?type=newemailverifycode&code=${verificationCode}&email=${newEmail}&oldemail=${userData.user}`;
-
-            const response = await fetch(url, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-
-            if (response.ok) {
-                const responseData = await response.json();
-
-                if (responseData.code === "Not found") {
-                    console.log("Code not Found");
-                    setIsCodeNotFound(true);
-                } else {
-                    console.log("Code Found")
-                    window.location.href = '/signin';
-                    setIsCodeNotFound(false);
-                }
-            } else {
-                console.log("Error when reading response");
-            }
-        } catch (error) {
-            console.log("Error occurred when verifying code:", error)
-        }
-    }
 
     //Code Input Handler
     const handleChange = (i, event) => {
@@ -316,6 +314,40 @@ const Profile = () => {
         }
     }
 
+    //Verify Change email code
+    const verifyFormSubmission = async(event) => {
+        event.preventDefault(); // Prevent default form submission
+        try {
+            const userData = JSON.parse(getCookie("userData"));
+            const url = `/api?type=newemailverifycode&code=${verificationCode}&email=${newEmail}&oldemail=${userData.user}`;
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if (response.ok) {
+                const responseData = await response.json();
+
+                if (responseData.code === "Not found") {
+                    console.log("Code not Found");
+                    setIsCodeNotFound(true);
+                } else {
+                    console.log("Code Found");
+                    deleteCookie("userData");
+                    window.location.href = '/signin';
+                    setIsCodeNotFound(false);
+                }
+            } else {
+                console.log("Error when reading response");
+            }
+        } catch (error) {
+            console.log("Error occurred when verifying code:", error)
+        }
+    }
+
     //Change First Name Handler
     const changeFirstName = async(event) => {
         event.preventDefault(); // Prevent default form submission
@@ -328,15 +360,15 @@ const Profile = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    id: JSON.parse(window.sessionStorage.getItem("userData")).id,
+                    id: JSON.parse(getCookie("userData")).id,
                     firstName: newFirstName
                 })
             })
 
             if (response.ok) {
                 const responseData = await response.json();
-
-                window.sessionStorage.setItem("userData", JSON.stringify(responseData));
+                
+                setCookie("userData", JSON.stringify(responseData), 1);
                 console.log("Change First Name Successful!");
                 window.location.href = '/profile';
             } else {
@@ -359,15 +391,15 @@ const Profile = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    id: JSON.parse(window.sessionStorage.getItem("userData")).id,
+                    id: JSON.parse(getCookie("userData")).id,
                     lastName: newLastName
                 })
             })
 
             if (response.ok) {
                 const responseData = await response.json();
-
-                window.sessionStorage.setItem("userData", JSON.stringify(responseData));
+                
+                setCookie("userData", JSON.stringify(responseData), 1);
                 console.log("Change Last Name Successful!");
                 window.location.href = '/profile';
             } else {
@@ -390,7 +422,7 @@ const Profile = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    id: JSON.parse(window.sessionStorage.getItem("userData")).id,
+                    id: JSON.parse(getCookie("userData")).id,
                     address: addAddressObj
                 })
             })
@@ -398,7 +430,7 @@ const Profile = () => {
             if (response.ok) {
                 const responseData = await response.json();
 
-                window.sessionStorage.setItem("userData", JSON.stringify(responseData));
+                setCookie("userData", JSON.stringify(responseData), 1);
                 setAddAddressObj({
                     country_reg: "",
                     phone_num: "",
@@ -510,21 +542,21 @@ const Profile = () => {
                                 <li>
                                     <div className="info-card-padding">
                                         <h1><strong>First Name</strong></h1>
-                                        <p>{JSON.parse(window.sessionStorage.getItem("userData")).firstName}</p>
+                                        <p>{JSON.parse(getCookie("userData")).firstName}</p>
                                         <button onClick={() => gotoPage("changeFirstName")}>Edit</button>
                                     </div>
                                 </li>
                                 <li>
                                     <div className="info-card-padding">
                                         <h1><strong>Last Name</strong></h1>
-                                        <p>{JSON.parse(window.sessionStorage.getItem("userData")).lastName}</p>
+                                        <p>{JSON.parse(getCookie("userData")).lastName}</p>
                                         <button onClick={() => gotoPage("changeLastName")}>Edit</button>
                                     </div>
                                 </li>
                                 <li>
                                     <div className="info-card-padding">
                                         <h1><strong>Email</strong></h1>
-                                        <p>{JSON.parse(window.sessionStorage.getItem("userData")).user}</p>
+                                        <p>{JSON.parse(getCookie("userData")).user}</p>
                                         <button onClick={() => gotoPage("changeEmail")}>Edit</button>
                                     </div>
                                 </li>
