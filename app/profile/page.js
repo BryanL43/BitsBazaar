@@ -7,11 +7,32 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 const Profile = () => {
-    const [openInfoEdit, setOpenInfoEdit] = useState(false);
-    const [openChangeFirstName, setOpenChangeFirstName] = useState(false);
-    const [openChangeLastName, setOpenChangeLastName] = useState(false);
-    const [openChangeEmail, setOpenChangeEmail] = useState(false);
-    const [openCodeVerify, setOpenCodeVerify] = useState(false);
+    //Page Render Variables
+    const [openStates, setOpenStates] = useState({
+        infoEdit: false,
+        changeFirstName: false,
+        changeLastName: false,
+        changeEmail: false,
+        codeVerify: false,
+        addressEdit: false,
+        addAddress: false
+    });
+
+    const areAllPagesClosed = Object.values(openStates).every(state => !state);
+
+    //Close all page for returning to /profile
+    const closeAllSubPages = () => {
+        setOpenStates({
+            infoEdit: false,
+            changeFirstName: false,
+            changeLastName: false,
+            changeEmail: false,
+            codeVerify: false,
+            addressEdit: false,
+            addAddress: false
+        });
+    };
+
     const codeInputs = useRef([]);
     const [verificationCode, setVerificationCode] = useState("");
     const [isCodeNotFound, setIsCodeNotFound] = useState(false);
@@ -52,53 +73,13 @@ const Profile = () => {
         window.location.href = '/signin';
     }
 
-    const gotoProfilePg = () => {
-        setOpenInfoEdit(false);
-        setOpenChangeFirstName(false);
-        setOpenChangeLastName(false);
-        setOpenChangeEmail(false);
-        setOpenCodeVerify(false);
-    }
-
-    const gotoInfoEditPg = () => {
-        setOpenInfoEdit(true);
-        setOpenChangeFirstName(false);
-        setOpenChangeLastName(false);
-        setOpenChangeEmail(false);
-        setOpenCodeVerify(false);
-    }
-
-    const gotoChangeFirstNamePg = () => {
-        setOpenInfoEdit(false);
-        setOpenChangeFirstName(true);
-        setOpenChangeLastName(false);
-        setOpenChangeEmail(false);
-        setOpenCodeVerify(false);
-    }
-
-    const gotoChangeLastNamePg = () => {
-        setOpenInfoEdit(false);
-        setOpenChangeFirstName(false);
-        setOpenChangeLastName(true);
-        setOpenChangeEmail(false);
-        setOpenCodeVerify(false);
-    }
-
-    const gotoChangeEmailPg = () => {
-        setOpenInfoEdit(false);
-        setOpenChangeFirstName(false);
-        setOpenChangeLastName(false);
-        setOpenChangeEmail(true);
-        setOpenCodeVerify(false);
-    }
-
-    const gotoCodeVerPg = () => {
-        setOpenInfoEdit(false);
-        setOpenChangeFirstName(false);
-        setOpenChangeLastName(false);
-        setOpenChangeEmail(false);
-        setOpenCodeVerify(true);
-    }
+    const gotoPage = (pageName) => {
+        closeAllSubPages();
+        setOpenStates(prevState => ({
+            ...prevState,
+            [pageName]: true
+        }));
+    };
 
     //Verify Change email code
     const verifyFormSubmission = async(event) => {
@@ -179,7 +160,7 @@ const Profile = () => {
 
             if (response.ok) {
                 console.log("Successfully sent verification code");
-                gotoCodeVerPg();
+                gotoPage('codeVerify');
             } else {
                 console.log("Error when reading response");
             }
@@ -250,11 +231,10 @@ const Profile = () => {
         }
     }
 
-
     return (
         <main>
             <div className="profile-screen">
-                {!openInfoEdit && !openChangeFirstName && !openChangeLastName && !openChangeEmail && !openCodeVerify && ( //Main Profile Page
+                {areAllPagesClosed && ( //Render main profile page
                     <React.Fragment>
                         <div className="profile-container">
                             <div className="profile-left-side">
@@ -292,7 +272,7 @@ const Profile = () => {
                                 </div>
                             </div>
                             <div className="profile-right-side">
-                                <div className="profile-setting-content" onClick={gotoInfoEditPg}>
+                                <div className="profile-setting-content" onClick={() => gotoPage("infoEdit")}>
                                     <Image src="/profileEdit.png" alt="Edit login, name, email, and password" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
                                     <div className="profile-setting-content-inner">
                                         <h2>Personal Information</h2>
@@ -300,14 +280,14 @@ const Profile = () => {
                                     </div>
                                 </div>
                                 <div className="profile-setting-content">
-                                    <Image src="/profileOrder.png" alt="Edit login, name, email, and password" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
+                                    <Image src="/profileOrder.png" alt="See your order history" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
                                     <div className="profile-setting-content-inner">
                                         <h2>Your Orders</h2>
                                         <p>See purchase history, track, or cancel an order</p>
                                     </div>
                                 </div>
-                                <div className="profile-setting-content">
-                                    <Image src="/profileAddress.png" alt="Edit login, name, email, and password" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
+                                <div className="profile-setting-content" onClick={() => gotoPage("addressEdit")}>
+                                    <Image src="/profileAddress.png" alt="Edit your addresses" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
                                     <div className="profile-setting-content-inner">
                                         <h2>Your Addresses</h2>
                                         <p>Edit, remove, or set default address</p>
@@ -324,12 +304,12 @@ const Profile = () => {
                         </div>
                     </React.Fragment>
                 )}
-                {openInfoEdit && ( 
+                {openStates['infoEdit'] && ( //Render edit personal information subpage
                     <React.Fragment>
                         <div className="edit-container">
                             <ol className="custom-list">
                                 <li>
-                                    <Link href="/profile" id="backToProfile" onClick={gotoProfilePg}>Your Account</Link>
+                                    <Link href="/profile" id="backToProfile" onClick={closeAllSubPages}>Your Account</Link>
                                 </li>
                                 <li>
                                     <p>Personal Information</p>
@@ -341,21 +321,21 @@ const Profile = () => {
                                     <div className="info-card-padding">
                                         <h1><strong>First Name</strong></h1>
                                         <p>{JSON.parse(window.sessionStorage.getItem("userData")).firstName}</p>
-                                        <button onClick={gotoChangeFirstNamePg}>Edit</button>
+                                        <button onClick={() => gotoPage("changeFirstName")}>Edit</button>
                                     </div>
                                 </li>
                                 <li>
                                     <div className="info-card-padding">
                                         <h1><strong>Last Name</strong></h1>
                                         <p>{JSON.parse(window.sessionStorage.getItem("userData")).lastName}</p>
-                                        <button onClick={gotoChangeLastNamePg}>Edit</button>
+                                        <button onClick={() => gotoPage("changeLastName")}>Edit</button>
                                     </div>
                                 </li>
                                 <li>
                                     <div className="info-card-padding">
                                         <h1><strong>Email</strong></h1>
                                         <p>{JSON.parse(window.sessionStorage.getItem("userData")).user}</p>
-                                        <button onClick={gotoChangeEmailPg}>Edit</button>
+                                        <button onClick={() => gotoPage("changeEmail")}>Edit</button>
                                     </div>
                                 </li>
                                 <li>
@@ -369,15 +349,15 @@ const Profile = () => {
                         </div>
                     </React.Fragment>
                 )}
-                {openChangeFirstName && (
+                {openStates['changeFirstName'] && ( //Render edit change first name subpage
                     <React.Fragment>
                         <div className="edit-container">
                             <ol className="custom-list">
                                 <li>
-                                    <Link href="/profile" id="backToProfile" onClick={gotoProfilePg}>Your Account</Link>
+                                    <Link href="/profile" id="backToProfile" onClick={closeAllSubPages}>Your Account</Link>
                                 </li>
                                 <li>
-                                    <Link href="/profile" id="backToProfile" onClick={gotoInfoEditPg}>Personal Information</Link>
+                                    <Link href="/profile" id="backToProfile" onClick={() => gotoPage("infoEdit")}>Personal Information</Link>
                                 </li>
                                 <li>
                                     <p>Change your first name</p>
@@ -397,15 +377,15 @@ const Profile = () => {
                         </div>
                     </React.Fragment>
                 )}
-                {openChangeLastName && ( //Open change last name page
+                {openStates['changeLastName'] && ( //Render edit change last name subpage
                     <React.Fragment>
                         <div className="edit-container">
                             <ol className="custom-list">
                                 <li>
-                                    <Link href="/profile" id="backToProfile" onClick={gotoProfilePg}>Your Account</Link>
+                                    <Link href="/profile" id="backToProfile" onClick={closeAllSubPages}>Your Account</Link>
                                 </li>
                                 <li>
-                                    <Link href="/profile" id="backToProfile" onClick={gotoInfoEditPg}>Personal Information</Link>
+                                    <Link href="/profile" id="backToProfile" onClick={() => gotoPage("infoEdit")}>Personal Information</Link>
                                 </li>
                                 <li>
                                     <p>Change your last name</p>
@@ -425,8 +405,8 @@ const Profile = () => {
                         </div>
                     </React.Fragment>
                 )}
-                {openChangeEmail && ( //Open change email page
-                    !openCodeVerify && ( //Render email page
+                {openStates['changeEmail'] && ( //Open change email page
+                    !openStates['codeVerify'] && ( //Render email page
                         <React.Fragment>
                             <div className="forgotpwd-screen">
                                 <div className="forgotpwd-container">
@@ -442,7 +422,7 @@ const Profile = () => {
                         </React.Fragment>
                     )
                 )}
-                {openCodeVerify && ( //Open code verification page
+                {openStates['codeVerify'] && ( //Open code verification page
                     <React.Fragment>
                         <div className="verify-screen">
                             <div className="verify-container">
@@ -473,6 +453,126 @@ const Profile = () => {
                                     <button id="submitBtn" type="submit">Verify</button>
                                 </form>
                             </div>
+                        </div>
+                    </React.Fragment>
+                )}
+                {openStates['addressEdit'] && ( //Render address edit subpage
+                    <React.Fragment>
+                        <div className="edit-address-container">
+                            <ol className="custom-list">
+                                <li>
+                                    <Link href="/profile" id="backToProfile" onClick={closeAllSubPages}>Your Account</Link>
+                                </li>
+                                <li>
+                                    <p>Your Addresses</p>
+                                </li>
+                            </ol>
+                            <h1>Your Addresses</h1>
+                            <div className="address-grid-container">
+                                <div className="address-card add-address-card">
+                                    <h1>+</h1>
+                                    <h2>Add Address</h2>
+                                </div>
+                                <div className="address-card">
+                                    <div className="address-top-bar">
+                                        <p><strong>Default Address</strong></p>
+                                    </div>
+                                    <ul>
+                                        <li><p><strong>Bryan Lee</strong></p></li>
+                                        <li><p>451 GREEN ST APT B</p></li>
+                                        <li><p>SAN FRANCISCO, CA 94133-4001</p></li>
+                                        <li><p>United States</p></li>
+                                        <li><p>Phone number: 4156238183</p></li>
+                                    </ul>
+                                    <div className="address-bottom-bar">
+                                        <Link href="/profile" onClick={() => gotoPage('addAddress')}>Edit</Link>
+                                        <Link href="/profile">Remove</Link>
+                                    </div>
+                                </div>
+                                <div className="address-card">
+                                    <ul>
+                                        <li><p><strong>Bryan Lee</strong></p></li>
+                                        <li><p>451 GREEN ST APT B</p></li>
+                                        <li><p>SAN FRANCISCO, CA 94133-4001</p></li>
+                                        <li><p>United States</p></li>
+                                        <li><p>Phone number: 4156238183</p></li>
+                                    </ul>
+                                    <div className="address-bottom-bar">
+                                        <Link href="/profile">Edit</Link>
+                                        <Link href="/profile">Remove</Link>
+                                        <Link href="/profile">Set as Default</Link>
+                                    </div>
+                                </div>
+                                <div className="address-card">
+                                    <ul>
+                                        <li><p><strong>Bryan Lee</strong></p></li>
+                                        <li><p>451 GREEN ST APT B</p></li>
+                                        <li><p>SAN FRANCISCO, CA 94133-4001</p></li>
+                                        <li><p>United States</p></li>
+                                        <li><p>Phone number: 4156238183</p></li>
+                                    </ul>
+                                    <div className="address-bottom-bar">
+                                        <Link href="/profile">Edit</Link>
+                                        <Link href="/profile">Remove</Link>
+                                        <Link href="/profile">Set as Default</Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </React.Fragment>
+                )}
+                {openStates['addAddress'] && ( //Render add address subpage
+                    <React.Fragment>
+                        <div className="edit-address-comp-container">
+                            <ol className="custom-list">
+                                <li>
+                                    <Link href="/profile" id="backToProfile" onClick={closeAllSubPages}>Your Account</Link>
+                                </li>
+                                <li>
+                                    <Link href="/profile" id="backToProfile" onClick={() => gotoPage("addressEdit")}>Your Addresses</Link>
+                                </li>
+                                <li>
+                                    <p>Edit Address</p>
+                                </li>
+                            </ol>
+                            <h1>Edit Your Address</h1>
+                            <form className="edit-address-container-2" action="/edit2" method="GET">
+                                <div className="component-address-edit">
+                                    <label><strong>Country/Region</strong></label>
+                                    <input type="text" className="address-edit-input" required />
+                                </div>
+                                <div className="component-address-edit">
+                                    <label><strong>Full Name (First and Last name)</strong></label>
+                                    <input type="text" className="address-edit-input" required />
+                                </div>
+                                <div className="component-address-edit">
+                                    <label><strong>Phone number</strong></label>
+                                    <input type="text" className="address-edit-input" required />
+                                </div>
+                                <div className="component-address-edit">
+                                    <label><strong>Address</strong></label>
+                                    <input type="text" className="address-edit-input" required />
+                                </div>
+                                <div className="component-address-edit component-address-edit-type2">
+                                    <div>
+                                        <label><strong>City</strong></label>
+                                        <input type="text" className="address-edit-input address-edit-input-override" required />
+                                    </div>
+                                    <div>
+                                        <label><strong>State</strong></label>
+                                        <input type="text" className="address-edit-input address-edit-input-override" required />
+                                    </div>
+                                    <div>
+                                        <label><strong>ZIP Code</strong></label>
+                                        <input type="text" className="address-edit-input address-edit-input-override" required />
+                                    </div>
+                                </div>
+                                <div className="address-edit-checkbox">
+                                    <input type='checkbox' className="setAsDefaultCheck"></input>
+                                    <label id="setAsDefaultLabel">Make this my default address</label>
+                                </div>
+                                <button>Add Address</button>
+                            </form>
                         </div>
                     </React.Fragment>
                 )}
