@@ -23,6 +23,7 @@ const Profile = () => {
     //Initial profile load greeting handler
     const [greetFirstName, setGreetFirstName] = useState("");
     const [greetLastName, setGreetLastName] = useState("");
+    const [currEmail, setCurrEmail] = useState("");
 
     useEffect(() => {
         const userDataString = window.sessionStorage.getItem("userData");
@@ -30,6 +31,7 @@ const Profile = () => {
             const userData = JSON.parse(userDataString);
             setGreetFirstName(userData.firstName);
             setGreetLastName(userData.lastName);
+            setCurrEmail(userData.user);
         }
     }, []);
 
@@ -322,7 +324,7 @@ const Profile = () => {
                         </div>
                     </React.Fragment>
                 )}
-                {openInfoEdit && !openChangeFirstName && !openChangeLastName && !openChangeEmail && !openCodeVerify && ( //Open edit personal information page
+                {openInfoEdit && ( 
                     <React.Fragment>
                         <div className="edit-container">
                             <ol className="custom-list">
@@ -367,7 +369,7 @@ const Profile = () => {
                         </div>
                     </React.Fragment>
                 )}
-                {openChangeFirstName && !openInfoEdit && !openChangeLastName && !openChangeEmail && !openCodeVerify && ( //Open change first name page
+                {openChangeFirstName && (
                     <React.Fragment>
                         <div className="edit-container">
                             <ol className="custom-list">
@@ -395,7 +397,7 @@ const Profile = () => {
                         </div>
                     </React.Fragment>
                 )}
-                {openChangeLastName && !openInfoEdit && !openChangeFirstName && !openChangeEmail && !openCodeVerify && ( //Open change last name page
+                {openChangeLastName && ( //Open change last name page
                     <React.Fragment>
                         <div className="edit-container">
                             <ol className="custom-list">
@@ -423,14 +425,14 @@ const Profile = () => {
                         </div>
                     </React.Fragment>
                 )}
-                {openChangeEmail && !openInfoEdit && !openChangeFirstName && !openChangeLastName && !openCodeVerify && ( //Open change email page
+                {openChangeEmail && ( //Open change email page
                     !openCodeVerify && ( //Render email page
                         <React.Fragment>
                             <div className="forgotpwd-screen">
                                 <div className="forgotpwd-container">
                                     <h1>Change Your Email Address</h1>
                                     <form className="signin-form" action="/profile" method="GET" onSubmit={sendCode}>
-                                        <p>Current email address: JohnDoe@gmail.com</p>
+                                        <p>Current email address: <strong>{currEmail}</strong></p>
                                         <p style={{width:"80%"}}>Enter the new email address you would like to associate with your account below. We will send a verification code to that address.</p>
                                         <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} required />
                                         <button id="submitBtn" type="submit">Continue</button>
@@ -440,7 +442,7 @@ const Profile = () => {
                         </React.Fragment>
                     )
                 )}
-                {openCodeVerify && !openInfoEdit && !openChangeFirstName && !openChangeLastName && !openChangeEmail && ( //Open code verification page
+                {openCodeVerify && ( //Open code verification page
                     <React.Fragment>
                         <div className="verify-screen">
                             <div className="verify-container">

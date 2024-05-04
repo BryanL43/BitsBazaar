@@ -1071,7 +1071,7 @@ header {
     font-weight: 400;
 }
 
-.edit-container h1, .edit-address-container h1 {
+.edit-container h1, .edit-address-container h1, .edit-address-comp-container h1 {
     font-size: 28px;
     font-family: "Inria Sans";
     color: var(--text);
@@ -1191,7 +1191,7 @@ header {
     position: relative;
 }
 
-.change-name-card-padding > label {
+.change-name-card-padding > label, .component-address-edit > label, .component-address-edit > div > label {
     font-family: "Inria Sans";
     color: var(--text);
     font-size: 16px;
@@ -1348,4 +1348,97 @@ header {
 
 .add-address-card:hover {
     cursor: pointer;
+}
+
+/* Edit address page */
+.edit-address-comp-container {
+    width: 26.5%;
+    height: 100vh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 1.5%;
+}
+
+.edit-address-container-2 {
+    width: 100%;
+    height: 100%;
+}
+
+.component-address-edit {
+    width: 100%;
+    height: 56px;
+    margin-bottom: 13px;
+}
+
+.address-edit-input {
+    height: 31px;
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 16px;
+    font-family: "Inria Sans";
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 7px;
+    outline: none;
+    background-color: var(--background);
+    border-color: var(--text);
+    color: var(--text);
+    transition: ease-in-out border-color 300ms;
+    display: block;
+    margin-left: 0;
+    margin-bottom: 20px;
+}
+
+.address-edit-input-override {
+    width: 90% !important;
+}
+
+.address-edit-input[type=text]:focus {
+    box-shadow: 0 0 5px var(--text);
+    border: 1px solid var(--text);
+    color: var(--text);
+}
+
+.component-address-edit-type2 {
+    display: flex;
+}
+
+.address-edit-checkbox {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.setAsDefaultCheck {
+    height: 16px;
+    width: 16px;
+    border: 1px solid;
+    border-color: var(--text);
+    margin: auto 5px auto 0px;
+}
+
+#setAsDefaultLabel {
+    font-family: "Inria Sans";
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.edit-address-container-2 button {
+    width: auto;
+    padding: 0 10px;
+    height: 29px;
+    font-family: "Inria Sans";
+    border: 1px solid #FCD200;
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: #FFD814;
+    color: black;
+    margin-bottom: 20px;
+}
+
+.edit-address-container-2 button:hover {
+    background-color: #f0c14b;
 }

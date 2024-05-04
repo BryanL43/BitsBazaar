@@ -54,6 +54,20 @@ const Edit = () => {
                                 <Link href="/address">Set as Default</Link>
                             </div>
                         </div>
+                        <div className="address-card">
+                            <ul>
+                                <li><p><strong>Bryan Lee</strong></p></li>
+                                <li><p>451 GREEN ST APT B</p></li>
+                                <li><p>SAN FRANCISCO, CA 94133-4001</p></li>
+                                <li><p>United States</p></li>
+                                <li><p>Phone number: 4156238183</p></li>
+                            </ul>
+                            <div className="address-bottom-bar">
+                                <Link href="/address">Edit</Link>
+                                <Link href="/address">Remove</Link>
+                                <Link href="/address">Set as Default</Link>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
