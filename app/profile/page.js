@@ -93,6 +93,93 @@ const Profile = () => {
         window.location.href = '/signin';
     }
 
+    function createAddressCard(rawAddress, isDefault) {
+        //Create a new address card element
+        const addressCard = document.createElement("div");
+        addressCard.classList.add("address-card");
+
+        //Check if the address is the default address for top bar
+        if (isDefault) {
+            //Create the address-top-bar for default address
+            const addressTopBar = document.createElement("div");
+            addressTopBar.classList.add("address-top-bar");
+            const strongTag = document.createElement("strong");
+            strongTag.textContent = "Default Address";
+            const paragraphTag = document.createElement("p");
+            paragraphTag.appendChild(strongTag);
+            addressTopBar.appendChild(paragraphTag);
+            addressCard.appendChild(addressTopBar);
+        }
+
+        //Create the ul element for address details
+        const ulElement = document.createElement("ul");
+
+        //Name creation
+        const name_liElement = document.createElement("li");
+        const name_pElement = document.createElement("p");
+        const name_strongTag = document.createElement("strong");
+        name_strongTag.textContent = greetFirstName + " " + greetLastName;
+        name_pElement.appendChild(name_strongTag);
+        name_liElement.appendChild(name_pElement);
+        ulElement.appendChild(name_liElement);
+
+        //Address creation
+        const adr_liElement = document.createElement("li");
+        const adr_pElement = document.createElement("p");
+        adr_pElement.textContent = rawAddress.address
+        adr_liElement.appendChild(adr_pElement);
+        ulElement.appendChild(adr_liElement);
+
+        //Address extended creation
+        const adrEx_liElement = document.createElement("li");
+        const adrEx_pElement = document.createElement("p");
+        adrEx_pElement.textContent = rawAddress.city + ", " + rawAddress.state + " " + rawAddress.zip_code
+        adrEx_liElement.appendChild(adrEx_pElement);
+        ulElement.appendChild(adrEx_liElement);
+
+        //Country/Region creation
+        const coun_liElement = document.createElement("li");
+        const coun_pElement = document.createElement("p");
+        coun_pElement.textContent = rawAddress.country_reg
+        coun_liElement.appendChild(coun_pElement);
+        ulElement.appendChild(coun_liElement);
+
+        //Phone number creation
+        const phone_liElement = document.createElement("li");
+        const phone_pElement = document.createElement("p");
+        phone_pElement.textContent = "Phone number: " + rawAddress.phone_num
+        phone_liElement.appendChild(phone_pElement);
+        ulElement.appendChild(phone_liElement);
+
+        //Create the address-bottom-bar element
+        const addressBottomBar = document.createElement("div");
+        addressBottomBar.classList.add("address-bottom-bar");
+        
+        //Create links for edit and remove
+        const editLink = document.createElement("a");
+        editLink.href = "/profile";
+        editLink.textContent = "Edit";
+        const removeLink = document.createElement("a");
+        removeLink.href = "/profile";
+        removeLink.textContent = "Remove";
+        addressBottomBar.appendChild(editLink);
+        addressBottomBar.appendChild(removeLink);
+
+        //If the address is not the default address, add "Set as Default" link
+        if (isDefault) {
+            const setDefaultLink = document.createElement("a");
+            setDefaultLink.href = "/profile";
+            setDefaultLink.textContent = "Set as Default";
+            addressBottomBar.appendChild(setDefaultLink);
+        }
+
+        //Append ul and address-bottom-bar to address card
+        addressCard.appendChild(ulElement);
+        addressCard.appendChild(addressBottomBar);
+
+        return addressCard;
+    }
+
     useEffect(() => {
         if (openStates['addressEdit']) {
             const userDataString = window.sessionStorage.getItem("userData");
@@ -103,101 +190,33 @@ const Profile = () => {
             //Container
             const addressGridContainer = document.querySelector(".address-grid-container");
 
-            //Delete all children so it doesn't duplicate clone
+            //Delete all children excluding firstchild so it doesn't duplicate clone
             let child = addressGridContainer.firstElementChild; // Get the second child
             while (child.nextElementSibling) {
                 addressGridContainer.removeChild(child.nextElementSibling);
             }
 
-            userData.addresses.forEach(address => {
-                let rawAddress = JSON.parse(address);
+            //Find the default address
+            const defaultAddress = userData.addresses.find(address => {
+                const rawAddress = JSON.parse(address);
+                return rawAddress.default === "true";
+            });
 
-                //Create a new address card element
-                const addressCard = document.createElement("div");
-                addressCard.classList.add("address-card");
-
-                //Check if the address is the default address for top bar
-                if (rawAddress.default === "true") {
-                    //Create the address-top-bar for default address
-                    const addressTopBar = document.createElement("div");
-                    addressTopBar.classList.add("address-top-bar");
-                    const strongTag = document.createElement("strong");
-                    strongTag.textContent = "Default Address";
-                    const paragraphTag = document.createElement("p");
-                    paragraphTag.appendChild(strongTag);
-                    addressTopBar.appendChild(paragraphTag);
-                    addressCard.appendChild(addressTopBar);
-                }
-
-                //Create the ul element for address details
-                const ulElement = document.createElement("ul");
-
-                //Name creation
-                const name_liElement = document.createElement("li");
-                const name_pElement = document.createElement("p");
-                const name_strongTag = document.createElement("strong");
-                name_strongTag.textContent = greetFirstName + " " + greetLastName;
-                name_pElement.appendChild(name_strongTag);
-                name_liElement.appendChild(name_pElement);
-                ulElement.appendChild(name_liElement);
-
-                //Address creation
-                const adr_liElement = document.createElement("li");
-                const adr_pElement = document.createElement("p");
-                adr_pElement.textContent = rawAddress.address
-                adr_liElement.appendChild(adr_pElement);
-                ulElement.appendChild(adr_liElement);
-
-                //Address extended creation
-                const adrEx_liElement = document.createElement("li");
-                const adrEx_pElement = document.createElement("p");
-                adrEx_pElement.textContent = rawAddress.city + ", " + rawAddress.state + " " + rawAddress.zip_code
-                adrEx_liElement.appendChild(adrEx_pElement);
-                ulElement.appendChild(adrEx_liElement);
-
-                //Country/Region creation
-                const coun_liElement = document.createElement("li");
-                const coun_pElement = document.createElement("p");
-                coun_pElement.textContent = rawAddress.country_reg
-                coun_liElement.appendChild(coun_pElement);
-                ulElement.appendChild(coun_liElement);
-
-                //Phone number creation
-                const phone_liElement = document.createElement("li");
-                const phone_pElement = document.createElement("p");
-                phone_pElement.textContent = "Phone number: " + rawAddress.phone_num
-                phone_liElement.appendChild(phone_pElement);
-                ulElement.appendChild(phone_liElement);
-
-                //Create the address-bottom-bar element
-                const addressBottomBar = document.createElement("div");
-                addressBottomBar.classList.add("address-bottom-bar");
-                
-                //Create links for edit and remove
-                const editLink = document.createElement("a");
-                editLink.href = "/profile";
-                editLink.textContent = "Edit";
-                const removeLink = document.createElement("a");
-                removeLink.href = "/profile";
-                removeLink.textContent = "Remove";
-                addressBottomBar.appendChild(editLink);
-                addressBottomBar.appendChild(removeLink);
-
-                //If the address is not the default address, add "Set as Default" link
-                if (rawAddress.default !== "true") {
-                    const setDefaultLink = document.createElement("a");
-                    setDefaultLink.href = "/profile";
-                    setDefaultLink.textContent = "Set as Default";
-                    addressBottomBar.appendChild(setDefaultLink);
-                }
-
-                // Append ul and address-bottom-bar to address card
-                addressCard.appendChild(ulElement);
-                addressCard.appendChild(addressBottomBar);
-
-                // Append the address card to the address grid container
+            //Process the default address first
+            if (defaultAddress) {
+                const rawDefaultAddress = JSON.parse(defaultAddress);
+                const addressCard = createAddressCard(rawDefaultAddress, true);
                 addressGridContainer.appendChild(addressCard);
-            })
+            }
+
+            //Process the rest of the addresses
+            userData.addresses.forEach(address => {
+                const rawAddress = JSON.parse(address);
+                if (rawAddress.default !== "true") {
+                    const addressCard = createAddressCard(rawAddress, false);
+                    addressGridContainer.appendChild(addressCard);
+                }
+            });
         }
     })
 
