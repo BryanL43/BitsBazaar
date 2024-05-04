@@ -14,8 +14,9 @@ const Profile = () => {
         changeLastName: false,
         changeEmail: false,
         codeVerify: false,
-        addressEdit: false,
-        addAddress: false
+        addressPage: false,
+        addAddress: false,
+        addressEdit: false
     });
 
     const areAllPagesClosed = Object.values(openStates).every(state => !state);
@@ -28,8 +29,9 @@ const Profile = () => {
             changeLastName: false,
             changeEmail: false,
             codeVerify: false,
-            addressEdit: false,
-            addAddress: false
+            addressPage: false,
+            addAddress: false,
+            addressEdit: false
         });
     };
 
@@ -57,8 +59,7 @@ const Profile = () => {
         var expires = "";
         if (days) {
             var date = new Date();
-            date.setTime(date.getTime() + (days * 5 * 60 * 1000)); //Changed to 5 minutes for testing
-            // date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
             expires = "; expires=" + date.toUTCString();
         }
         document.cookie = name + "=" + (value || "") + expires + "; path=/";
@@ -123,6 +124,14 @@ const Profile = () => {
     const accessoriesRedirect = () => {
         window.location.href = '/signin';
     }
+
+    const gotoPage = (pageName) => {
+        closeAllSubPages();
+        setOpenStates(prevState => ({
+            ...prevState,
+            [pageName]: true
+        }));
+    };
 
     function createAddressCard(rawAddress, isDefault) {
         //Create a new address card element
@@ -190,6 +199,13 @@ const Profile = () => {
         const editLink = document.createElement("a");
         editLink.href = "/profile";
         editLink.textContent = "Edit";
+
+        editLink.addEventListener("click", function(event) {
+            event.preventDefault();
+            setAddAddressObj(rawAddress);
+            gotoPage("addressEdit");
+        })
+
         const removeLink = document.createElement("a");
         removeLink.href = "/profile";
         removeLink.textContent = "Remove";
@@ -212,7 +228,7 @@ const Profile = () => {
     }
 
     useEffect(() => {
-        if (openStates['addressEdit']) {
+        if (openStates['addressPage']) {
             const userDataString = getCookie("userData");
 
             //Parse the JSON string into a JavaScript object
@@ -250,14 +266,6 @@ const Profile = () => {
             });
         }
     })
-
-    const gotoPage = (pageName) => {
-        closeAllSubPages();
-        setOpenStates(prevState => ({
-            ...prevState,
-            [pageName]: true
-        }));
-    };
 
     //Code Input Handler
     const handleChange = (i, event) => {
@@ -440,7 +448,7 @@ const Profile = () => {
                     zip_code: "",
                     default: false
                 });                
-                gotoPage("addressEdit");
+                gotoPage("addressPage");
             } else {
                 console.log("Add Address Failed");
             }
@@ -451,6 +459,43 @@ const Profile = () => {
 
     const editAddress = async(event) => {
         event.preventDefault(); // Prevent default form submission
+        console.log(addAddressObj);
+        console.log(JSON.parse(getCookie("userData")));
+
+        // try {
+        //     const url = "/api?type=addaddress";
+
+        //     const response = await fetch(url, {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json"
+        //         },
+        //         body: JSON.stringify({
+        //             id: JSON.parse(getCookie("userData")).id,
+        //             address: addAddressObj
+        //         })
+        //     })
+
+        //     if (response.ok) {
+        //         const responseData = await response.json();
+
+        //         setCookie("userData", JSON.stringify(responseData), 1);
+        //         setAddAddressObj({
+        //             country_reg: "",
+        //             phone_num: "",
+        //             address: "",
+        //             city: "",
+        //             state: "",
+        //             zip_code: "",
+        //             default: false
+        //         });                
+        //         gotoPage("addressPage");
+        //     } else {
+        //         console.log("Add Address Failed");
+        //     }
+        // } catch (error) {
+        //     console.log("Error occured when adding address:", error)
+        // }
     }
 
     return (
@@ -508,7 +553,7 @@ const Profile = () => {
                                         <p>See purchase history, track, or cancel an order</p>
                                     </div>
                                 </div>
-                                <div className="profile-setting-content" onClick={() => gotoPage("addressEdit")}>
+                                <div className="profile-setting-content" onClick={() => gotoPage("addressPage")}>
                                     <Image src="/profileAddress.png" alt="Edit your addresses" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
                                     <div className="profile-setting-content-inner">
                                         <h2>Your Addresses</h2>
@@ -678,7 +723,7 @@ const Profile = () => {
                         </div>
                     </React.Fragment>
                 )}
-                {openStates['addressEdit'] && ( //Render address edit subpage
+                {openStates['addressPage'] && ( //Render address subpage
                     <React.Fragment>
                         <div className="edit-address-container">
                             <ol className="custom-list">
@@ -691,7 +736,7 @@ const Profile = () => {
                             </ol>
                             <h1>Your Addresses</h1>
                             <div className="address-grid-container">
-                                <div className="address-card add-address-card" onClick={() => gotoPage('addAddress')}>
+                                <div className="address-card add-address-card" onClick={() => {setAddAddressObj({country_reg: "", phone_num: "", address: "", city: "", state: "", zip_code: "", default: false}); gotoPage('addAddress');}}>
                                     <h1>+</h1>
                                     <h2>Add Address</h2>
                                 </div>
@@ -707,13 +752,13 @@ const Profile = () => {
                                     <Link href="/profile" id="backToProfile" onClick={closeAllSubPages}>Your Account</Link>
                                 </li>
                                 <li>
-                                    <Link href="/profile" id="backToProfile" onClick={() => gotoPage("addressEdit")}>Your Addresses</Link>
+                                    <Link href="/profile" id="backToProfile" onClick={() => gotoPage("addressPage")}>Your Addresses</Link>
                                 </li>
                                 <li>
-                                    <p>Edit Address</p>
+                                    <p>New Address</p>
                                 </li>
                             </ol>
-                            <h1>Edit Your Address</h1>
+                            <h1>Add A New Address</h1>
                             <form className="edit-address-container-2" action="/profile" method="POST" onSubmit={addAddress}>
                                 <div className="component-address-edit">
                                     <label><strong>Country/Region</strong></label>
@@ -750,6 +795,61 @@ const Profile = () => {
                                     <label id="setAsDefaultLabel">Make this my default address</label>
                                 </div>
                                 <button>Add Address</button>
+                            </form>
+                        </div>
+                    </React.Fragment>
+                )}
+                {openStates['addressEdit'] && ( //Render edit address subpage (I didn't want to create too many fragment so I just duplicated it)
+                    <React.Fragment>
+                        <div className="edit-address-comp-container">
+                            <ol className="custom-list">
+                                <li>
+                                    <Link href="/profile" id="backToProfile" onClick={closeAllSubPages}>Your Account</Link>
+                                </li>
+                                <li>
+                                    <Link href="/profile" id="backToProfile" onClick={() => gotoPage("addressPage")}>Your Addresses</Link>
+                                </li>
+                                <li>
+                                    <p>Edit Address</p>
+                                </li>
+                            </ol>
+                            <h1>Edit Your Address</h1>
+                            <form className="edit-address-container-2" action="/profile" method="POST" onSubmit={editAddress}>
+                                <div className="component-address-edit">
+                                    <label><strong>Country/Region</strong></label>
+                                    <input type="text" className="address-edit-input" value={addAddressObj["country_reg"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, country_reg: e.target.value}))} required />
+                                </div>
+                                <div className="component-address-edit">
+                                    <label><strong>Full Name (First and Last name)</strong></label>
+                                    <input type="text" className="address-edit-input" value={greetFirstName + " " + greetLastName} readOnly />
+                                </div>
+                                <div className="component-address-edit">
+                                    <label><strong>Phone number</strong></label>
+                                    <input type="text" className="address-edit-input" value={addAddressObj["phone_num"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, phone_num: e.target.value}))} onKeyPress={(e) => {const charCode = e.charCode; if (!(charCode >= 48 && charCode <= 57) && charCode !== 8) {e.preventDefault();}}} required />
+                                </div>
+                                <div className="component-address-edit">
+                                    <label><strong>Address</strong></label>
+                                    <input type="text" className="address-edit-input" value={addAddressObj["address"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, address: e.target.value}))} required />
+                                </div>
+                                <div className="component-address-edit component-address-edit-type2">
+                                    <div>
+                                        <label><strong>City</strong></label>
+                                        <input type="text" className="address-edit-input address-edit-input-override" value={addAddressObj["city"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, city: e.target.value}))} required />
+                                    </div>
+                                    <div>
+                                        <label><strong>State</strong></label>
+                                        <input type="text" className="address-edit-input address-edit-input-override" value={addAddressObj["state"]} maxLength={2} onChange={(e) => setAddAddressObj(prevState => ({...prevState, state: e.target.value}))} onKeyPress={(e) => {const charCode = e.charCode; if (!(charCode >= 65 && charCode <= 90) && !(charCode >= 97 && charCode <= 122) && charCode !== 8 && charCode !== 32) { e.preventDefault();}}} required />
+                                    </div>
+                                    <div>
+                                        <label><strong>ZIP Code</strong></label>
+                                        <input type="text" className="address-edit-input address-edit-input-override" value={addAddressObj["zip_code"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, zip_code: e.target.value}))} onKeyPress={(e) => {const charCode = e.charCode; if (!((charCode >= 48 && charCode <= 57) || charCode === 45) && charCode !== 8 && charCode !== 32) {e.preventDefault();}}} required />
+                                    </div>
+                                </div>
+                                <div className="address-edit-checkbox">
+                                    <input type='checkbox' className="setAsDefaultCheck" checked={addAddressObj["default"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, default: e.target.checked}))}></input>
+                                    <label id="setAsDefaultLabel">Make this my default address</label>
+                                </div>
+                                <button>Save Address</button>
                             </form>
                         </div>
                     </React.Fragment>

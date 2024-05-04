@@ -28,8 +28,7 @@ const Signin = () => {
         var expires = "";
         if (days) {
             var date = new Date();
-            date.setTime(date.getTime() + (days * 5 * 60 * 1000)); //Changed to 5 minutes for testing
-            // date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
             expires = "; expires=" + date.toUTCString();
         }
         document.cookie = name + "=" + (value || "") + expires + "; path=/";

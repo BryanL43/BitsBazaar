@@ -400,5 +400,7 @@ export async function POST(req) {
             console.error("Error occurred during adding address:", error);
             return NextResponse.error("Error occurred during adding address", 500);
         }
+    } else if (type === "editaddress") {
+        
     }
 }
