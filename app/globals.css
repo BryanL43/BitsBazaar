@@ -1442,3 +1442,160 @@ header {
 .edit-address-container-2 button:hover {
     background-color: #f0c14b;
 }
+
+/*Catalogue page*/
+.catalogue-page {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    color: var(--text);
+    font-family: "Inria Sans"
+}
+
+.filter {
+    width: 15%;
+    margin-left: 5px;
+
+}
+
+.filter-card {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 0.1rem solid;
+    border-color: rgb(132, 132, 132);
+
+}
+
+.filter-card p {
+    margin: 0px;
+}
+
+.items {
+    width: 85%;
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20%;
+    column-gap: 5%;
+    row-gap: 10px;
+    justify-content: space-around;
+    grid-gap: 15px;
+    margin-top: 10px;
+}
+
+@media (max-width:1000px) {
+    .items {
+        grid-template-columns: 25% 25% 25%;
+    }
+}
+
+.items-card {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 0.1rem solid;
+    border-color: rgb(132, 132, 132);
+}
+
+.items-card img {
+    width: 70%;
+    height: 100%;
+}
+
+.items-card p {
+    font-size: 90%;
+}
+
+.items-card button {
+    width: 100%;
+    background-color: var(--accent);
+}
+
+/* Product page */
+.product-page {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: var(--text);
+    color: var(--text);
+    font-family: "Inria Sans"
+}
+
+.product-image {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+}
+
+.product-image img {
+    height: 50%;
+    width: 70%;
+}
+
+.product-image button {
+    background-color: var(--accent);
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-thumbs {
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.image-thumbs img {
+    height: 50px;
+    width: 50px;
+}
+
+.image1 {
+    border: 0.2rem solid;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.image1--active{
+    border: none;
+}
+
+.image2 {
+    border: 0.2rem solid;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.image2--active{
+    border: none;
+}
+
+.product-detail {
+    width: 40%;
+}
+
+.product-detail #name {
+    font-size: 28px;
+}
+
+.product-detail input {
+    width: 10%;
+    margin-right: 5px;
+}
+
+.product-detail button {
+    background-color: var(--accent);
+    margin-left: 10px;
+    margin-right: 10px;
+}
