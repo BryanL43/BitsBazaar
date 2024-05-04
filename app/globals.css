@@ -715,10 +715,6 @@ header {
 
 }
 
-
-/*         */
-
-
 /*Checkout Page */
 .checkout-page {
     display: flex;
@@ -772,9 +768,6 @@ header {
 .order-summary p {
     margin: 0px;
 }
-
-
-/*         */
 
 /* Home Page */
 
@@ -858,7 +851,6 @@ header {
     line-height: 48px;
     color: var(--text);
     font-family: "Inria Sans";
-    text-decoration: underline;
 }
 
 #yourAccWelcomeText {
@@ -1079,7 +1071,7 @@ header {
     font-weight: 400;
 }
 
-.edit-container h1 {
+.edit-container h1, .edit-address-container h1 {
     font-size: 28px;
     font-family: "Inria Sans";
     color: var(--text);
@@ -1248,4 +1240,89 @@ header {
 
 .change-name-card-padding button:hover {
     background-color: #f0c14b;
+}
+
+/* Your Address Page */
+.edit-address-container {
+    width: 52.5%;
+    height: 100vh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 1.5%;
+}
+
+.address-grid-container {
+    background-color: grey;
+    width: 100%;
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 320px);
+    grid-gap: 15px;
+}
+
+.address-card {
+    background-color: yellow;
+    width: 320px;
+    height: 266px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.address-top-bar {
+    background-color: purple;
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border-bottom: 1px solid;
+}
+
+.address-top-bar p {
+    padding-left: 20px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: var(--text);
+    font-family: "Inria Sans"
+}
+
+.address-grid-container ul {
+    list-style-type: none;
+    margin: 0px;
+    padding-top: 10px;
+    padding-left: 20px;
+    height: 75%;
+}
+
+.address-grid-container p {
+    font-size: 16px;
+    font-family: "Inria Sans";
+    color: var(--text);
+    margin: 0;
+}
+
+.address-bottom-bar {
+    width: 100%;
+    height: 20px;
+    background-color: white;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.address-bottom-bar > a {
+    text-decoration: none;
+    font-size: 16px;
+    font-family: "Inria Sans";
+    padding-left: 20px;
+}
+
+.address-bottom-bar > a:first-child::after {
+    content: "|";
+    color: black;
+    font-weight: bold;
+    margin-left: 20px;
+    color: var(--text);
 }

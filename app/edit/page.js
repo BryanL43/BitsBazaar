@@ -9,46 +9,47 @@ const Edit = () => {
     return (
         <main>
             <div className="profile-screen">
-                <div className="edit-container">
+                <div className="edit-address-container">
                     <ol className="custom-list">
                         <li>
                             <Link href="/profile" id="backToProfile">Your Account</Link>
                         </li>
                         <li>
-                            <p>Personal Information</p>
+                            <p>Your Addresses</p>
                         </li>
                     </ol>
-                    <h1>Personal Information</h1>
-                    <ul className="info-card-container">
-                        <li>
-                            <div className="info-card-padding">
-                                <h1><strong>First Name</strong></h1>
-                                <p>Bryan</p>
-                                <button>Edit</button>
+                    <h1>Your Addresses</h1>
+                    <div className="address-grid-container">
+                        <div className="address-card">
+                            <div className="address-top-bar">
+                                <p><strong>Default Address</strong></p>
                             </div>
-                        </li>
-                        <li>
-                            <div className="info-card-padding">
-                                <h1><strong>Last Name</strong></h1>
-                                <p>Lee</p>
-                                <button>Edit</button>
+                            <ul>
+                                <li><p><strong>Bryan Lee</strong></p></li>
+                                <li><p>451 GREEN ST APT B</p></li>
+                                <li><p>SAN FRANCISCO, CA 94133-4001</p></li>
+                                <li><p>United States</p></li>
+                                <li><p>Phone number: 4156238183</p></li>
+                            </ul>
+                            <div className="address-bottom-bar">
+                                <Link href="/address" id="address-first-link">Edit</Link>
+                                <Link href="/address">Remove</Link>
                             </div>
-                        </li>
-                        <li>
-                            <div className="info-card-padding">
-                                <h1><strong>Email</strong></h1>
-                                <p>bryanlee56098@gmail.com</p>
-                                <button>Edit</button>
+                        </div>
+                        <div className="address-card">
+                            <ul>
+                                <li><p><strong>Bryan Lee</strong></p></li>
+                                <li><p>451 GREEN ST APT B</p></li>
+                                <li><p>SAN FRANCISCO, CA 94133-4001</p></li>
+                                <li><p>United States</p></li>
+                                <li><p>Phone number: 4156238183</p></li>
+                            </ul>
+                            <div className="address-bottom-bar">
+                                <Link href="/address" id="address-first-link">Edit</Link>
+                                <Link href="/address">Remove</Link>
                             </div>
-                        </li>
-                        <li>
-                            <div className="info-card-padding">
-                                <h1><strong>Password</strong></h1>
-                                <p>**********</p>
-                                <button>Edit</button>
-                            </div>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
