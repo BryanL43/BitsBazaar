@@ -1,3 +1,5 @@
+"use client"
+
 import prisma from "@/prisma/Client";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +11,7 @@ export default async function Home() {
         <div className='intro'>
             <h1>Welcome to BitsBazaar</h1>
             <p>We provide high quality computer parts</p>
-            <button>Shop Now</button>
+            <button onClick={() => window.location.href = '/signin'}>Shop Now</button>
         </div>
 
         <img id="slideImg" src='laptop1.jpeg'></img>

@@ -33,6 +33,7 @@ const Profile = () => {
         });
     };
 
+    //Database handler states
     const codeInputs = useRef([]);
     const [verificationCode, setVerificationCode] = useState("");
     const [isCodeNotFound, setIsCodeNotFound] = useState(false);
@@ -41,7 +42,18 @@ const Profile = () => {
     const [newLastName, setNewLastName] = useState("");
     const [newEmail, setNewEmail] = useState("");
 
+    const [addAddressObj, setAddAddressObj] = useState({
+        country_reg: "",
+        phone_num: "",
+        address: "",
+        city: "",
+        state: "",
+        zip_code: "",
+        default: false
+    });
+
     //Initial profile load greeting handler
+    const [isDataExist, setIsDataExist] = useState(false);
     const [greetFirstName, setGreetFirstName] = useState("");
     const [greetLastName, setGreetLastName] = useState("");
     const [currEmail, setCurrEmail] = useState("");
@@ -50,15 +62,23 @@ const Profile = () => {
         const userDataString = window.sessionStorage.getItem("userData");
         if (userDataString) {
             const userData = JSON.parse(userDataString);
+
+            if (!userData.firstName) { //Edge case handler
+                window.location.href = '/signin';
+            }
+
             setGreetFirstName(userData.firstName);
             setGreetLastName(userData.lastName);
             setCurrEmail(userData.user);
+            setIsDataExist(true);
+        } else {
+            window.location.href = '/signin';
         }
     }, []);
 
     //Handle Page Module Navigation
     const bannerRedirect = () => {
-        window.location.href = '/signin';
+        window.location.href = '/catalogue';
     }
 
     const laptopRedirect = () => {
@@ -72,6 +92,114 @@ const Profile = () => {
     const accessoriesRedirect = () => {
         window.location.href = '/signin';
     }
+
+    useEffect(() => {
+        if (openStates['addressEdit']) {
+            const userDataString = window.sessionStorage.getItem("userData");
+
+            //Parse the JSON string into a JavaScript object
+            const userData = JSON.parse(userDataString);
+
+            //Container
+            const addressGridContainer = document.querySelector(".address-grid-container");
+
+            //Delete all children so it doesn't duplicate clone
+            let child = addressGridContainer.firstElementChild; // Get the second child
+            while (child.nextElementSibling) {
+                addressGridContainer.removeChild(child.nextElementSibling);
+            }
+
+            userData.addresses.forEach(address => {
+                let rawAddress = JSON.parse(address);
+
+                //Create a new address card element
+                const addressCard = document.createElement("div");
+                addressCard.classList.add("address-card");
+
+                //Check if the address is the default address for top bar
+                if (rawAddress.default === "true") {
+                    //Create the address-top-bar for default address
+                    const addressTopBar = document.createElement("div");
+                    addressTopBar.classList.add("address-top-bar");
+                    const strongTag = document.createElement("strong");
+                    strongTag.textContent = "Default Address";
+                    const paragraphTag = document.createElement("p");
+                    paragraphTag.appendChild(strongTag);
+                    addressTopBar.appendChild(paragraphTag);
+                    addressCard.appendChild(addressTopBar);
+                }
+
+                //Create the ul element for address details
+                const ulElement = document.createElement("ul");
+
+                //Name creation
+                const name_liElement = document.createElement("li");
+                const name_pElement = document.createElement("p");
+                const name_strongTag = document.createElement("strong");
+                name_strongTag.textContent = greetFirstName + " " + greetLastName;
+                name_pElement.appendChild(name_strongTag);
+                name_liElement.appendChild(name_pElement);
+                ulElement.appendChild(name_liElement);
+
+                //Address creation
+                const adr_liElement = document.createElement("li");
+                const adr_pElement = document.createElement("p");
+                adr_pElement.textContent = rawAddress.address
+                adr_liElement.appendChild(adr_pElement);
+                ulElement.appendChild(adr_liElement);
+
+                //Address extended creation
+                const adrEx_liElement = document.createElement("li");
+                const adrEx_pElement = document.createElement("p");
+                adrEx_pElement.textContent = rawAddress.city + ", " + rawAddress.state + " " + rawAddress.zip_code
+                adrEx_liElement.appendChild(adrEx_pElement);
+                ulElement.appendChild(adrEx_liElement);
+
+                //Country/Region creation
+                const coun_liElement = document.createElement("li");
+                const coun_pElement = document.createElement("p");
+                coun_pElement.textContent = rawAddress.country_reg
+                coun_liElement.appendChild(coun_pElement);
+                ulElement.appendChild(coun_liElement);
+
+                //Phone number creation
+                const phone_liElement = document.createElement("li");
+                const phone_pElement = document.createElement("p");
+                phone_pElement.textContent = "Phone number: " + rawAddress.phone_num
+                phone_liElement.appendChild(phone_pElement);
+                ulElement.appendChild(phone_liElement);
+
+                //Create the address-bottom-bar element
+                const addressBottomBar = document.createElement("div");
+                addressBottomBar.classList.add("address-bottom-bar");
+                
+                //Create links for edit and remove
+                const editLink = document.createElement("a");
+                editLink.href = "/profile";
+                editLink.textContent = "Edit";
+                const removeLink = document.createElement("a");
+                removeLink.href = "/profile";
+                removeLink.textContent = "Remove";
+                addressBottomBar.appendChild(editLink);
+                addressBottomBar.appendChild(removeLink);
+
+                //If the address is not the default address, add "Set as Default" link
+                if (rawAddress.default !== "true") {
+                    const setDefaultLink = document.createElement("a");
+                    setDefaultLink.href = "/profile";
+                    setDefaultLink.textContent = "Set as Default";
+                    addressBottomBar.appendChild(setDefaultLink);
+                }
+
+                // Append ul and address-bottom-bar to address card
+                addressCard.appendChild(ulElement);
+                addressCard.appendChild(addressBottomBar);
+
+                // Append the address card to the address grid container
+                addressGridContainer.appendChild(addressCard);
+            })
+        }
+    })
 
     const gotoPage = (pageName) => {
         closeAllSubPages();
@@ -231,10 +359,53 @@ const Profile = () => {
         }
     }
 
+    //Add Address Handler
+    const addAddress = async(event) => {
+        event.preventDefault(); // Prevent default form submission
+        try {
+            const url = "/api?type=addaddress";
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: JSON.parse(window.sessionStorage.getItem("userData")).id,
+                    address: addAddressObj
+                })
+            })
+
+            if (response.ok) {
+                const responseData = await response.json();
+
+                window.sessionStorage.setItem("userData", JSON.stringify(responseData));
+                setAddAddressObj({
+                    country_reg: "",
+                    phone_num: "",
+                    address: "",
+                    city: "",
+                    state: "",
+                    zip_code: "",
+                    default: false
+                });                
+                gotoPage("addressEdit");
+            } else {
+                console.log("Add Address Failed");
+            }
+        } catch (error) {
+            console.log("Error occured when adding address:", error)
+        }
+    }
+
+    const editAddress = async(event) => {
+        event.preventDefault(); // Prevent default form submission
+    }
+
     return (
         <main>
             <div className="profile-screen">
-                {areAllPagesClosed && ( //Render main profile page
+                {areAllPagesClosed && isDataExist && ( //Render main profile page
                     <React.Fragment>
                         <div className="profile-container">
                             <div className="profile-left-side">
@@ -469,53 +640,9 @@ const Profile = () => {
                             </ol>
                             <h1>Your Addresses</h1>
                             <div className="address-grid-container">
-                                <div className="address-card add-address-card">
+                                <div className="address-card add-address-card" onClick={() => gotoPage('addAddress')}>
                                     <h1>+</h1>
                                     <h2>Add Address</h2>
-                                </div>
-                                <div className="address-card">
-                                    <div className="address-top-bar">
-                                        <p><strong>Default Address</strong></p>
-                                    </div>
-                                    <ul>
-                                        <li><p><strong>Bryan Lee</strong></p></li>
-                                        <li><p>451 GREEN ST APT B</p></li>
-                                        <li><p>SAN FRANCISCO, CA 94133-4001</p></li>
-                                        <li><p>United States</p></li>
-                                        <li><p>Phone number: 4156238183</p></li>
-                                    </ul>
-                                    <div className="address-bottom-bar">
-                                        <Link href="/profile" onClick={() => gotoPage('addAddress')}>Edit</Link>
-                                        <Link href="/profile">Remove</Link>
-                                    </div>
-                                </div>
-                                <div className="address-card">
-                                    <ul>
-                                        <li><p><strong>Bryan Lee</strong></p></li>
-                                        <li><p>451 GREEN ST APT B</p></li>
-                                        <li><p>SAN FRANCISCO, CA 94133-4001</p></li>
-                                        <li><p>United States</p></li>
-                                        <li><p>Phone number: 4156238183</p></li>
-                                    </ul>
-                                    <div className="address-bottom-bar">
-                                        <Link href="/profile">Edit</Link>
-                                        <Link href="/profile">Remove</Link>
-                                        <Link href="/profile">Set as Default</Link>
-                                    </div>
-                                </div>
-                                <div className="address-card">
-                                    <ul>
-                                        <li><p><strong>Bryan Lee</strong></p></li>
-                                        <li><p>451 GREEN ST APT B</p></li>
-                                        <li><p>SAN FRANCISCO, CA 94133-4001</p></li>
-                                        <li><p>United States</p></li>
-                                        <li><p>Phone number: 4156238183</p></li>
-                                    </ul>
-                                    <div className="address-bottom-bar">
-                                        <Link href="/profile">Edit</Link>
-                                        <Link href="/profile">Remove</Link>
-                                        <Link href="/profile">Set as Default</Link>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -536,39 +663,39 @@ const Profile = () => {
                                 </li>
                             </ol>
                             <h1>Edit Your Address</h1>
-                            <form className="edit-address-container-2" action="/edit2" method="GET">
+                            <form className="edit-address-container-2" action="/profile" method="POST" onSubmit={addAddress}>
                                 <div className="component-address-edit">
                                     <label><strong>Country/Region</strong></label>
-                                    <input type="text" className="address-edit-input" required />
+                                    <input type="text" className="address-edit-input" value={addAddressObj["country_reg"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, country_reg: e.target.value}))} required />
                                 </div>
                                 <div className="component-address-edit">
                                     <label><strong>Full Name (First and Last name)</strong></label>
-                                    <input type="text" className="address-edit-input" required />
+                                    <input type="text" className="address-edit-input" value={greetFirstName + " " + greetLastName} readOnly />
                                 </div>
                                 <div className="component-address-edit">
                                     <label><strong>Phone number</strong></label>
-                                    <input type="text" className="address-edit-input" required />
+                                    <input type="text" className="address-edit-input" value={addAddressObj["phone_num"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, phone_num: e.target.value}))} onKeyPress={(e) => {const charCode = e.charCode; if (!(charCode >= 48 && charCode <= 57) && charCode !== 8) {e.preventDefault();}}} required />
                                 </div>
                                 <div className="component-address-edit">
                                     <label><strong>Address</strong></label>
-                                    <input type="text" className="address-edit-input" required />
+                                    <input type="text" className="address-edit-input" value={addAddressObj["address"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, address: e.target.value}))} required />
                                 </div>
                                 <div className="component-address-edit component-address-edit-type2">
                                     <div>
                                         <label><strong>City</strong></label>
-                                        <input type="text" className="address-edit-input address-edit-input-override" required />
+                                        <input type="text" className="address-edit-input address-edit-input-override" value={addAddressObj["city"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, city: e.target.value}))} required />
                                     </div>
                                     <div>
                                         <label><strong>State</strong></label>
-                                        <input type="text" className="address-edit-input address-edit-input-override" required />
+                                        <input type="text" className="address-edit-input address-edit-input-override" value={addAddressObj["state"]} maxLength={2} onChange={(e) => setAddAddressObj(prevState => ({...prevState, state: e.target.value}))} onKeyPress={(e) => {const charCode = e.charCode; if (!(charCode >= 65 && charCode <= 90) && !(charCode >= 97 && charCode <= 122) && charCode !== 8 && charCode !== 32) { e.preventDefault();}}} required />
                                     </div>
                                     <div>
                                         <label><strong>ZIP Code</strong></label>
-                                        <input type="text" className="address-edit-input address-edit-input-override" required />
+                                        <input type="text" className="address-edit-input address-edit-input-override" value={addAddressObj["zip_code"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, zip_code: e.target.value}))} onKeyPress={(e) => {const charCode = e.charCode; if (!((charCode >= 48 && charCode <= 57) || charCode === 45) && charCode !== 8 && charCode !== 32) {e.preventDefault();}}} required />
                                     </div>
                                 </div>
                                 <div className="address-edit-checkbox">
-                                    <input type='checkbox' className="setAsDefaultCheck"></input>
+                                    <input type='checkbox' className="setAsDefaultCheck" onChange={(e) => setAddAddressObj(prevState => ({...prevState, default: e.target.checked}))}></input>
                                     <label id="setAsDefaultLabel">Make this my default address</label>
                                 </div>
                                 <button>Add Address</button>
