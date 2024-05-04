@@ -1254,7 +1254,6 @@ header {
 }
 
 .address-grid-container {
-    background-color: grey;
     width: 100%;
     height: auto;
     display: grid;
@@ -1263,20 +1262,20 @@ header {
 }
 
 .address-card {
-    background-color: yellow;
     width: 320px;
     height: 266px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    border-radius: 5px;
+    border: 1px solid var(--text);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
 .address-top-bar {
-    background-color: purple;
     width: 100%;
     height: 40px;
-    border-radius: 5px;
-    border-bottom: 1px solid;
+    border-bottom: 1px solid var(--text);
 }
 
 .address-top-bar p {
@@ -1306,7 +1305,6 @@ header {
 .address-bottom-bar {
     width: 100%;
     height: 20px;
-    background-color: white;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
@@ -1319,10 +1317,35 @@ header {
     padding-left: 20px;
 }
 
-.address-bottom-bar > a:first-child::after {
+.address-bottom-bar > a:not(:last-child)::after {
     content: "|";
-    color: black;
     font-weight: bold;
     margin-left: 20px;
+    color: var(--text) !important;
+    cursor: default;
+}
+
+.add-address-card {
+    border: dashed 2px var(--text);
+}
+
+.add-address-card > h1 {
+    margin: auto;
+    font-weight: bold;
+    font-size: 75px;
     color: var(--text);
+    font-family: "Inria Sans";
+    padding-top: 18%;
+}
+
+.add-address-card > h2 {
+    display: block;
+    margin: auto;
+    font-family: "Inria Sans";
+    color: var(--text);
+    padding-bottom: 33%;
+}
+
+.add-address-card:hover {
+    cursor: pointer;
 }

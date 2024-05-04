@@ -20,6 +20,10 @@ const Edit = () => {
                     </ol>
                     <h1>Your Addresses</h1>
                     <div className="address-grid-container">
+                        <div className="address-card add-address-card">
+                            <h1>+</h1>
+                            <h2>Add Address</h2>
+                        </div>
                         <div className="address-card">
                             <div className="address-top-bar">
                                 <p><strong>Default Address</strong></p>
@@ -32,7 +36,7 @@ const Edit = () => {
                                 <li><p>Phone number: 4156238183</p></li>
                             </ul>
                             <div className="address-bottom-bar">
-                                <Link href="/address" id="address-first-link">Edit</Link>
+                                <Link href="/address">Edit</Link>
                                 <Link href="/address">Remove</Link>
                             </div>
                         </div>
@@ -45,8 +49,9 @@ const Edit = () => {
                                 <li><p>Phone number: 4156238183</p></li>
                             </ul>
                             <div className="address-bottom-bar">
-                                <Link href="/address" id="address-first-link">Edit</Link>
+                                <Link href="/address">Edit</Link>
                                 <Link href="/address">Remove</Link>
+                                <Link href="/address">Set as Default</Link>
                             </div>
                         </div>
                     </div>
