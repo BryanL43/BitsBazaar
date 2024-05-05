@@ -40,6 +40,8 @@ const Profile = () => {
     const [verificationCode, setVerificationCode] = useState("");
     const [isCodeNotFound, setIsCodeNotFound] = useState(false);
     const [iEdit_Add, setIEdit_Add] = useState();
+    const [iRemove_Add, setIRemove_Add] = useState();
+    const [iNewDefault_Add, setINewDefault_Add] = useState();
 
     const [newFirstName, setNewFirstName] = useState("");
     const [newLastName, setNewLastName] = useState("");
@@ -211,14 +213,30 @@ const Profile = () => {
         const removeLink = document.createElement("a");
         removeLink.href = "/profile";
         removeLink.textContent = "Remove";
+
+        removeLink.addEventListener("click", function(event) {
+            event.preventDefault();
+            setIRemove_Add(index);
+            setAddAddressObj(rawAddress);
+            gotoPage("addressPage");
+        })
+
         addressBottomBar.appendChild(editLink);
         addressBottomBar.appendChild(removeLink);
 
         //If the address is not the default address, add "Set as Default" link
-        if (isDefault) {
+        if (!isDefault) {
             const setDefaultLink = document.createElement("a");
             setDefaultLink.href = "/profile";
             setDefaultLink.textContent = "Set as Default";
+
+            setDefaultLink.addEventListener("click", function(event) {
+                event.preventDefault();
+                setINewDefault_Add(index);
+                setAddAddressObj(rawAddress);
+                gotoPage("addressPage");
+            })
+
             addressBottomBar.appendChild(setDefaultLink);
         }
 
@@ -228,6 +246,28 @@ const Profile = () => {
 
         return addressCard;
     }
+
+    const [initialRender, setInitialRender] = useState(true);
+
+    useEffect(() => {
+        if (!initialRender) {
+            //Call removeAddress when iRemove_Add changes
+            removeAddress();
+        } else {
+            //Set initial render flag to false after the initial render to enable
+            setInitialRender(false);
+        }
+    }, [iRemove_Add]);
+
+    useEffect(() => {
+        if (!initialRender) {
+            //Call newDefaultAddress when iNewDefault_Add changes
+            newDefaultAddress();
+        } else {
+            //Set initial render flag to false after the initial render to enable
+            setInitialRender(false);
+        }
+    }, [iNewDefault_Add]);
 
     useEffect(() => {
         if (openStates['addressPage']) {
@@ -263,29 +303,6 @@ const Profile = () => {
                     addressGridContainer.appendChild(addressCard);
                 }
             }
-
-            /*
-            const defaultAddress = userData.addresses.find((address, index) => {
-                const rawAddress = JSON.parse(address);
-                return (rawAddress.default === "true");
-            });
-
-            //Process the default address first
-            if (defaultAddress) {
-                const rawDefaultAddress = JSON.parse(defaultAddress);
-                const addressCard = createAddressCard(rawDefaultAddress, true);
-                addressGridContainer.appendChild(addressCard);
-            }
-
-            //Process the rest of the addresses
-            userData.addresses.forEach((address, index) => {
-                const rawAddress = JSON.parse(address);
-                if (rawAddress.default !== "true") {
-                    console.log(index);
-                    const addressCard = createAddressCard(rawAddress, false, index);
-                    addressGridContainer.appendChild(addressCard);
-                }
-            });*/
         }
     })
 
@@ -479,6 +496,7 @@ const Profile = () => {
         }
     }
 
+    //Edit Address Handler
     const editAddress = async(event) => {
         event.preventDefault(); // Prevent default form submission
 
@@ -516,6 +534,83 @@ const Profile = () => {
             }
         } catch (error) {
             console.log("Error occured when editing address:", error)
+        }
+    }
+
+    //Hoist Remove Address Handler
+    const removeAddress = async() => {
+        try {
+            const url = "/api?type=removeaddress";
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: JSON.parse(getCookie("userData")).id,
+                    address: addAddressObj,
+                    index: iRemove_Add
+                })
+            })
+
+            if (response.ok) {
+                const responseData = await response.json();
+
+                setCookie("userData", JSON.stringify(responseData), 1);
+                setAddAddressObj({
+                    country_reg: "",
+                    phone_num: "",
+                    address: "",
+                    city: "",
+                    state: "",
+                    zip_code: "",
+                    default: false
+                });                
+                gotoPage("addressPage");
+            } else {
+                console.log("Remove Address Failed");
+            }
+        } catch (error) {
+            console.log("Error occured when removing address:", error)
+        }
+    }
+
+    const newDefaultAddress = async() => {
+        try {
+            const url = "/api?type=newdefaultaddress";
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: JSON.parse(getCookie("userData")).id,
+                    address: addAddressObj,
+                    index: iNewDefault_Add
+                })
+            })
+
+            if (response.ok) {
+                const responseData = await response.json();
+
+                setCookie("userData", JSON.stringify(responseData), 1);
+                setAddAddressObj({
+                    country_reg: "",
+                    phone_num: "",
+                    address: "",
+                    city: "",
+                    state: "",
+                    zip_code: "",
+                    default: false
+                });                
+                gotoPage("addressPage");
+            } else {
+                console.log("Setting New Default Address Failed");
+            }
+        } catch (error) {
+            console.log("Error occured when setting new default address:", error)
         }
     }
 

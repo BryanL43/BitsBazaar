@@ -485,5 +485,122 @@ export async function POST(req) {
             console.error("Error occurred during editing address:", error);
             return NextResponse.error("Error occurred during editing address", 500);
         }
+    } else if (type === "removeaddress") {
+        try {
+            const data = await req.json();
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            if (!user) {
+                return NextResponse.error("User not found", 404);
+            }
+
+            const addresses = user.addresses.map(addressString => JSON.parse(addressString));
+
+            //Remove the address at the specified index
+            addresses.splice(data.index, 1)[0];
+
+            //If the removed address is the default, set all addresses' default to false
+            if (data.address.default === "true") {
+                addresses.forEach(address => {
+                    address.default = false;
+                });
+            }
+
+            //If the removed address was the default or the list is empty, set the first address as the new default
+            if (data.address.default === "true" || addresses.length === 0) {
+                if (addresses.length > 0) {
+                    addresses[0].default = "true";
+                }
+            }
+
+            //Update the user with the modified addresses
+            await prisma.user.update({
+                where: {
+                    id: data.id
+                },
+                data: {
+                    addresses: addresses.map(address => JSON.stringify(address))
+                }
+            });
+
+            //Return new updated data
+            const findUser = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            const userData = {
+                id: findUser.id,
+                firstName: findUser.firstName,
+                lastName: findUser.lastName,
+                user: findUser.email,
+                addresses: findUser.addresses
+            }
+
+            return NextResponse.json(userData);
+        } catch (error) {
+            console.error("Error occurred during editing address:", error);
+            return NextResponse.error("Error occurred during editing address", 500);
+        }
+    } else if (type === "newdefaultaddress") {
+        try {
+            const data = await req.json();
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            if (!user) {
+                return NextResponse.error("User not found", 404);
+            }
+
+            const addresses = user.addresses.map(addressString => JSON.parse(addressString));
+
+            //Set all default to false first
+            addresses.forEach(address => {
+                address.default = false;
+            });
+
+            //Set the new default
+            addresses[data.index].default = "true";
+
+            //Update the user with the modified addresses
+            await prisma.user.update({
+                where: {
+                    id: data.id
+                },
+                data: {
+                    addresses: addresses.map(address => JSON.stringify(address))
+                }
+            });
+
+            //Return new updated data
+            const findUser = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            const userData = {
+                id: findUser.id,
+                firstName: findUser.firstName,
+                lastName: findUser.lastName,
+                user: findUser.email,
+                addresses: findUser.addresses
+            }
+
+            return NextResponse.json(userData);
+        } catch (error) {
+            console.error("Error occurred during editing address:", error);
+            return NextResponse.error("Error occurred during editing address", 500);
+        }
     }
 }
