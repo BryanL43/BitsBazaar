@@ -676,11 +676,11 @@ const Profile = () => {
                                         <p>Edit, remove, or set default address</p>
                                     </div>
                                 </div>
-                                <div className="profile-setting-content">
-                                    <Image src="/profilePayment.png" alt="Edit login, name, email, and password" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
+                                <div className="profile-setting-content" onClick={() => window.location.href = "/cart"}>
+                                    <Image src="/profileCart.png" alt="Your Cart" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
                                     <div className="profile-setting-content-inner">
-                                        <h2>Your Payments</h2>
-                                        <p>Edit or add payment method</p>
+                                        <h2>Your Cart</h2>
+                                        <p>View items in your cart</p>
                                     </div>
                                 </div>
                             </div>
