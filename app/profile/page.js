@@ -39,6 +39,7 @@ const Profile = () => {
     const codeInputs = useRef([]);
     const [verificationCode, setVerificationCode] = useState("");
     const [isCodeNotFound, setIsCodeNotFound] = useState(false);
+    const [iEdit_Add, setIEdit_Add] = useState();
 
     const [newFirstName, setNewFirstName] = useState("");
     const [newLastName, setNewLastName] = useState("");
@@ -133,7 +134,7 @@ const Profile = () => {
         }));
     };
 
-    function createAddressCard(rawAddress, isDefault) {
+    function createAddressCard(rawAddress, isDefault, index) {
         //Create a new address card element
         const addressCard = document.createElement("div");
         addressCard.classList.add("address-card");
@@ -202,6 +203,7 @@ const Profile = () => {
 
         editLink.addEventListener("click", function(event) {
             event.preventDefault();
+            setIEdit_Add(index);
             setAddAddressObj(rawAddress);
             gotoPage("addressEdit");
         })
@@ -243,10 +245,29 @@ const Profile = () => {
                 addressGridContainer.removeChild(child.nextElementSibling);
             }
 
-            //Find the default address
-            const defaultAddress = userData.addresses.find(address => {
+            //Find and process the default address first
+            for (let i = 0; i < userData.addresses.length; i++) {
+                if (JSON.parse(userData.addresses[i]).default === "true") {
+                    const rawDefaultAddress = JSON.parse(userData.addresses[i]);
+                    const addressCard = createAddressCard(rawDefaultAddress, true, i);
+                    addressGridContainer.appendChild(addressCard);
+                    break;
+                }
+            }
+
+            //Process the rest of the addresses
+            for (let i = 0; i < userData.addresses.length; i++) {
+                if (JSON.parse(userData.addresses[i]).default !== "true") {
+                    const rawDefaultAddress = JSON.parse(userData.addresses[i]);
+                    const addressCard = createAddressCard(rawDefaultAddress, false, i);
+                    addressGridContainer.appendChild(addressCard);
+                }
+            }
+
+            /*
+            const defaultAddress = userData.addresses.find((address, index) => {
                 const rawAddress = JSON.parse(address);
-                return rawAddress.default === "true";
+                return (rawAddress.default === "true");
             });
 
             //Process the default address first
@@ -257,13 +278,14 @@ const Profile = () => {
             }
 
             //Process the rest of the addresses
-            userData.addresses.forEach(address => {
+            userData.addresses.forEach((address, index) => {
                 const rawAddress = JSON.parse(address);
                 if (rawAddress.default !== "true") {
-                    const addressCard = createAddressCard(rawAddress, false);
+                    console.log(index);
+                    const addressCard = createAddressCard(rawAddress, false, index);
                     addressGridContainer.appendChild(addressCard);
                 }
-            });
+            });*/
         }
     })
 
@@ -459,43 +481,42 @@ const Profile = () => {
 
     const editAddress = async(event) => {
         event.preventDefault(); // Prevent default form submission
-        console.log(addAddressObj);
-        console.log(JSON.parse(getCookie("userData")));
 
-        // try {
-        //     const url = "/api?type=addaddress";
+        try {
+            const url = "/api?type=editaddress";
 
-        //     const response = await fetch(url, {
-        //         method: "POST",
-        //         headers: {
-        //             "Content-Type": "application/json"
-        //         },
-        //         body: JSON.stringify({
-        //             id: JSON.parse(getCookie("userData")).id,
-        //             address: addAddressObj
-        //         })
-        //     })
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: JSON.parse(getCookie("userData")).id,
+                    address: addAddressObj,
+                    index: iEdit_Add
+                })
+            })
 
-        //     if (response.ok) {
-        //         const responseData = await response.json();
+            if (response.ok) {
+                const responseData = await response.json();
 
-        //         setCookie("userData", JSON.stringify(responseData), 1);
-        //         setAddAddressObj({
-        //             country_reg: "",
-        //             phone_num: "",
-        //             address: "",
-        //             city: "",
-        //             state: "",
-        //             zip_code: "",
-        //             default: false
-        //         });                
-        //         gotoPage("addressPage");
-        //     } else {
-        //         console.log("Add Address Failed");
-        //     }
-        // } catch (error) {
-        //     console.log("Error occured when adding address:", error)
-        // }
+                setCookie("userData", JSON.stringify(responseData), 1);
+                setAddAddressObj({
+                    country_reg: "",
+                    phone_num: "",
+                    address: "",
+                    city: "",
+                    state: "",
+                    zip_code: "",
+                    default: false
+                });                
+                gotoPage("addressPage");
+            } else {
+                console.log("Edit Address Failed");
+            }
+        } catch (error) {
+            console.log("Error occured when editing address:", error)
+        }
     }
 
     return (
@@ -846,7 +867,7 @@ const Profile = () => {
                                     </div>
                                 </div>
                                 <div className="address-edit-checkbox">
-                                    <input type='checkbox' className="setAsDefaultCheck" checked={addAddressObj["default"]} onChange={(e) => setAddAddressObj(prevState => ({...prevState, default: e.target.checked}))}></input>
+                                    <input type='checkbox' className="setAsDefaultCheck" {...(addAddressObj["default"] === "true" ? {checked: true} : {})} onChange={(e) => setAddAddressObj(prevState => ({...prevState, default: e.target.checked}))}></input>
                                     <label id="setAsDefaultLabel">Make this my default address</label>
                                 </div>
                                 <button>Save Address</button>

@@ -401,6 +401,89 @@ export async function POST(req) {
             return NextResponse.error("Error occurred during adding address", 500);
         }
     } else if (type === "editaddress") {
-        
+        try {
+            const data = await req.json();
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            if (!user) {
+                return NextResponse.error("User not found", 404);
+            }
+
+            const addresses = user.addresses.map(addressString => JSON.parse(addressString));
+
+            //Check if the edited address has default set to true
+            if (data.address.default === true) {
+                //Update all other addresses of the user to have default set to false
+                addresses.forEach(address => {
+                    address.default = false;
+                });
+            }
+
+            //Reformat country/region
+            let word1 = data.address.country_reg.toLowerCase().split(' ');
+            word1 = word1.map(word1 => word1.charAt(0).toUpperCase() + word1.slice(1));
+            let formatted_coun = word1.join(' ');
+
+            //Reformat address
+            let word2 = data.address.address.toLowerCase().split(' ');
+            word2 = word2.map(word2 => word2.charAt(0).toUpperCase() + word2.slice(1));
+            let formatted_add = word2.join(' ');
+
+            //Reformat City
+            let word3 = data.address.city.toLowerCase().split(' ');
+            word3 = word3.map(word3 => word3.charAt(0).toUpperCase() + word3.slice(1));
+            let formatted_city = word3.join(' ');
+
+            //Reformat state
+            let formatted_state = data.address.state.toUpperCase();
+
+            const reformatAddress = {
+                country_reg: formatted_coun,
+                phone_num: data.address.phone_num,
+                address: formatted_add,
+                city: formatted_city,
+                state: formatted_state,
+                zip_code: data.address.zip_code,
+                default: data.address.default.toString()
+            }
+
+            //update the indexed one
+            addresses[data.index] = reformatAddress;
+
+            //Update the user with the modified addresses
+            await prisma.user.update({
+                where: {
+                    id: data.id
+                },
+                data: {
+                    addresses: addresses.map(address => JSON.stringify(address))
+                }
+            });
+
+            //Return new updated data
+            const findUser = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            const userData = {
+                id: findUser.id,
+                firstName: findUser.firstName,
+                lastName: findUser.lastName,
+                user: findUser.email,
+                addresses: findUser.addresses
+            }
+
+            return NextResponse.json(userData);
+        } catch (error) {
+            console.error("Error occurred during editing address:", error);
+            return NextResponse.error("Error occurred during editing address", 500);
+        }
     }
 }
