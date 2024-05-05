@@ -1071,7 +1071,7 @@ header {
     font-weight: 400;
 }
 
-.edit-container h1, .edit-address-container h1, .edit-address-comp-container h1 {
+.edit-container h1, .edit-address-container h1, .edit-address-comp-container h1, .your-order-container h1 {
     font-size: 28px;
     font-family: "Inria Sans";
     color: var(--text);
@@ -1598,4 +1598,176 @@ header {
     background-color: var(--accent);
     margin-left: 10px;
     margin-right: 10px;
+}
+
+/* Your Orders Page */
+.your-order-container {
+    /* background-color: grey; */
+    width: 48.25%;
+    height: auto;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 1.5%;
+}
+
+.past-order-drop-down {
+    height: 30px;
+    width: auto;
+    border-radius: 5px;
+    color: var(--text);
+    border: 1px solid var(--text);
+    background-color: var(--background);
+    box-shadow: 0 0 3px var(--text);
+}
+
+.your-order-filter label {
+    font-size: 16px;
+    font-family: "Inria Sans";
+    color: var(--text);
+    margin-right: 8px;
+}
+
+.past-order-drop-down option {
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: "Inria Sans";
+    color: var(--text);
+}
+
+.your-order-filter {
+    margin-bottom: 10px;
+}
+
+.your-order-cards {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    border: 1px solid var(--text);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    margin-bottom: 15px;
+}
+
+.your-order-card-top-bar {
+    width: 100%;
+    height: 65px;
+    border-bottom: 1px solid var(--text);
+}
+
+.order-card-main {
+    width: 100%;
+    height: 140px;
+    display: flex;
+}
+
+.order-card-main:not(:last-child) {
+    border-bottom: 1px solid var(--text);
+}
+
+.your-order-card-top-bar {
+    display: flex;
+
+}
+
+.your-order-top-bar-cont {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.your-order-top-bar-cont2 {
+    margin-left: 50px;
+    margin-top: 10px;
+}
+
+.your-order-top-bar-cont p:first-child, .your-order-top-bar-cont2 p:first-child {
+    color: var(--text);
+    font-family: "Inria Sans";
+    font-size: 14px;
+    margin: 0;
+}
+
+.your-order-top-bar-cont p:last-child, .your-order-top-bar-cont2 p:last-child {
+    color: var(--text);
+    font-family: "Inria Sans";
+    font-size: 16px;
+}
+
+.order-card-main-left {
+    display: flex;
+    height: 100%;
+    width: 100px;
+    margin-left: 20px;
+}
+
+.order-card-main-left img {
+    display: block;
+    margin: auto;
+}
+
+.order-card-main-middle {
+    height: 100%;
+    width: 61%;
+    padding-left: 10px;
+}
+
+.order-card-main-right {
+    height: 100%;
+    width: 24%;
+}
+
+.order-card-main-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.order-card-main-middle a {
+    text-decoration: none;
+    font-size: 16px;
+    font-family: "Inria Sans";
+}
+
+.order-card-main-middle a:hover {
+    text-decoration: underline;
+}
+
+.order-card-main-middle button {
+    width: 120px;
+    height: 29px;
+    font-family: "Inria Sans";
+    border: 1px solid #FCD200;
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: #FFD814;
+}
+
+.order-card-main-middle button:hover {
+    background-color: #f0c14b;
+}
+
+.order-card-main-middle button svg {
+    margin-right: 10px;
+}
+
+.order-card-main-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.order-card-main-right button {
+    width: 100%;
+    height: 29px;
+    margin-bottom: 5px;
+    font-family: "Inria Sans";
+    border: 1px solid var(--text);
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: var(--background);
+    color: var(--text);
+}
+
+.order-card-main-right button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
 }
