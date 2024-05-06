@@ -169,13 +169,18 @@ export async function GET(req) {
         let filterKey = !filter || filter === "undefined" ? "none" : filter.toLowerCase();
 
         if (filterKey !== "none" && searchKey !== "all") { //With search and filter key
-            const filteredProducts = await prisma.product.findMany({
-                where: {
-                    tags: {
-                        hasSome: filterKey.split(",")[0]
+            let filteredProducts;
+            if (filterKey.split(",")[0]) { //If LHS filter exist
+                filteredProducts = await prisma.product.findMany({
+                    where: {
+                        tags: {
+                            has: filterKey.split(",")[0]
+                        }
                     }
-                }
-            });
+                });
+            } else { //If LHS doesn't exist aka only price filter
+                filteredProducts = await prisma.product.findMany();
+            }
 
             // Filter products based on search keywords
             const searchedProducts = filteredProducts.filter(product => {
@@ -187,15 +192,65 @@ export async function GET(req) {
                 return productName.includes(searchKeyLower) || productDetail.includes(searchKeyLower);
             });
 
-            return NextResponse.json({ products: searchedProducts })
-        } else if (filterKey !== "none") { //filter case
-            const filteredProducts = await prisma.product.findMany({
-                where: {
-                    tags: {
-                        has: filterKey.split(",")[0]
+            if (!filterKey.split(",")[1]) {
+                return NextResponse.json({ products: searchedProducts })
+            }
+
+            //Filter by price
+            const finalFilteredProducts = [];
+            const filterKeyPrice = parseFloat(filterKey.split(",")[1]);
+            if (filterKeyPrice === 0) {
+                searchedProducts.forEach(product => {
+                    if (parseFloat(product.price) >= 0 && parseFloat(product.price) <= 99) {
+                        finalFilteredProducts.push(product);
                     }
-                }
-            });
+                })
+            } else if (filterKeyPrice === 100) {
+                searchedProducts.forEach(product => {
+                    if (parseFloat(product.price) >= 100 && parseFloat(product.price) <= 200) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            } else if (filterKeyPrice === 201) {
+                searchedProducts.forEach(product => {
+                    if (parseFloat(product.price) >= 201 && parseFloat(product.price) <= 300) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            } else if (filterKeyPrice === 301) {
+                searchedProducts.forEach(product => {
+                    if (parseFloat(product.price) >= 301 && parseFloat(product.price) <= 400) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            } else if (filterKeyPrice === 401) {
+                searchedProducts.forEach(product => {
+                    if (parseFloat(product.price) >= 401 && parseFloat(product.price) <= 500) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            } else {
+                searchedProducts.forEach(product => {
+                    if (parseFloat(product.price) > 500) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            }
+
+            return NextResponse.json({ products: finalFilteredProducts });
+        } else if (filterKey !== "none") { //filter case
+            let filteredProducts;
+            if (filterKey.split(",")[0]) { //If LHS filter exist
+                filteredProducts = await prisma.product.findMany({
+                    where: {
+                        tags: {
+                            has: filterKey.split(",")[0]
+                        }
+                    }
+                });
+            } else { //If LHS doesn't exist aka only price filter
+                filteredProducts = await prisma.product.findMany();
+            }
 
             if (!filterKey.split(",")[1]) {
                 return NextResponse.json({ products: filteredProducts });

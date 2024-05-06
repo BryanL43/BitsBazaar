@@ -107,9 +107,20 @@ const Catalogue = (query) => {
                     })
                 }
             })
+            //Handle URL change
             const searchParams = new URLSearchParams(window.location.search);
-            searchParams.set('filter', filter);
+            const existingFilter = searchParams.get('filter');
+
+            if (existingFilter) {
+                const updatedFilter = filter + existingFilter;
+                searchParams.set("filter", updatedFilter);
+            } else {
+                searchParams.set("filter", filter);
+            }
+
             history.pushState(null, '', '?' + searchParams.toString());
+
+            //Update product cards
             const itemsContainer = document.querySelector('.items');
             while (document.querySelector('.items').firstChild) {
                 itemsContainer.removeChild(itemsContainer.firstChild);
@@ -125,9 +136,27 @@ const Catalogue = (query) => {
                     })
                 }
             })
+            //Handle URL change
             const searchParams = new URLSearchParams(window.location.search);
-            searchParams.delete('filter');
+            const existingFilter = searchParams.get('filter');
+
+            if (existingFilter) {
+                const filterParts = existingFilter.split(',');
+                if (filterParts.length > 1) { //Remove the left-hand side of the comma
+                    filterParts.shift();
+                    const updatedFilter = "," + filterParts.join(',');
+                    searchParams.set('filter', updatedFilter);
+
+                    history.pushState(null, '', '?' + searchParams.toString());
+                } else { //If there's only one part (no content on the left-hand side of the comma), just remove the 'filter' parameter
+                    searchParams.delete('filter');
+                    history.pushState(null, '', '?' + searchParams.toString());
+                }
+            }
+
             history.pushState(null, '', '?' + searchParams.toString());
+
+            //Update product cards
             const itemsContainer = document.querySelector('.items');
             while (document.querySelector('.items').firstChild) {
                 itemsContainer.removeChild(itemsContainer.firstChild);
@@ -136,7 +165,7 @@ const Catalogue = (query) => {
         }
     }
 
-    function priceFilterApplied(filter, checked) {
+    function priceFilterApplied(filter, checked, value) {
         const filterCards = document.querySelectorAll('.filter-card');
 
         if (checked) {
@@ -149,7 +178,19 @@ const Catalogue = (query) => {
                     })
                 }
             })
-            console.log(window.location.search);
+            const searchParams = new URLSearchParams(window.location.search);
+            const existingFilter = searchParams.get('filter');
+            if (existingFilter) {
+                searchParams.set('filter', existingFilter + ',' + value);
+            } else {
+                searchParams.set('filter', "," + value);
+            }
+            history.pushState(null, '', '?' + searchParams.toString());
+            const itemsContainer = document.querySelector('.items');
+            while (document.querySelector('.items').firstChild) {
+                itemsContainer.removeChild(itemsContainer.firstChild);
+            }
+            getProducts();
         } else {
             filterCards.forEach((filterCard, index) => {
                 if (index == filterCards.length - 1) {
@@ -160,6 +201,19 @@ const Catalogue = (query) => {
                     })
                 }
             })
+            const searchParams = new URLSearchParams(window.location.search);
+            const existingFilter = searchParams.get('filter');
+            if (existingFilter) {
+                const filterParts = existingFilter.split(',');
+                const updatedFilter = filterParts[0];
+                searchParams.set('filter', updatedFilter);
+                history.pushState(null, '', '?' + searchParams.toString());
+            }
+            const itemsContainer = document.querySelector('.items');
+            while (document.querySelector('.items').firstChild) {
+                itemsContainer.removeChild(itemsContainer.firstChild);
+            }
+            getProducts();
         }
     }
 
@@ -198,12 +252,12 @@ const Catalogue = (query) => {
 
                         <div className='filter-card'>
                             <p>Price filter</p>
-                            <input type='checkbox' onChange={(e) => { priceFilterApplied("Less than $100", e.target.checked) }}></input> <label>Less than $100</label> <br></br>
-                            <input type='checkbox' onChange={(e) => { priceFilterApplied("$100 - $200", e.target.checked) }}></input> <label>$100 - $200</label> <br></br>
-                            <input type='checkbox' onChange={(e) => { priceFilterApplied("$201 - $300", e.target.checked) }}></input> <label>$201 - $300</label> <br></br>
-                            <input type='checkbox' onChange={(e) => { priceFilterApplied("$301 - $400", e.target.checked) }}></input> <label>$301 - $400</label> <br></br>
-                            <input type='checkbox' onChange={(e) => { priceFilterApplied("$401 - $500", e.target.checked) }}></input> <label>$401 - $500</label> <br></br>
-                            <input type='checkbox' onChange={(e) => { priceFilterApplied("More than $500", e.target.checked) }}></input> <label>More than $500</label> <br></br>
+                            <input type='checkbox' onChange={(e) => { priceFilterApplied("Less than $100", e.target.checked, 0) }}></input> <label>Less than $100</label> <br></br>
+                            <input type='checkbox' onChange={(e) => { priceFilterApplied("$100 - $200", e.target.checked, 100) }}></input> <label>$100 - $200</label> <br></br>
+                            <input type='checkbox' onChange={(e) => { priceFilterApplied("$201 - $300", e.target.checked, 201) }}></input> <label>$201 - $300</label> <br></br>
+                            <input type='checkbox' onChange={(e) => { priceFilterApplied("$301 - $400", e.target.checked, 301) }}></input> <label>$301 - $400</label> <br></br>
+                            <input type='checkbox' onChange={(e) => { priceFilterApplied("$401 - $500", e.target.checked, 401) }}></input> <label>$401 - $500</label> <br></br>
+                            <input type='checkbox' onChange={(e) => { priceFilterApplied("More than $500", e.target.checked, 501) }}></input> <label>More than $500</label> <br></br>
                         </div>
                     </div>
 
