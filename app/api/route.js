@@ -602,5 +602,26 @@ export async function POST(req) {
             console.error("Error occurred during editing address:", error);
             return NextResponse.error("Error occurred during editing address", 500);
         }
+    } else if (type === "addproduct") {
+        try {
+            const data = await req.json();
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            if (!user || user.id !== "662c8a917069d646e0af7982") {
+                return NextResponse.json({Access: "Denied"})
+            }
+
+            await prisma.product.create({data: data.product});          
+
+            return NextResponse.json({Access: "Success"});
+        } catch (error) {
+            console.error("Error occurred when adding product:", error);
+            return NextResponse.error("Error occurred when adding product", 500);
+        }
     }
 }

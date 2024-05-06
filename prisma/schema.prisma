@@ -28,3 +28,12 @@ model ResetCode {
   createdAt     DateTime  @default(now())
   expiresAt     DateTime?
 }
+
+model Product {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  price         String?
+  detail        String?
+  tags          String[]
+  images        String[]
+}

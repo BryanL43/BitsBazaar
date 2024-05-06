@@ -11,7 +11,7 @@ export default async function Home() {
         <div className='intro'>
             <h1>Welcome to BitsBazaar</h1>
             <p>We provide high quality computer parts</p>
-            <button onClick={() => window.location.href = '/signin'}>Shop Now</button>
+            <button onClick={() => window.location.href = '/catalogue?search=all'}>Shop Now</button>
         </div>
 
         <img id="slideImg" src='laptop1.jpeg'></img>

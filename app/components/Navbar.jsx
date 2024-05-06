@@ -13,6 +13,7 @@ const Navbar = () => {
     const [isUserDropOpen, setIsUserDropOpen] = useState("none");
     const [isCartDropOpen, setIsCartDropOpen] = useState("none");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [searchVal, setSearchVal] = useState("");
 
     //Cookie Handler:
     function getCookie(name) {
@@ -53,12 +54,18 @@ const Navbar = () => {
         setIsUserDropOpen("none");
         setIsCartDropOpen(`${isCartDropOpen === "none" ? "block" : "none"}`);
     }
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            window.location.href = "/catalogue?search=" + searchVal;
+        }
+    };
     
     return (
         <nav className="navBar">
             <Link href="/"><img src='/logo.png' style={{ height: '34px' }} alt="BitBazaar Logo" /></Link>
-            <input className="searchBar" type="text" placeholder="Search" autoComplete="off" />
-            <Link id="searchIcon" href="/"><FontAwesomeIcon icon={faMagnifyingGlass} /></Link>
+            <input className="searchBar" type="text" placeholder="Search" autoComplete="off" value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyDown={handleKeyDown} />
+            <Link id="searchIcon" href="/catalogue" onClick={() => {window.location.href = "/catalogue?search=" + searchVal}}><FontAwesomeIcon icon={faMagnifyingGlass} /></Link>
             <button id="themeToggleBtn" onClick={toggleTheme}>
                 <FontAwesomeIcon icon={faCircleHalfStroke} />
             </button>

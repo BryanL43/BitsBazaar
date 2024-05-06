@@ -68,6 +68,7 @@ header {
     color: var(--text);
     transition: ease-in-out border-color 300ms;
     margin-left: auto;
+    font-family: "Inria Sans";
 }
 
 .searchBar::placeholder {
@@ -1444,27 +1445,49 @@ header {
 }
 
 /*Catalogue page*/
-.catalogue-page {
+.catalogue-screen {
     width: 100%;
-    height: 100vh;
+    height: auto;
+}
+
+.main-catalogue-page {
     display: flex;
     color: var(--text);
     font-family: "Inria Sans"
 }
 
+.filterTopBar {
+    margin-left: 50px;
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.filterTopBar h1 {
+    width: 14%;
+    font-size: 28px;
+    font-family: "Inria Sans";
+    color: var(--text);
+}
+
+.filterTopBar p {
+    margin: 0;
+    text-align: center;
+    font-size: 18px;
+    font-family: "Inria Sans";
+    color: var(--text);
+}
+
 .filter {
     width: 15%;
-    margin-left: 5px;
-
+    margin-left: 50px;
 }
 
 .filter-card {
-    margin-top: 10px;
     margin-bottom: 10px;
     padding: 10px;
-    border: 0.1rem solid;
-    border-color: rgb(132, 132, 132);
-
+    border-radius: 5px;
+    border: 1px solid var(--text);
 }
 
 .filter-card p {
@@ -1472,43 +1495,72 @@ header {
 }
 
 .items {
-    width: 85%;
+    width: 100%;
     display: grid;
-    grid-template-columns: 20% 20% 20% 20%;
-    column-gap: 5%;
-    row-gap: 10px;
-    justify-content: space-around;
-    grid-gap: 15px;
-    margin-top: 10px;
+    grid-template-columns: 23% 23% 23% 23%;
+    justify-content: space-evenly;
+    grid-gap: 10px;
+    margin-right: 10px;
 }
 
 @media (max-width:1000px) {
     .items {
-        grid-template-columns: 25% 25% 25%;
+        grid-template-columns: 30% 30% 30%;
+    }
+}
+
+@media (max-width:750px) {
+    .items {
+        grid-template-columns: 45% 45%;
     }
 }
 
 .items-card {
     width: 100%;
+    height: 500px;
     padding: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 0.1rem solid;
-    border-color: rgb(132, 132, 132);
+    border-radius: 5px;
+    border: 1px solid var(--text);
+    box-shadow: 0 0 2px var(--text);
 }
 
 .items-card img {
-    width: 70%;
-    height: 100%;
+    width: 95%;
+    height: 224px;
+    margin: 10px;
 }
 
-.items-card p {
-    font-size: 90%;
+.items-card-text-content {
+    width: 95%;
+    height: 42.5%;
+}
+
+.items-card a {
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.items-card a:hover {
+    text-decoration: underline;
+}
+
+.detail-item {
+    height: 50%;
+    overflow: hidden;
+    position: relative;
+}
+
+.price-item {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text);
 }
 
 .items-card button {
-    width: 100%;
+    width: 95%;
     background-color: var(--accent);
 }
 
