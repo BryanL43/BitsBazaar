@@ -7,7 +7,7 @@ const resend = new Resend("re_GMWC3jMX_92c9tR4ex1ZYY8Prmbu22bre");
 
 export async function GET(req) {
     const { query } = parse(req.url, true);
-    const { type, email, password, code, oldemail } = query;
+    const { type, email, password, code, oldemail, search, filter } = query;
 
     if (type === "signin") {
         try {
@@ -163,6 +163,59 @@ export async function GET(req) {
         } catch (error) {
             console.error("Error occurred during verifying code:", error);
             return NextResponse.error("Error occurred when verifying code", 500);
+        }
+    } else if (type === "getproducts") {
+        let searchKey = !search || search === "undefined" ? "all" : search;
+        let filterKey = !filter || filter === "undefined" ? "none" : filter;
+
+        if (filterKey !== "none" && searchKey !== "all") { //With search and filter key
+            const filteredProducts = await prisma.product.findMany({
+                where: {
+                    tags: {
+                        hasSome: filterKey.split(",")
+                    }
+                }
+            });
+
+            // Filter products based on search keywords
+            const searchedProducts = filteredProducts.filter(product => {
+                const productName = product.name.toLowerCase();
+                const productDetail = product.detail.toLowerCase();
+                const searchKeyLower = searchKey.toLowerCase();
+
+                //Check if product name or detail contains search keywords
+                return productName.includes(searchKeyLower) || productDetail.includes(searchKeyLower);
+            });
+
+            return NextResponse.json({ products: searchedProducts })
+        } else if (filterKey !== "none") { //filter case
+            const filteredProducts = await prisma.product.findMany({
+                where: {
+                    tags: {
+                        hasSome: filterKey.split(",")
+                    }
+                }
+            });
+            return NextResponse.json({ products: filteredProducts });
+        } else if (searchKey !== "all") { // Search case
+            const allProducts = await prisma.product.findMany();
+
+            // Filter products based on search keywords
+            const searchedProducts = allProducts.filter(product => {
+                const productName = product.name.toLowerCase();
+                const productDetail = product.detail.toLowerCase();
+                const searchKeyLower = searchKey.toLowerCase();
+
+                //Check if product name or detail contains search keywords
+                return productName.includes(searchKeyLower) || productDetail.includes(searchKeyLower);
+            });
+
+            return NextResponse.json({ products: searchedProducts });
+        } else if (searchKey === "all") { //Retrieve all products from the database
+            const allProducts = await prisma.product.findMany();
+            return NextResponse.json({ products: allProducts });
+        } else { //Error case
+            return NextResponse.json({});
         }
     }
 }
