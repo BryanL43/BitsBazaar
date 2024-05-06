@@ -631,11 +631,11 @@ header {
 }
 
 .shoppingCart {
-    width: 30%;
+    width: 35%;
 
 }
 
-.card {
+.shoppingCart .card {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -643,18 +643,19 @@ header {
     margin-bottom: 20px;
     width: 100%;
     background-color: white;
-    background-color: var(--accent);
-
+    padding: 10px;
+    border: 0.15rem solid;
+    border-color: gray;
 }
 
-.card img {
-    width: 50%;
-    height: 50%;
+.shoppingCart img {
+    width: 40%;
+    height: 100%;
     margin-right: 10%;
 }
 
 .description {
-    width: 50%;
+    width: 45%;
     font-family: "Inria Sans";
 }
 
@@ -1822,4 +1823,28 @@ header {
 
 .order-card-main-right button:hover {
     background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Footer Page */
+.footer-page {
+    width: 100%;
+    margin-top: auto;
+    background-color: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    padding-top: 25px;
+    padding-bottom: 5px;
+    
+}
+
+.footer-page .contact {
+    font-size: 28px;
+    width: 15%;
+    height: 100%;
+}
+
+.footer-page .socials p {
+    margin: 3px;
 }

@@ -165,14 +165,14 @@ export async function GET(req) {
             return NextResponse.error("Error occurred when verifying code", 500);
         }
     } else if (type === "getproducts") {
-        let searchKey = !search || search === "undefined" ? "all" : search;
-        let filterKey = !filter || filter === "undefined" ? "none" : filter;
+        let searchKey = !search || search === "undefined" ? "all" : search.toLowerCase();
+        let filterKey = !filter || filter === "undefined" ? "none" : filter.toLowerCase();
 
         if (filterKey !== "none" && searchKey !== "all") { //With search and filter key
             const filteredProducts = await prisma.product.findMany({
                 where: {
                     tags: {
-                        hasSome: filterKey.split(",")
+                        hasSome: filterKey.split(",")[0]
                     }
                 }
             });
@@ -192,11 +192,57 @@ export async function GET(req) {
             const filteredProducts = await prisma.product.findMany({
                 where: {
                     tags: {
-                        hasSome: filterKey.split(",")
+                        has: filterKey.split(",")[0]
                     }
                 }
             });
-            return NextResponse.json({ products: filteredProducts });
+
+            if (!filterKey.split(",")[1]) {
+                return NextResponse.json({ products: filteredProducts });
+            }
+
+            //Filter by price
+            const finalFilteredProducts = [];
+            const filterKeyPrice = parseFloat(filterKey.split(",")[1]);
+            if (filterKeyPrice === 0) {
+                filteredProducts.forEach(product => {
+                    if (parseFloat(product.price) >= 0 && parseFloat(product.price) <= 99) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            } else if (filterKeyPrice === 100) {
+                filteredProducts.forEach(product => {
+                    if (parseFloat(product.price) >= 100 && parseFloat(product.price) <= 200) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            } else if (filterKeyPrice === 201) {
+                filteredProducts.forEach(product => {
+                    if (parseFloat(product.price) >= 201 && parseFloat(product.price) <= 300) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            } else if (filterKeyPrice === 301) {
+                filteredProducts.forEach(product => {
+                    if (parseFloat(product.price) >= 301 && parseFloat(product.price) <= 400) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            } else if (filterKeyPrice === 401) {
+                filteredProducts.forEach(product => {
+                    if (parseFloat(product.price) >= 401 && parseFloat(product.price) <= 500) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            } else {
+                filteredProducts.forEach(product => {
+                    if (parseFloat(product.price) > 500) {
+                        finalFilteredProducts.push(product);
+                    }
+                })
+            }
+
+            return NextResponse.json({ products: finalFilteredProducts });
         } else if (searchKey !== "all") { // Search case
             const allProducts = await prisma.product.findMany();
 

@@ -67,8 +67,13 @@ const Catalogue = (query) => {
 
     const getProducts = async() => {
         try {
-            const url = `/api?type=getproducts&search=${query.searchParams.search}&filter=${query.searchParams.filter}`;
+            let searchParam = "";
+            if (query.searchParams.search) {
+                searchParam = query.searchParams.search.toLowerCase();
+            }
 
+            const url = `/api?type=getproducts&search=${searchParam}&filter=${window.location.href.split("&filter=")[1]}`;
+            
             const response = await fetch(url, {
                 method: "GET",
                 headers: {
@@ -78,7 +83,6 @@ const Catalogue = (query) => {
 
             if (response.ok) {
                 const responseData = await response.json();
-                
                 responseData.products.forEach(product => {
                     document.querySelector(".items").appendChild(createProductCard(product));
                 })
@@ -106,6 +110,11 @@ const Catalogue = (query) => {
             const searchParams = new URLSearchParams(window.location.search);
             searchParams.set('filter', filter);
             history.pushState(null, '', '?' + searchParams.toString());
+            const itemsContainer = document.querySelector('.items');
+            while (document.querySelector('.items').firstChild) {
+                itemsContainer.removeChild(itemsContainer.firstChild);
+            }
+            getProducts();
         } else {
             filterCards.forEach((filterCard, index) => {
                 if (index < filterCards.length - 1) {
@@ -116,6 +125,14 @@ const Catalogue = (query) => {
                     })
                 }
             })
+            const searchParams = new URLSearchParams(window.location.search);
+            searchParams.delete('filter');
+            history.pushState(null, '', '?' + searchParams.toString());
+            const itemsContainer = document.querySelector('.items');
+            while (document.querySelector('.items').firstChild) {
+                itemsContainer.removeChild(itemsContainer.firstChild);
+            }
+            getProducts();
         }
     }
 
@@ -132,6 +149,7 @@ const Catalogue = (query) => {
                     })
                 }
             })
+            console.log(window.location.search);
         } else {
             filterCards.forEach((filterCard, index) => {
                 if (index == filterCards.length - 1) {
@@ -195,7 +213,7 @@ const Catalogue = (query) => {
                             <div className="items-card-text-content">
                                 <Link href="/catalogue">Name of Item</Link>
                                 <p className='price-item'>${price1}</p>
-                                <p className='detail-item'>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Some sort of longer text added.</p>
+                                <p className='detail-item'>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
                             </div>
                             <button>View Details</button>
                         </div> */}
