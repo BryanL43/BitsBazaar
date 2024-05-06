@@ -7,7 +7,7 @@ const resend = new Resend("re_GMWC3jMX_92c9tR4ex1ZYY8Prmbu22bre");
 
 export async function GET(req) {
     const { query } = parse(req.url, true);
-    const { type, email, password, code, oldemail, search, filter } = query;
+    const { type, email, password, code, oldemail, search, filter, productId } = query;
 
     if (type === "signin") {
         try {
@@ -165,158 +165,177 @@ export async function GET(req) {
             return NextResponse.error("Error occurred when verifying code", 500);
         }
     } else if (type === "getproducts") {
-        let searchKey = !search || search === "undefined" ? "all" : search.toLowerCase();
-        let filterKey = !filter || filter === "undefined" ? "none" : filter.toLowerCase();
+        try {
+            let searchKey = !search || search === "undefined" ? "all" : search.toLowerCase();
+            let filterKey = !filter || filter === "undefined" ? "none" : filter.toLowerCase();
 
-        if (filterKey !== "none" && searchKey !== "all") { //With search and filter key
-            let filteredProducts;
-            if (filterKey.split(",")[0]) { //If LHS filter exist
-                filteredProducts = await prisma.product.findMany({
-                    where: {
-                        tags: {
-                            has: filterKey.split(",")[0]
+            if (filterKey !== "none" && searchKey !== "all") { //With search and filter key
+                let filteredProducts;
+                if (filterKey.split(",")[0]) { //If LHS filter exist
+                    filteredProducts = await prisma.product.findMany({
+                        where: {
+                            tags: {
+                                has: filterKey.split(",")[0]
+                            }
                         }
-                    }
+                    });
+                } else { //If LHS doesn't exist aka only price filter
+                    filteredProducts = await prisma.product.findMany();
+                }
+
+                // Filter products based on search keywords
+                const searchedProducts = filteredProducts.filter(product => {
+                    const productName = product.name.toLowerCase();
+                    const productDetail = product.detail.toLowerCase();
+                    const searchKeyLower = searchKey.toLowerCase();
+
+                    //Check if product name or detail contains search keywords
+                    return productName.includes(searchKeyLower) || productDetail.includes(searchKeyLower);
                 });
-            } else { //If LHS doesn't exist aka only price filter
-                filteredProducts = await prisma.product.findMany();
-            }
 
-            // Filter products based on search keywords
-            const searchedProducts = filteredProducts.filter(product => {
-                const productName = product.name.toLowerCase();
-                const productDetail = product.detail.toLowerCase();
-                const searchKeyLower = searchKey.toLowerCase();
+                if (!filterKey.split(",")[1]) {
+                    return NextResponse.json({ products: searchedProducts })
+                }
 
-                //Check if product name or detail contains search keywords
-                return productName.includes(searchKeyLower) || productDetail.includes(searchKeyLower);
-            });
-
-            if (!filterKey.split(",")[1]) {
-                return NextResponse.json({ products: searchedProducts })
-            }
-
-            //Filter by price
-            const finalFilteredProducts = [];
-            const filterKeyPrice = parseFloat(filterKey.split(",")[1]);
-            if (filterKeyPrice === 0) {
-                searchedProducts.forEach(product => {
-                    if (parseFloat(product.price) >= 0 && parseFloat(product.price) <= 99) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            } else if (filterKeyPrice === 100) {
-                searchedProducts.forEach(product => {
-                    if (parseFloat(product.price) >= 100 && parseFloat(product.price) <= 200) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            } else if (filterKeyPrice === 201) {
-                searchedProducts.forEach(product => {
-                    if (parseFloat(product.price) >= 201 && parseFloat(product.price) <= 300) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            } else if (filterKeyPrice === 301) {
-                searchedProducts.forEach(product => {
-                    if (parseFloat(product.price) >= 301 && parseFloat(product.price) <= 400) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            } else if (filterKeyPrice === 401) {
-                searchedProducts.forEach(product => {
-                    if (parseFloat(product.price) >= 401 && parseFloat(product.price) <= 500) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            } else {
-                searchedProducts.forEach(product => {
-                    if (parseFloat(product.price) > 500) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            }
-
-            return NextResponse.json({ products: finalFilteredProducts });
-        } else if (filterKey !== "none") { //filter case
-            let filteredProducts;
-            if (filterKey.split(",")[0]) { //If LHS filter exist
-                filteredProducts = await prisma.product.findMany({
-                    where: {
-                        tags: {
-                            has: filterKey.split(",")[0]
+                //Filter by price
+                const finalFilteredProducts = [];
+                const filterKeyPrice = parseFloat(filterKey.split(",")[1]);
+                if (filterKeyPrice === 0) {
+                    searchedProducts.forEach(product => {
+                        if (parseFloat(product.price) >= 0 && parseFloat(product.price) <= 99) {
+                            finalFilteredProducts.push(product);
                         }
-                    }
+                    })
+                } else if (filterKeyPrice === 100) {
+                    searchedProducts.forEach(product => {
+                        if (parseFloat(product.price) >= 100 && parseFloat(product.price) <= 200) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                } else if (filterKeyPrice === 201) {
+                    searchedProducts.forEach(product => {
+                        if (parseFloat(product.price) >= 201 && parseFloat(product.price) <= 300) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                } else if (filterKeyPrice === 301) {
+                    searchedProducts.forEach(product => {
+                        if (parseFloat(product.price) >= 301 && parseFloat(product.price) <= 400) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                } else if (filterKeyPrice === 401) {
+                    searchedProducts.forEach(product => {
+                        if (parseFloat(product.price) >= 401 && parseFloat(product.price) <= 500) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                } else {
+                    searchedProducts.forEach(product => {
+                        if (parseFloat(product.price) > 500) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                }
+
+                return NextResponse.json({ products: finalFilteredProducts });
+            } else if (filterKey !== "none") { //filter case
+                let filteredProducts;
+                if (filterKey.split(",")[0]) { //If LHS filter exist
+                    filteredProducts = await prisma.product.findMany({
+                        where: {
+                            tags: {
+                                has: filterKey.split(",")[0]
+                            }
+                        }
+                    });
+                } else { //If LHS doesn't exist aka only price filter
+                    filteredProducts = await prisma.product.findMany();
+                }
+
+                if (!filterKey.split(",")[1]) {
+                    return NextResponse.json({ products: filteredProducts });
+                }
+
+                //Filter by price
+                const finalFilteredProducts = [];
+                const filterKeyPrice = parseFloat(filterKey.split(",")[1]);
+                if (filterKeyPrice === 0) {
+                    filteredProducts.forEach(product => {
+                        if (parseFloat(product.price) >= 0 && parseFloat(product.price) <= 99) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                } else if (filterKeyPrice === 100) {
+                    filteredProducts.forEach(product => {
+                        if (parseFloat(product.price) >= 100 && parseFloat(product.price) <= 200) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                } else if (filterKeyPrice === 201) {
+                    filteredProducts.forEach(product => {
+                        if (parseFloat(product.price) >= 201 && parseFloat(product.price) <= 300) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                } else if (filterKeyPrice === 301) {
+                    filteredProducts.forEach(product => {
+                        if (parseFloat(product.price) >= 301 && parseFloat(product.price) <= 400) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                } else if (filterKeyPrice === 401) {
+                    filteredProducts.forEach(product => {
+                        if (parseFloat(product.price) >= 401 && parseFloat(product.price) <= 500) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                } else {
+                    filteredProducts.forEach(product => {
+                        if (parseFloat(product.price) > 500) {
+                            finalFilteredProducts.push(product);
+                        }
+                    })
+                }
+
+                return NextResponse.json({ products: finalFilteredProducts });
+            } else if (searchKey !== "all") { // Search case
+                const allProducts = await prisma.product.findMany();
+
+                // Filter products based on search keywords
+                const searchedProducts = allProducts.filter(product => {
+                    const productName = product.name.toLowerCase();
+                    const productDetail = product.detail.toLowerCase();
+                    const searchKeyLower = searchKey.toLowerCase();
+
+                    //Check if product name or detail contains search keywords
+                    return productName.includes(searchKeyLower) || productDetail.includes(searchKeyLower);
                 });
-            } else { //If LHS doesn't exist aka only price filter
-                filteredProducts = await prisma.product.findMany();
+
+                return NextResponse.json({ products: searchedProducts });
+            } else if (searchKey === "all") { //Retrieve all products from the database
+                const allProducts = await prisma.product.findMany();
+                return NextResponse.json({ products: allProducts });
+            } else { //Error case
+                return NextResponse.json({});
             }
-
-            if (!filterKey.split(",")[1]) {
-                return NextResponse.json({ products: filteredProducts });
-            }
-
-            //Filter by price
-            const finalFilteredProducts = [];
-            const filterKeyPrice = parseFloat(filterKey.split(",")[1]);
-            if (filterKeyPrice === 0) {
-                filteredProducts.forEach(product => {
-                    if (parseFloat(product.price) >= 0 && parseFloat(product.price) <= 99) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            } else if (filterKeyPrice === 100) {
-                filteredProducts.forEach(product => {
-                    if (parseFloat(product.price) >= 100 && parseFloat(product.price) <= 200) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            } else if (filterKeyPrice === 201) {
-                filteredProducts.forEach(product => {
-                    if (parseFloat(product.price) >= 201 && parseFloat(product.price) <= 300) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            } else if (filterKeyPrice === 301) {
-                filteredProducts.forEach(product => {
-                    if (parseFloat(product.price) >= 301 && parseFloat(product.price) <= 400) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            } else if (filterKeyPrice === 401) {
-                filteredProducts.forEach(product => {
-                    if (parseFloat(product.price) >= 401 && parseFloat(product.price) <= 500) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            } else {
-                filteredProducts.forEach(product => {
-                    if (parseFloat(product.price) > 500) {
-                        finalFilteredProducts.push(product);
-                    }
-                })
-            }
-
-            return NextResponse.json({ products: finalFilteredProducts });
-        } else if (searchKey !== "all") { // Search case
-            const allProducts = await prisma.product.findMany();
-
-            // Filter products based on search keywords
-            const searchedProducts = allProducts.filter(product => {
-                const productName = product.name.toLowerCase();
-                const productDetail = product.detail.toLowerCase();
-                const searchKeyLower = searchKey.toLowerCase();
-
-                //Check if product name or detail contains search keywords
-                return productName.includes(searchKeyLower) || productDetail.includes(searchKeyLower);
-            });
-
-            return NextResponse.json({ products: searchedProducts });
-        } else if (searchKey === "all") { //Retrieve all products from the database
-            const allProducts = await prisma.product.findMany();
-            return NextResponse.json({ products: allProducts });
-        } else { //Error case
-            return NextResponse.json({});
+        } catch (error) {
+            console.error("Error occurred when getting products:", error);
+            return NextResponse.error("Error occurred when getting products code", 500);
+        }
+    } else if (type === "getproductbyid") {
+        try {
+            
+            const foundProduct = await prisma.product.findUnique({
+                where: {
+                    id: productId
+                }
+            })
+            
+            return NextResponse.json(foundProduct);
+        } catch (error) {
+            console.error("Error occurred during acquiring product:", error);
+            return NextResponse.error("Error occurred during acquiring product", 500);
         }
     }
 }

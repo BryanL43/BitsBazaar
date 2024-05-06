@@ -1,9 +1,6 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { text } from '@fortawesome/fontawesome-svg-core';
 
 const Catalogue = (query) => {
 
@@ -47,6 +44,11 @@ const Catalogue = (query) => {
         //Create view product button
         const viewBtn = document.createElement("button");
         viewBtn.textContent = "View Details";
+
+        viewBtn.addEventListener("click", function() {
+            window.location.href = "/product?id=" + info.id;
+        })
+
         productCard.appendChild(viewBtn);
 
         return productCard;

@@ -1,15 +1,10 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
 
 const Product = () => {
     const price1 = 21.99;
     const [i, setQuantity] = useState(0);
-
-    if(i == 0) {
-
-    }
 
     const myPictures = [
         {
@@ -25,11 +20,24 @@ const Product = () => {
     const [isActive1, setIsActive1] = useState(true);
     const [isActive2, setIsActive2] = useState(true);
 
+    const [initialRender, setInitialRender] = useState(true);
+    useEffect(() => {
+        if (!initialRender) {
+            getProduct();
+        } else {
+            setInitialRender(false);
+        }
+    })
+
     function goLeft(e) {
         if(i > 0) {
             setQuantity(i - 1);
             setIsActive1(false);
             setIsActive2(true);
+        } else {
+            setQuantity(0);
+            setIsActive1(true);
+            setIsActive2(false);
         }
     }
 
@@ -38,6 +46,33 @@ const Product = () => {
             setQuantity(i + 1);
             setIsActive1(true);
             setIsActive2(false);
+        } else {
+            setQuantity(0);
+            setIsActive1(true);
+            setIsActive2(false);
+        }
+    }
+
+    const getProduct = async() => {
+        try {
+            const productId = window.location.href.split("?id=")[1].toString();
+            const url = `/api?type=getproductbyid&productId=${productId}`;
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData);
+            } else {
+                console.log("Acquiring Product Failed");
+            }
+        } catch (error) {
+            console.log("Error occured when acquiring product:", error)
         }
     }
 
@@ -57,9 +92,9 @@ const Product = () => {
             </div>
 
             <div className='product-detail'>
-                <p id='name'>Name of Product</p>
+                <h1 id="name">Name of Product</h1>
                 <p id='detail'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-                <p>${price1}</p>
+                <p id="product-price">${price1}</p>
                 <label>Qty: </label> <input type='number' min={0}></input>
                 <button>Add to Cart</button>
             </div>

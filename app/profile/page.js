@@ -112,22 +112,6 @@ const Profile = () => {
     }, []);
 
     //Handle Page Module Navigation
-    const bannerRedirect = () => {
-        window.location.href = '/catalogue';
-    }
-
-    const laptopRedirect = () => {
-        window.location.href = '/signin';
-    }
-
-    const pcRedirect = () => {
-        window.location.href = '/signin';
-    }
-
-    const accessoriesRedirect = () => {
-        window.location.href = '/signin';
-    }
-
     const gotoPage = (pageName) => {
         closeAllSubPages();
         setOpenStates(prevState => ({
@@ -628,7 +612,7 @@ const Profile = () => {
                                         <h3>Start Browsing</h3>
                                         <Link href="/signin">View catalog</Link>
                                     </div>
-                                    <div className="profile-banner-main" onClick={bannerRedirect}>
+                                    <div className="profile-banner-main" onClick={() => {window.location.href = '/catalogue?search=all';}}>
                                         <Image className="profile-banner-img" src="/profilebanner.png" alt="Start browsing BitsBazaar" width={0} height={0} sizes="100vw" style={{width: "100%", height: "100%"}}/>
                                         <p className="banner-text-1">Find the technology you need</p>
                                         <p className="banner-text-2">Shop BitsBazaar</p>
@@ -638,16 +622,16 @@ const Profile = () => {
                                     <div className="quick-browse-top-bar">
                                         <h3>Quick Browse</h3>
                                     </div>
-                                    <div className="quick-browse-container" onClick={laptopRedirect}>
-                                        <div className="quick-browse-content">
+                                    <div className="quick-browse-container">
+                                        <div className="quick-browse-content" onClick={() => {window.location.href = '/catalogue?search=all&filter=Laptop';}}>
                                             <Image src="/profilelaptopimg.png" alt="Browse Laptop Catagory" width={0} height={0} sizes="100vw" style={{width: "33%", height: "100%"}}/>
                                             <h3>High-Quality Laptops</h3>
                                         </div>
-                                        <div className="quick-browse-content" onClick={pcRedirect}>
+                                        <div className="quick-browse-content" onClick={() => {window.location.href = '/catalogue?search=all&filter=PC';}}>
                                             <Image src="/profilepcimg.png" alt="Browse Gaming PC Catagory" width={0} height={0} sizes="100vw" style={{width: "33%", height: "100%"}}/>
                                             <h3>Gaming PC</h3>
                                         </div>
-                                        <div className="quick-browse-content" onClick={accessoriesRedirect}>
+                                        <div className="quick-browse-content" onClick={() => {window.location.href = '/catalogue?search=all&filter=Audio Gear';}}>
                                             <Image src="/profileheadsetimg.png" alt="Browse Accessories Catagory" width={0} height={0} sizes="100vw" style={{width: "33%", height: "100%"}}/>
                                             <h3>Accessories</h3>
                                         </div>

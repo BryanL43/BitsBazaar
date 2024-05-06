@@ -69,6 +69,47 @@ const Edit = () => {
                             </div>
                         </div>
                     </div>
+
+                    <div className="your-order-cards">
+                        <div className="your-order-card-top-bar">
+                            <div className="your-order-top-bar-cont">
+                                <p>ORDER PLACED</p>
+                                <p>May 5, 2023</p>
+                            </div>
+                            <div className="your-order-top-bar-cont2">
+                                <p>TOTAL</p>
+                                <p>$70.42</p>
+                            </div>
+                        </div>
+                        <div className="order-card-main">
+                            <div className="order-card-main-left">
+                                <Image src="/profileheadsetimg.png" sizes="100vw" width={0} height={0} style={{width: "90px", height: "90px"}}></Image>
+                            </div>
+                            <div className="order-card-main-middle">
+                                <Link href="/signin">JanSport Right Pack Backpack - Travel, Work, or Laptop Bookbag with Leather Bottom, Black</Link>
+                                <button><FontAwesomeIcon icon={faBagShopping} />Buy Again</button>
+                            </div>
+                            <div className="order-card-main-right">
+                                <button>Track your order</button>
+                                <button>Cancel your order</button>
+                            </div>
+                        </div>
+                        <div className="order-card-main">
+                            <div className="order-card-main-left">
+                                <Image src="/profileheadsetimg.png" sizes="100vw" width={0} height={0} style={{width: "90px", height: "90px"}}></Image>
+                            </div>
+                            <div className="order-card-main-middle">
+                                <Link href="/signin">JanSport Right Pack Backpack - Travel, Work, or Laptop Bookbag with Leather Bottom, Black</Link>
+                                <button><FontAwesomeIcon icon={faBagShopping} />Buy Again</button>
+                            </div>
+                            <div className="order-card-main-right">
+                                <button>Track your order</button>
+                                <button>Cancel your order</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    
                 </div>
             </div>
         </main>

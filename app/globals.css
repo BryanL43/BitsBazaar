@@ -1502,6 +1502,7 @@ header {
     justify-content: space-evenly;
     grid-gap: 10px;
     margin-right: 10px;
+    margin-bottom: 30px;
 }
 
 @media (max-width:1000px) {
@@ -1636,6 +1637,11 @@ header {
 
 .product-detail {
     width: 40%;
+    padding-bottom: 5%;
+}
+
+#product-price {
+    font-weight: bold;
 }
 
 .product-detail #name {
@@ -1836,7 +1842,8 @@ header {
     padding: 15px;
     padding-top: 25px;
     padding-bottom: 5px;
-    
+    margin-bottom: -10px;
+    font-family: "Inria Sans";
 }
 
 .footer-page .contact {
