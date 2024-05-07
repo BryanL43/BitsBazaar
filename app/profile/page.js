@@ -106,6 +106,11 @@ const Profile = () => {
             setGreetLastName(userData.lastName);
             setCurrEmail(userData.user);
             setIsDataExist(true);
+            
+            if (window.location.search.split("?")[1] === "address") {
+                gotoPage("addressPage");
+                history.replaceState(null, null, window.location.pathname);
+            }
         } else {
             window.location.href = '/signin';
         }
@@ -646,7 +651,7 @@ const Profile = () => {
                                         <p>Edit login credentials, name, and email address</p>
                                     </div>
                                 </div>
-                                <div className="profile-setting-content">
+                                <div className="profile-setting-content" onClick={() => window.location.href = "/orders"}>
                                     <Image src="/profileOrder.png" alt="See your order history" width={0} height={0} sizes="100vw" style={{width: "66px", height: "66px"}}/>
                                     <div className="profile-setting-content-inner">
                                         <h2>Your Orders</h2>

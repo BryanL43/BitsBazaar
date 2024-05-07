@@ -2,12 +2,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark, faCircleExclamation, faBagShopping } from '@fortawesome/free-solid-svg-icons';
+import { faBagShopping } from '@fortawesome/free-solid-svg-icons';
 
-const Edit = () => {
-
+const Orders = () => {
 
     return (
         <main>
@@ -116,4 +115,4 @@ const Edit = () => {
     )
 }
 
-export default Edit
+export default Orders

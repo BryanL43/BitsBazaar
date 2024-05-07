@@ -607,46 +607,6 @@ header {
     margin: auto;
 }
 
-/*Checkout Page */
-.checkout-page {
-    display: flex;
-    justify-content: space-evenly;
-    height: 100vh;
-    width: 100%;
-    color: var(--text);
-    font-family: "Inria Sans"
-}
-
-.checkout-detail {
-    width: 30%;
-}
-
-.checkout-detail button {
-    width: 100%;
-    margin-top: 50px;
-}
-
-.order-summary {
-    margin-top: 50px;
-    width: 20%;
-    height: 100px;
-    display: flex;
-    flex-direction: column;
-    background-color: rgb(202, 202, 202)
-}
-
-.mailing-address {
-    padding: 10px;
-    margin-bottom: 30px;
-    border: 0.3rem solid;
-    border-color: gainsboro;
-}
-
-.mailing-address p {
-    margin: 0px;
-}
-
-
 /*Styling input*/
 .exp {
     width: 33%;
@@ -963,7 +923,7 @@ header {
     font-weight: 400;
 }
 
-.edit-container h1, .edit-address-container h1, .edit-address-comp-container h1, .your-order-container h1, .cart-container h1 {
+.edit-container h1, .edit-address-container h1, .edit-address-comp-container h1, .your-order-container h1, .cart-container h1, .checkout-detail h1 {
     font-size: 28px;
     font-family: "Inria Sans";
     color: var(--text);
@@ -1208,6 +1168,10 @@ header {
     font-size: 16px;
     font-family: "Inria Sans";
     padding-left: 20px;
+}
+
+.address-bottom-bar > a:hover {
+    text-decoration: underline;
 }
 
 .address-bottom-bar > a:not(:last-child)::after {
@@ -2006,4 +1970,45 @@ header {
 
 .checkout-info button:hover {
     background-color: #f0c14b;
+}
+
+/*Checkout Page */
+.checkout-page {
+    display: flex;
+    justify-content: space-evenly;
+    height: 100vh;
+    width: 100%;
+    color: var(--text);
+    font-family: "Inria Sans";
+    padding-top: 1.5%;
+}
+
+.checkout-detail {
+    width: 30%;
+}
+
+.checkout-detail button {
+    width: 100%;
+    height: 29px;
+    font-family: "Inria Sans";
+    border: 1px solid #FCD200;
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: #FFD814;
+    display: block;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.checkout-detail button:hover {
+    background-color: #f0c14b;
+}
+
+.order-summary {
+    margin-top: 50px;
+    width: 20%;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(202, 202, 202)
 }
