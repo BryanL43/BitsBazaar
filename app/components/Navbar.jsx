@@ -9,6 +9,8 @@ import { faUser, faCircleHalfStroke, faCartShopping, faMagnifyingGlass } from '@
 const Navbar = () => {
     const { toggleTheme } = useTheme();
 
+    const [itemCount, setItemCount] = useState(0);
+
     //Handle Drop Down Buttons
     const [isUserDropOpen, setIsUserDropOpen] = useState("none");
     const [isCartDropOpen, setIsCartDropOpen] = useState("none");
@@ -35,15 +37,41 @@ const Navbar = () => {
         document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
 
-    //Initial DOM Loaded data acquisition
-    useEffect(() => {
-        const userDataString = getCookie("userData");
-        if (userDataString) {
-            setIsLoggedIn(true);
-        } else {
-            setIsLoggedIn(false);
+    let previousCookieValue = getCookie("userData");
+
+    function checkCookieChange() {
+        const currentCookieValue = getCookie("userData");
+        if (currentCookieValue !== previousCookieValue) {
+            const userDataString = getCookie("userData");
+            if (userDataString) {
+                const userData = JSON.parse(userDataString);
+                setItemCount(prevItemCount => prevItemCount * 0);
+                userData.cart.forEach(item => {
+                    setItemCount(prevItemCount => prevItemCount + parseInt(JSON.parse(item).quantity));
+                });
+            }
+            previousCookieValue = currentCookieValue;
         }
-    }, []);
+    }
+
+    //Initial DOM Loaded data acquisition
+    const [initialRender, setInitialRender] = useState(true);
+    useEffect(() => {
+        if (!initialRender) { //prevent double callback
+            const userDataString = getCookie("userData");
+            if (userDataString) {
+                setIsLoggedIn(true);
+                const userData = JSON.parse(userDataString);
+                userData.cart.forEach(item => {
+                    setItemCount(prevItemCount => prevItemCount + parseInt(JSON.parse(item).quantity));
+                });
+            } else {
+                setIsLoggedIn(false);
+            }
+        } else {
+            setInitialRender(false);
+        }
+    }, [initialRender]);
 
     const handleUserDropDown = () => {
         setIsCartDropOpen("none");
@@ -52,6 +80,7 @@ const Navbar = () => {
 
     const handleCartDropDown = () => {
         setIsUserDropOpen("none");
+        checkCookieChange();
         setIsCartDropOpen(`${isCartDropOpen === "none" ? "block" : "none"}`);
     }
 
@@ -107,12 +136,12 @@ const Navbar = () => {
                 </button>
                 <div className="cartDropDown-content" style={{display: `${isCartDropOpen}`}}>
                     <div id="cartDropDownOpaque" onClick={handleCartDropDown}></div>
-                    <Link id="dropDown-B" href="/">
+                    <Link id="dropDown-B" href="/cart">
                         <h5>Your BitsBazaar Carts</h5>
                     </Link>
-                    <Link id="dropDown-B" href="/">
-                        <h5>Cart (0 items)</h5>
-                        <p>Subtotal: <span className="subtotal-amount">$0.00</span></p>
+                    <Link id="dropDown-B" href="/cart">
+                        <h5>Cart ({itemCount} items)</h5>
+                        <p>Click here to see your subtotal.</p>
                     </Link>
                 </div>
             </div>

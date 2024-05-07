@@ -5,6 +5,19 @@ import Image from 'next/image';
 import React, { useState, useRef, useEffect } from 'react'
 
 const Cart = () => {
+    useEffect(() => { //Prevent cart from opening when not signed in
+        const userDataString = getCookie("userData");
+        if (userDataString) {
+            const userData = JSON.parse(userDataString);
+
+            if (!userData.firstName) { //Edge case handler
+                window.location.href = '/signin';
+            }
+        } else {
+            window.location.href = '/signin';
+        }
+    }, []);
+
     const [subtotal, setSubtotal] = useState(0.0);
     const [itemCount, setItemCount] = useState(0);
 

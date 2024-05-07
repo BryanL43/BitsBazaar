@@ -227,10 +227,6 @@ header {
     align-items: center;
 }
 
-.subtotal-amount {
-    margin-left: auto;
-}
-
 .cartDropDown-content a:hover {
     background-color: rgb(35,35,35);
     color: var(--primary);
