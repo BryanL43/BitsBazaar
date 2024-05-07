@@ -4,6 +4,12 @@ import React, { useState, useRef, useEffect } from 'react'
 import Link from 'next/link';
 
 const Checkout = () => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+
+    const [subtotal, setSubtotal] = useState(0.0);
+    const [itemCount, setItemCount] = useState(0);
+
     const [addAddressObj, setAddAddressObj] = useState({
         country_reg: "",
         phone_num: "",
@@ -39,15 +45,44 @@ const Checkout = () => {
         document.cookie = name + "=" + (value || "") + expires + "; path=/";
     }
 
+    const getProduct = async(prodId, qnt) => {
+        try {
+            const url = `/api?type=getproductbyid&productId=${prodId}`;
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if (response.ok) {
+                const responseData = await response.json();
+                setSubtotal(prevSubtotal => prevSubtotal + parseFloat(responseData.price) * qnt);
+                setItemCount(prevItemCount => prevItemCount + parseInt(qnt));
+            } else {
+                console.log("Acquiring Product Failed");
+            }
+        } catch (error) {
+            console.log("Error occured when acquiring product:", error);
+        }
+    }
+
     const [initialRender, setInitialRender] = useState(true);
     useEffect(() => {
         if (!initialRender) { // Prevent double callback
             const userDataString = getCookie("userData");
             if (userDataString) {
                 const userData = JSON.parse(userDataString);
+                setFirstName(userData.firstName);
+                setLastName(userData.lastName);
+
                 const defaultAddress = userData.addresses.find(address => JSON.parse(address).default === "true");
-                
                 setAddAddressObj(JSON.parse(defaultAddress))
+
+                JSON.parse(getCookie("userData")).cart.forEach(product => {
+                    getProduct(JSON.parse(product).productId, JSON.parse(product).quantity);
+                })
             } else {
                 window.location.href = "/signin";
             }
@@ -55,6 +90,16 @@ const Checkout = () => {
             setInitialRender(false);
         }
     }, [initialRender]);
+
+    const checkedout = () => {
+        const userData = JSON.parse(getCookie("userData"))
+        userData.cart.forEach(item => {
+            userData.orderlog.push(item);
+        })
+        userData.cart = [];
+
+        setCookie("userData", JSON.stringify(userData), 1);
+    }
 
     return (
         <main>
@@ -65,7 +110,7 @@ const Checkout = () => {
                     <div className="address-grid-container">
                     <div className="address-card">
                         <ul>
-                            <li><p><strong>{JSON.parse(getCookie("userData")).firstName + " " + JSON.parse(getCookie("userData")).lastName}</strong></p></li>
+                            <li><p><strong>{firstName + " " + lastName}</strong></p></li>
                             <li><p>{addAddressObj["address"]}</p></li>
                             <li><p>{addAddressObj["city"] + ", " + addAddressObj["state"] + " " + addAddressObj["zip_code"]}</p></li>
                             <li><p>{addAddressObj["country_reg"]}</p></li>
@@ -87,14 +132,14 @@ const Checkout = () => {
                         <input type='text' placeholder="3-digit CVV" className='exp'></input>
                     </div>
 
-                    <button>Finish Checkout</button>
+                    <button onClick={checkedout}>Finish Checkout</button>
 
                 </div>
 
-                <div className="order-summary">
-                    <p>Order Summary</p>
-                    <p>Quantity: 0</p>
-                    <p>Order Total: 0</p>
+                <div className="checkout-info order-summary">
+                    <p>Order Summary:</p>
+                    <p>Quantity of items: {itemCount}</p>
+                    <p>Order total: <strong>${subtotal.toFixed(2)}</strong></p>
                 </div>
 
             </div>

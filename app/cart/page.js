@@ -280,7 +280,7 @@ const Cart = () => {
                         </div>
                         <div className="checkout-info">
                             <p>Subtotal ({itemCount} item): <strong>${subtotal.toFixed(2)}</strong></p>
-                            <button>Proceed to checkout</button>
+                            <button onClick={() => window.location.href = "/checkout"}>Proceed to checkout</button>
                         </div>
                     </div>
                 </div>

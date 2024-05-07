@@ -2007,8 +2007,6 @@ header {
 .order-summary {
     margin-top: 50px;
     width: 20%;
-    height: 100px;
     display: flex;
     flex-direction: column;
-    background-color: rgb(202, 202, 202)
 }
