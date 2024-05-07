@@ -904,28 +904,39 @@ export async function POST(req) {
                     cart: data.user.cart
                 }
             });
+            return NextResponse.json({});
+        } catch (error) {
+            console.error("Error occurred when updating user's cart:", error);
+            return NextResponse.error("Error occurred when updating user's cart", 500);
+        }
+    } else if (type === "checkout") {
+        try {
+            const data = await req.json();
 
-            //Return new updated data
-            const findUser = await prisma.user.findUnique({
+            const user = await prisma.user.findUnique({
                 where: {
                     id: data.user.id
                 }
             });
 
-            const userData = {
-                id: findUser.id,
-                firstName: findUser.firstName,
-                lastName: findUser.lastName,
-                user: findUser.email,
-                addresses: findUser.addresses,
-                cart: findUser.cart,
-                orderlog: findUser.orderlog
+            if (!user) {
+                return NextResponse.error("User not found", 404);
             }
 
-            return NextResponse.json({});
+            await prisma.user.update({
+                where: {
+                    id: data.user.id
+                },
+                data: {
+                    cart: data.user.cart,
+                    orderlog: data.user.orderlog
+                }
+            });
+            
+            return NextResponse.json({}); //Empty response as data is already updated rapidly on cookie
         } catch (error) {
-            console.error("Error occurred when updating user's cart:", error);
-            return NextResponse.error("Error occurred when updating user's cart", 500);
+            console.error("Error occurred when checking out:", error);
+            return NextResponse.error("Error occurred when checking out", 500);
         }
     }
 }

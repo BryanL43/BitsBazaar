@@ -91,14 +91,40 @@ const Checkout = () => {
         }
     }, [initialRender]);
 
+    const checkoutapi = async() => {
+        try {
+            const url = "/api?type=checkout";
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user: JSON.parse(getCookie("userData")),
+                })
+            })
+
+            if (response.ok) {
+                await response.json();
+                window.location.href = "/orders"
+            } else {
+                console.log("Check Out Failed");
+            }
+        } catch(error) {
+            console.log("Error occured when checking out:", error);
+        }
+    }
+
     const checkedout = () => {
         const userData = JSON.parse(getCookie("userData"))
         userData.cart.forEach(item => {
-            userData.orderlog.push(item);
+            userData.orderlog.push(JSON.stringify({item, date: new Date()}));
         })
         userData.cart = [];
 
         setCookie("userData", JSON.stringify(userData), 1);
+        checkoutapi();
     }
 
     return (

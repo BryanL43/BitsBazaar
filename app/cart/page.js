@@ -259,7 +259,7 @@ const Cart = () => {
                     </ol>
                     <h1>Shopping Cart</h1>
                     <div className="cart-flex">
-                        <div className="cart-cards">
+                        <div className="cart-cards" style={{ opacity: itemCount === 0 ? 0 : 1 }}>
 
                             {/* <div className="cart-card-main">
                                 <div className="cart-card-main-left">
