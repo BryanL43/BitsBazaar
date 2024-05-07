@@ -37,7 +37,7 @@ const Navbar = () => {
         document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
 
-    let previousCookieValue = getCookie("userData");
+    let previousCookieValue;
 
     function checkCookieChange() {
         const currentCookieValue = getCookie("userData");
@@ -60,6 +60,7 @@ const Navbar = () => {
         if (!initialRender) { //prevent double callback
             const userDataString = getCookie("userData");
             if (userDataString) {
+                previousCookieValue = getCookie("userData");
                 setIsLoggedIn(true);
                 const userData = JSON.parse(userDataString);
                 userData.cart.forEach(item => {
