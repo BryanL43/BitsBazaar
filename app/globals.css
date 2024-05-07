@@ -1578,6 +1578,14 @@ header {
 }
 
 /* Your Orders Page */
+.orders-screen {
+    display: block;
+    width: 100%;
+    height: calc(100vh - 60px);;
+    background-color: var(--background);
+    margin: 0 auto;
+}
+
 .your-order-container {
     /* background-color: grey; */
     width: 48.25%;
