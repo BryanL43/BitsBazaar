@@ -24,7 +24,9 @@ export async function GET(req) {
                     firstName: findUser.firstName,
                     lastName: findUser.lastName,
                     user: findUser.email,
-                    addresses: findUser.addresses
+                    addresses: findUser.addresses,
+                    cart: findUser.cart,
+                    orderlog: findUser.orderlog
                 }
 
                 return NextResponse.json(userData);
@@ -420,7 +422,9 @@ export async function POST(req) {
                 firstName: findUser.firstName,
                 lastName: findUser.lastName,
                 user: findUser.email,
-                addresses: findUser.addresses
+                addresses: findUser.addresses,
+                cart: findUser.cart,
+                orderlog: findUser.orderlog
             }
 
             return NextResponse.json(userData);
@@ -464,7 +468,9 @@ export async function POST(req) {
                 firstName: findUser.firstName,
                 lastName: findUser.lastName,
                 user: findUser.email,
-                addresses: findUser.addresses
+                addresses: findUser.addresses,
+                cart: findUser.cart,
+                orderlog: findUser.orderlog
             }
 
             return NextResponse.json(userData);
@@ -565,7 +571,9 @@ export async function POST(req) {
                 firstName: findUser.firstName,
                 lastName: findUser.lastName,
                 user: findUser.email,
-                addresses: findUser.addresses
+                addresses: findUser.addresses,
+                cart: findUser.cart,
+                orderlog: findUser.orderlog
             }
 
             return NextResponse.json(userData);
@@ -650,7 +658,9 @@ export async function POST(req) {
                 firstName: findUser.firstName,
                 lastName: findUser.lastName,
                 user: findUser.email,
-                addresses: findUser.addresses
+                addresses: findUser.addresses,
+                cart: findUser.cart,
+                orderlog: findUser.orderlog
             }
 
             return NextResponse.json(userData);
@@ -713,7 +723,9 @@ export async function POST(req) {
                 firstName: findUser.firstName,
                 lastName: findUser.lastName,
                 user: findUser.email,
-                addresses: findUser.addresses
+                addresses: findUser.addresses,
+                cart: findUser.cart,
+                orderlog: findUser.orderlog
             }
 
             return NextResponse.json(userData);
@@ -767,7 +779,9 @@ export async function POST(req) {
                 firstName: findUser.firstName,
                 lastName: findUser.lastName,
                 user: findUser.email,
-                addresses: findUser.addresses
+                addresses: findUser.addresses,
+                cart: findUser.cart,
+                orderlog: findUser.orderlog
             }
 
             return NextResponse.json(userData);
@@ -795,6 +809,123 @@ export async function POST(req) {
         } catch (error) {
             console.error("Error occurred when adding product:", error);
             return NextResponse.error("Error occurred when adding product", 500);
+        }
+    } else if (type === "addtocart") {
+        try {
+            const data = await req.json();
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            if (!user) {
+                return NextResponse.error("User not found", 404);
+            }
+
+            const prod_To_Add = {
+                productId: data.product,
+                quantity: data.quantity
+            }
+
+            // Add to Cart
+            if (user.cart && user.cart.length > 0) {
+                //If addresses array already exists, update existing addresses
+                const cartData = user.cart.map(products => JSON.parse(products));
+
+                const combinedCartData = [...cartData, prod_To_Add];
+
+                // Update user with the new addresses
+                await prisma.user.update({
+                    where: {
+                        id: data.id
+                    },
+                    data: {
+                        cart: {
+                            set: combinedCartData.map(products => JSON.stringify(products))
+                        }
+                    }
+                });
+            } else { //If no existing array, create a new cart array with the new cart product
+                await prisma.user.update({
+                    where: {
+                        id: data.id
+                    },
+                    data: {
+                        cart: {
+                            push: JSON.stringify(prod_To_Add)
+                        } 
+                    }
+                });
+            }
+
+            //Return new updated data
+            const findUser = await prisma.user.findUnique({
+                where: {
+                    id: data.id
+                }
+            });
+
+            const userData = {
+                id: findUser.id,
+                firstName: findUser.firstName,
+                lastName: findUser.lastName,
+                user: findUser.email,
+                addresses: findUser.addresses,
+                cart: findUser.cart,
+                orderlog: findUser.orderlog
+            }
+
+            return NextResponse.json(userData);
+        } catch (error) {
+            console.error("Error occurred when adding to cart:", error);
+            return NextResponse.error("Error occurred when adding to cart", 500);
+        }
+    } else if (type === "updatecart") {
+        try {
+            const data = await req.json();
+
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: data.user.id
+                }
+            });
+
+            if (!user) {
+                return NextResponse.error("User not found", 404);
+            }
+
+            await prisma.user.update({
+                where: {
+                    id: data.user.id
+                },
+                data: {
+                    cart: data.user.cart
+                }
+            });
+
+            //Return new updated data
+            const findUser = await prisma.user.findUnique({
+                where: {
+                    id: data.user.id
+                }
+            });
+
+            const userData = {
+                id: findUser.id,
+                firstName: findUser.firstName,
+                lastName: findUser.lastName,
+                user: findUser.email,
+                addresses: findUser.addresses,
+                cart: findUser.cart,
+                orderlog: findUser.orderlog
+            }
+
+            return NextResponse.json({});
+        } catch (error) {
+            console.error("Error occurred when updating user's cart:", error);
+            return NextResponse.error("Error occurred when updating user's cart", 500);
         }
     }
 }

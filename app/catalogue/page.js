@@ -24,7 +24,7 @@ const Catalogue = (query) => {
 
         //Create name link to product detail
         const nameLink = document.createElement("a");
-        nameLink.href = "/product";
+        nameLink.href = "/product?id=" + info.id;
         nameLink.textContent = info.name;
         textContent.appendChild(nameLink);
 
@@ -92,7 +92,7 @@ const Catalogue = (query) => {
                 console.log("Acquiring Products Failed");
             }
         } catch (error) {
-            console.log("Error occured when acquiring products:", error)
+            console.log("Error occured when acquiring products:", error);
         }
     }
 

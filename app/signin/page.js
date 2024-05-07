@@ -54,7 +54,13 @@ const Signin = () => {
                 } else {
                     setIsLoginNotFound(false);
                     setCookie("userData", JSON.stringify(responseData), 1); //Expire time of 1 day
-                    window.location.href = '/profile';
+
+                    if (window.sessionStorage.getItem("to-add-to-cart")) {
+                        window.location.href = "/product?id=" + window.sessionStorage.getItem("to-add-to-cart");
+                        window.sessionStorage.removeItem("to-add-to-cart");
+                    } else {
+                        window.location.href = '/catalogue?search=all';
+                    }
                 }
             } else {
                 console.log("Sign in failed");

@@ -93,7 +93,7 @@ const Navbar = () => {
                                 <h5>Your Profile</h5>
                                 <p>Edit your account or see your orders.</p>
                             </Link>
-                            <Link id="dropDown-A" href="/signin" onClick={() => {handleUserDropDown(); setIsLoggedIn(false); deleteCookie("userData");}}>
+                            <Link id="dropDown-A" href="/signin" onClick={() => {handleUserDropDown(); setIsLoggedIn(false); deleteCookie("userData"); window.sessionStorage.removeItem("to-add-to-cart"); window.sessionStorage.removeItem("quantity")}}>
                                 <h5>Sign Out</h5>
                                 <p>Sign out of current account.</p>
                             </Link>

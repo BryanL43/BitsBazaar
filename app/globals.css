@@ -611,112 +611,6 @@ header {
     margin: auto;
 }
 
-/*Cart css*/
-/*change font*/
-
-.cart {
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    margin-bottom: 100px;
-    margin-left: auto;
-    margin-right: auto;
-
-}
-
-.cart p {
-    color: var(--text);
-    font-family: "Inria Sans"
-}
-
-.shoppingCart {
-    width: 35%;
-
-}
-
-.shoppingCart .card {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    width: 100%;
-    background-color: white;
-    padding: 10px;
-    border: 0.15rem solid;
-    border-color: gray;
-}
-
-.shoppingCart img {
-    width: 40%;
-    height: 100%;
-    margin-right: 10%;
-}
-
-.description {
-    width: 45%;
-    font-family: "Inria Sans";
-}
-
-.checkout {
-    margin-top: 80px;
-    width: 30%;
-    height: 100px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 20px;
-    background-color: gray;
-    font-family: "Inria Sans";
-}
-
-
-.shoppingCart button {
-    background-color: #6758f1;
-}
-
-.checkout button {
-    width: 100%;
-    background-color: #6758f1;
-}
-
-.moreItems {
-    display: flex;
-    justify-content: center;
-    border: #111018;
-    border-style: solid;
-    padding: 3%;
-}
-
-@media (max-width: 1016px) {
-    .description {
-        font-size: 80%;
-    }
-
-    .checkout {
-        font-size: 80%;
-    }
-
-}
-
-@media (max-width: 428px) {
-
-    .card {
-        flex-direction: column;
-    }
-    .description {
-        font-size: 60%;
-    }
-
-    .checkout {
-        font-size: 60%;
-        margin-right: 0px;
-        margin-top: 140px;
-    }
-
-}
-
 /*Checkout Page */
 .checkout-page {
     display: flex;
@@ -1073,7 +967,7 @@ header {
     font-weight: 400;
 }
 
-.edit-container h1, .edit-address-container h1, .edit-address-comp-container h1, .your-order-container h1 {
+.edit-container h1, .edit-address-container h1, .edit-address-comp-container h1, .your-order-container h1, .cart-container h1 {
     font-size: 28px;
     font-family: "Inria Sans";
     color: var(--text);
@@ -1247,7 +1141,7 @@ header {
 /* Your Address Page */
 .edit-address-container {
     width: 52.5%;
-    height: 100vh;
+    min-height: calc(100vh - 60px);
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -1261,6 +1155,7 @@ header {
     display: grid;
     grid-template-columns: repeat(auto-fill, 320px);
     grid-gap: 15px;
+    margin-bottom: 30px;
 }
 
 .address-card {
@@ -1482,6 +1377,7 @@ header {
 .filter {
     width: 15%;
     margin-left: 50px;
+    margin-bottom: 30px;
 }
 
 .filter-card {
@@ -1570,12 +1466,16 @@ header {
 .product-page {
     height: 100vh;
     width: 100%;
+}
+
+.product-page-container {
     display: flex;
     justify-content: space-around;
     align-items: center;
     color: var(--text);
-    color: var(--text);
-    font-family: "Inria Sans"
+    font-family: "Inria Sans";
+    width: 100%;
+    height: 100%;
 }
 
 .product-image {
@@ -1594,6 +1494,24 @@ header {
     background-color: var(--accent);
     margin-left: 10px;
     margin-right: 10px;
+}
+
+#back-link {
+    position: absolute;
+    margin-top: 1.5%;
+    margin-left: 10%;
+    font-family: "Inria Sans";
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+#back-link:hover {
+    text-decoration: underline;
+}
+
+#back-link svg {
+    margin-right: 5px;
 }
 
 #a {
@@ -1615,8 +1533,13 @@ header {
     width: 50px;
 }
 
+#imgSwitchBtn {
+    font-size: 20px;
+    font-weight: bold;
+}
+
 .image1 {
-    border: 0.2rem solid;
+    border: 2px solid var(--text);
     margin-left: 5px;
     margin-right: 5px;
 }
@@ -1626,7 +1549,7 @@ header {
 }
 
 .image2 {
-    border: 0.2rem solid;
+    border: 2px solid var(--text);
     margin-left: 5px;
     margin-right: 5px;
 }
@@ -1653,10 +1576,45 @@ header {
     margin-right: 5px;
 }
 
+.qtyInput {
+    height: 31px;
+    width: 75px !important;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 16px;
+    font-family: "Inria Sans";
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 7px;
+    outline: none;
+    background-color: var(--background);
+    border-color: var(--text);
+    color: var(--text);
+    transition: ease-in-out border-color 300ms;
+}
+
+.qtyInput[type=text]:focus {
+    box-shadow: 0 0 5px var(--text);
+    border: 1px solid var(--text);
+    color: var(--text);
+}
+
 .product-detail button {
-    background-color: var(--accent);
+    width: 130px;
+    height: 29px;
+    position: absolute;
+    font-family: "Inria Sans";
+    border: 1px solid #FCD200;
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: #FFD814;
+    color: black;
     margin-left: 10px;
     margin-right: 10px;
+}
+
+.product-detail button:hover {
+    background-color: #f0c14b;
 }
 
 /* Your Orders Page */
@@ -1773,6 +1731,7 @@ header {
 .order-card-main-right {
     height: 100%;
     width: 24%;
+    margin-right: 10px;
 }
 
 .order-card-main-middle {
@@ -1854,4 +1813,201 @@ header {
 
 .footer-page .socials p {
     margin: 3px;
+}
+
+/* Cart page */
+.cart-screen {
+    display: block;
+    width: 80%;
+    min-height: calc(100vh - 60px);
+    background-color: var(--background);
+    margin: 0 auto;
+}
+
+.cart-container {
+    width: 80%;
+    height: auto;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 1.5%;
+}
+
+.past-order-drop-down {
+    height: 30px;
+    width: auto;
+    border-radius: 5px;
+    color: var(--text);
+    border: 1px solid var(--text);
+    background-color: var(--background);
+    box-shadow: 0 0 3px var(--text);
+}
+
+.your-order-filter label {
+    font-size: 16px;
+    font-family: "Inria Sans";
+    color: var(--text);
+    margin-right: 8px;
+}
+
+.past-order-drop-down option {
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: "Inria Sans";
+    color: var(--text);
+}
+
+.cart-flex {
+    display: flex;
+    width: 100%;
+}
+
+.cart-cards {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    border: 1px solid var(--text);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    margin-bottom: 15px;
+    margin-right: 20px;
+}
+
+.cart-card-main {
+    width: 100%;
+    height: 140px;
+    display: flex;
+}
+
+.cart-card-main:not(:last-child) {
+    border-bottom: 1px solid var(--text);
+}
+
+.cart-card-main-left {
+    display: flex;
+    height: 100%;
+    width: 100px;
+    margin-left: 20px;
+}
+
+.cart-card-main-left img {
+    display: block;
+    margin: auto;
+}
+
+.cart-card-main-middle {
+    height: 100%;
+    width: 61%;
+    padding-left: 10px;
+}
+
+.cart-card-main-right {
+    height: 100%;
+    width: 24%;
+    margin-right: 10px;
+}
+
+.cart-card-main-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cart-card-main-middle a {
+    text-decoration: none;
+    font-size: 16px;
+    font-family: "Inria Sans";
+}
+
+.cart-card-main-middle a:hover {
+    text-decoration: underline;
+}
+
+.cart-card-main-middle button {
+    width: 120px;
+    height: 29px;
+    font-family: "Inria Sans";
+    border: 1px solid #FCD200;
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: #FFD814;
+}
+
+.cart-card-main-middle button:hover {
+    background-color: #f0c14b;
+}
+
+.cart-card-main-middle button svg {
+    margin-right: 10px;
+}
+
+.cart-card-main-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cart-card-main-right button {
+    width: 100%;
+    height: 29px;
+    margin-bottom: 5px;
+    font-family: "Inria Sans";
+    border: 1px solid var(--text);
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: var(--background);
+    color: var(--text);
+}
+
+.cart-card-main-right button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.cartQty {
+    margin-top: 5px;
+}
+
+.cartQty p {
+    display: inline;
+    margin-left: 20px;
+    color: var(--text);
+    font-family: "Inria Sans";
+}
+
+.cartQty label {
+    color: var(--text);
+    font-family: "Inria Sans";
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+.checkout-info {
+    width: 30%;
+    height: 140px;
+    border: 1px solid var(--text);
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+}
+
+.checkout-info p {
+    font-size: 20px;
+    font-family: "Inria Sans";
+    color: var(--text);
+}
+
+.checkout-info button {
+    width: 100%;
+    height: 29px;
+    font-family: "Inria Sans";
+    border: 1px solid #FCD200;
+    border-radius: 5px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    background-color: #FFD814;
+    display: block;
+    margin: auto;
+}
+
+.checkout-info button:hover {
+    background-color: #f0c14b;
 }
