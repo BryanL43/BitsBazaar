@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash, faCircleExclamation, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/navigation'
@@ -10,12 +10,14 @@ import { signIn } from '../utils/auth';
 import { setCookie, getCookie } from '../utils/cookies';
 
 const SignInMenu = () => {
-    const router = useRouter()
+    const router = useRouter();
 
-    //Already logged in so redirect
-    if (getCookie("userData")) {
-        router.push("/catalogue?search=all");
-    }
+    useEffect(() => {
+        //Check if user is already logged in
+        if (getCookie('userData')) {
+            router.push('/catalogue?search=all');
+        }
+    }, []);
 
     const [isLoginNotFound, setIsLoginNotFound] = useState(false);
     const [pwdVis, setPwdVis] = useState(false);
