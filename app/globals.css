@@ -1420,6 +1420,7 @@ header {
 .items-card button {
     width: 95%;
     background-color: var(--accent);
+    margin-top: auto;
 }
 
 /* Product page */

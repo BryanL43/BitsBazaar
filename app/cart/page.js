@@ -3,216 +3,193 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation';
+
+import { getCookie, setCookie } from '../utils/cookies';
+import CartCard from '../components/CartCard';
 
 const Cart = () => {
-    useEffect(() => { //Prevent cart from opening when not signed in
-        const userDataString = getCookie("userData");
-        if (userDataString) {
-            const userData = JSON.parse(userDataString);
+    const router = useRouter();
 
-            if (!userData.firstName) { //Edge case handler
-                window.location.href = '/signin';
-            }
-        } else {
-            window.location.href = '/signin';
+    const [cartData, setCartData] = useState([]);
+
+    useEffect(() => { //Prevent cart from opening when not signed in
+        const userDataString = JSON.parse(getCookie("userData"))
+        if (!userDataString) {
+            router.push("/signin");
         }
     }, []);
 
     const [subtotal, setSubtotal] = useState(0.0);
     const [itemCount, setItemCount] = useState(0);
 
-    function getCookie(name) {
-        var nameEQ = name + "=";
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i];
-            while (cookie.charAt(0) === ' ') {
-                cookie = cookie.substring(1, cookie.length);
-            }
-            if (cookie.indexOf(nameEQ) === 0) {
-                return cookie.substring(nameEQ.length, cookie.length);
-            }
-        }
-        return null;
-    }
+    // const updateCart = async () => {
+    //     try {
+    //         const url = "/api?type=updatecart";
 
-    function setCookie(name, value, days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
-        }
-        document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    }
+    //         const response = await fetch(url, {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify({
+    //                 user: JSON.parse(getCookie("userData")),
+    //             })
+    //         })
 
-    const updateCart = async() => {
-        try {
-            const url = "/api?type=updatecart";
+    //         if (response.ok) {
+    //             const responseData = await response.json();
+    //             return true;
+    //         } else {
+    //             console.log("Add To Cart Failed");
+    //         }
+    //     } catch (error) {
+    //         console.log("Error occured when updating user's cart:", error);
+    //     }
+    //     return false;
+    // }
 
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    user: JSON.parse(getCookie("userData")),
-                })
-            })
+    // function createCartCard(info, quantity) {
+    //     //Create a new product card element
+    //     const cartCard = document.createElement("div");
+    //     cartCard.classList.add("cart-card-main");
 
-            if (response.ok) {
-                const responseData = await response.json();
-                return true;    
-            } else {
-                console.log("Add To Cart Failed");
-            }
-        } catch(error) {
-            console.log("Error occured when updating user's cart:", error);
-        }
-        return false;
-    }
+    //     //Create LHS of card
+    //     const cardLHS = document.createElement("div");
+    //     cardLHS.classList.add("cart-card-main-left");
 
-    function createCartCard(info, quantity) {
-        //Create a new product card element
-        const cartCard = document.createElement("div");
-        cartCard.classList.add("cart-card-main");
+    //     //Create Image
+    //     const cartImg = document.createElement("img");
+    //     cartImg.src = info.images[0];
+    //     cartImg.sizes = "100vw";
+    //     cartImg.width = "0";
+    //     cartImg.height = "0";
+    //     cartImg.style = "width: 90px; height: 90px;"
+    //     cartImg.alt = info.name;
+    //     cardLHS.appendChild(cartImg);
 
-        //Create LHS of card
-        const cardLHS = document.createElement("div");
-        cardLHS.classList.add("cart-card-main-left");
+    //     cartCard.appendChild(cardLHS);
 
-        //Create Image
-        const cartImg = document.createElement("img");
-        cartImg.src = info.images[0];
-        cartImg.sizes = "100vw";
-        cartImg.width = "0";
-        cartImg.height = "0";
-        cartImg.style = "width: 90px; height: 90px;"
-        cartImg.alt = info.name;
-        cardLHS.appendChild(cartImg);
+    //     //Create Middle of card
+    //     const cardMiddle = document.createElement("div");
+    //     cardMiddle.classList.add("cart-card-main-middle");
 
-        cartCard.appendChild(cardLHS);
+    //     //Create link
+    //     const nameLink = document.createElement("a");
+    //     nameLink.href = "/product?id=" + info.id;
+    //     nameLink.textContent = info.name;
+    //     cardMiddle.appendChild(nameLink);
 
-        //Create Middle of card
-        const cardMiddle = document.createElement("div");
-        cardMiddle.classList.add("cart-card-main-middle");
-        
-        //Create link
-        const nameLink = document.createElement("a");
-        nameLink.href = "/product?id=" + info.id;
-        nameLink.textContent = info.name;
-        cardMiddle.appendChild(nameLink);
+    //     //Create cartQty
+    //     const cartQrtDiv = document.createElement("div");
+    //     cartQrtDiv.classList.add("cartQty");
 
-        //Create cartQty
-        const cartQrtDiv = document.createElement("div");
-        cartQrtDiv.classList.add("cartQty");
+    //     //Create Label
+    //     const qtyLabel = document.createElement("label");
+    //     qtyLabel.textContent = "Quantity: ";
+    //     cartQrtDiv.appendChild(qtyLabel);
 
-        //Create Label
-        const qtyLabel = document.createElement("label");
-        qtyLabel.textContent = "Quantity: ";
-        cartQrtDiv.appendChild(qtyLabel);
+    //     cardMiddle.appendChild(cartQrtDiv);
 
-        cardMiddle.appendChild(cartQrtDiv);
+    //     //Create Input
+    //     const qtyInputEl = document.createElement("input");
+    //     qtyInputEl.classList.add("qtyInput");
+    //     qtyInputEl.type = "number";
+    //     qtyInputEl.min = 1;
+    //     qtyInputEl.value = quantity;
+    //     qtyInputEl.required = true;
 
-        //Create Input
-        const qtyInputEl = document.createElement("input");
-        qtyInputEl.classList.add("qtyInput");
-        qtyInputEl.type = "number";
-        qtyInputEl.min = 1;
-        qtyInputEl.value = quantity;
-        qtyInputEl.required = true;
+    //     qtyInputEl.addEventListener('change', (event) => {
+    //         qtyInputEl.disabled = true;
+    //         const newQuantity = parseInt(event.target.value);
+    //         const userData = JSON.parse(getCookie("userData"));
+    //         const cartData = userData.cart.map(JSON.parse);
+    //         const productId = info.id;
 
-        qtyInputEl.addEventListener('change', (event) => {
-            qtyInputEl.disabled = true;
-            const newQuantity = parseInt(event.target.value);
-            const userData = JSON.parse(getCookie("userData"));
-            const cartData = userData.cart.map(JSON.parse);
-            const productId = info.id;
-        
-            //Find the product in the cart
-            const productIndex = cartData.findIndex(product => product.productId === productId);
-            if (productIndex !== -1) {
-                //Get the previous quantity
-                const previousQuantity = parseInt(cartData[productIndex].quantity);
-                
-                //Update the quantity of the product
-                cartData[productIndex].quantity = newQuantity;
-                
-                //Recalculate subtotal
-                const quantityChange = newQuantity - previousQuantity;
-                setSubtotal(prevSubtotal => parseFloat((prevSubtotal + (parseFloat(info.price) * quantityChange)).toFixed(2)));
-                
-                //Update the cookie with the new cart data
-                userData.cart = cartData.map(JSON.stringify);
-                setCookie("userData", JSON.stringify(userData), 1);
-                
-                setItemCount(prevItemCount => prevItemCount + quantityChange);
+    //         //Find the product in the cart
+    //         const productIndex = cartData.findIndex(product => product.productId === productId);
+    //         if (productIndex !== -1) {
+    //             //Get the previous quantity
+    //             const previousQuantity = parseInt(cartData[productIndex].quantity);
 
-                if (updateCart()) {
-                    setTimeout(() => {
-                        qtyInputEl.disabled = false;
-                    }, 1000);
-                }
-            }
-        });                
+    //             //Update the quantity of the product
+    //             cartData[productIndex].quantity = newQuantity;
 
-        cartQrtDiv.appendChild(qtyInputEl);
+    //             //Recalculate subtotal
+    //             const quantityChange = newQuantity - previousQuantity;
+    //             setSubtotal(prevSubtotal => parseFloat((prevSubtotal + (parseFloat(info.price) * quantityChange)).toFixed(2)));
 
-        //Create p
-        const priceP = document.createElement("p");
-        const pricePStrong = document.createElement("strong");
-        pricePStrong.textContent = "$" + info.price;
-        priceP.appendChild(pricePStrong);
-        cartQrtDiv.appendChild(priceP);
+    //             //Update the cookie with the new cart data
+    //             userData.cart = cartData.map(JSON.stringify);
+    //             setCookie("userData", JSON.stringify(userData), 1);
 
-        cartCard.appendChild(cardMiddle);
+    //             setItemCount(prevItemCount => prevItemCount + quantityChange);
 
-        //Create RHS of card
-        const RHSDiv = document.createElement("div");
-        RHSDiv.classList.add("cart-card-main-right");
+    //             if (updateCart()) {
+    //                 setTimeout(() => {
+    //                     qtyInputEl.disabled = false;
+    //                 }, 1000);
+    //             }
+    //         }
+    //     });
 
-        //Create button
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "Delete";
+    //     cartQrtDiv.appendChild(qtyInputEl);
 
-        deleteBtn.addEventListener("click", () => {
-            const productId = info.id;
-            const userData = JSON.parse(getCookie("userData"));
-            const cartData = userData.cart.map(JSON.parse);
+    //     //Create p
+    //     const priceP = document.createElement("p");
+    //     const pricePStrong = document.createElement("strong");
+    //     pricePStrong.textContent = "$" + info.price;
+    //     priceP.appendChild(pricePStrong);
+    //     cartQrtDiv.appendChild(priceP);
 
-            //Find the index of the product in the cart
-            const productIndex = cartData.findIndex(product => product.productId === productId);
-            if (productIndex !== -1) {
-                const deletedQuantity = parseInt(cartData[productIndex].quantity);
+    //     cartCard.appendChild(cardMiddle);
 
-                //Remove the product from the cart
-                cartData.splice(productIndex, 1);
+    //     //Create RHS of card
+    //     const RHSDiv = document.createElement("div");
+    //     RHSDiv.classList.add("cart-card-main-right");
 
-                // Update the subtotal
-                setSubtotal(prevSubtotal => parseFloat((prevSubtotal - (parseFloat(info.price) * deletedQuantity)).toFixed(2)));
+    //     //Create button
+    //     const deleteBtn = document.createElement("button");
+    //     deleteBtn.textContent = "Delete";
 
-                //Update the cookie with the new cart data
-                userData.cart = cartData.map(JSON.stringify);
-                setCookie("userData", JSON.stringify(userData), 1);
+    //     deleteBtn.addEventListener("click", () => {
+    //         const productId = info.id;
+    //         const userData = JSON.parse(getCookie("userData"));
+    //         const cartData = userData.cart.map(JSON.parse);
 
-                cartCard.remove();
+    //         //Find the index of the product in the cart
+    //         const productIndex = cartData.findIndex(product => product.productId === productId);
+    //         if (productIndex !== -1) {
+    //             const deletedQuantity = parseInt(cartData[productIndex].quantity);
 
-                setItemCount(prevItemCount => prevItemCount - deletedQuantity);
+    //             //Remove the product from the cart
+    //             cartData.splice(productIndex, 1);
 
-                updateCart();
-            }
-        })
+    //             // Update the subtotal
+    //             setSubtotal(prevSubtotal => parseFloat((prevSubtotal - (parseFloat(info.price) * deletedQuantity)).toFixed(2)));
 
-        RHSDiv.appendChild(deleteBtn);
+    //             //Update the cookie with the new cart data
+    //             userData.cart = cartData.map(JSON.stringify);
+    //             setCookie("userData", JSON.stringify(userData), 1);
 
-        cartCard.appendChild(RHSDiv);
+    //             cartCard.remove();
 
-        return cartCard;
-    }
+    //             setItemCount(prevItemCount => prevItemCount - deletedQuantity);
+
+    //             updateCart();
+    //         }
+    //     })
+
+    //     RHSDiv.appendChild(deleteBtn);
+
+    //     cartCard.appendChild(RHSDiv);
+
+    //     return cartCard;
+    // }
 
     const getProduct = async(prodId, qnt) => {
         try {
-            const url = `/api?type=getproductbyid&productId=${prodId}`;
+            const url = `/api/products/${prodId}`;
 
             const response = await fetch(url, {
                 method: "GET",
@@ -221,13 +198,15 @@ const Cart = () => {
                 }
             })
 
-            if (response.ok) {
-                const responseData = await response.json();
-                document.querySelector(".cart-cards").appendChild(createCartCard(responseData, qnt));
-                setSubtotal(prevSubtotal => prevSubtotal + parseFloat(responseData.price) * qnt);
+            if (!response.ok) {
+                throw new Error("No product acquisition response.");
+            }
+
+            const responseData = await response.json();
+            if (responseData.success === true && responseData.product) {
+                setCartData(prevCartData => [...prevCartData, responseData.product]);
+                setSubtotal(prevSubtotal => prevSubtotal + parseFloat(responseData.product.price) * qnt);
                 setItemCount(prevItemCount => prevItemCount + parseInt(qnt));
-            } else {
-                console.log("Acquiring Product Failed");
             }
         } catch (error) {
             console.log("Error occured when acquiring product:", error);
@@ -237,9 +216,13 @@ const Cart = () => {
     const [initialRender, setInitialRender] = useState(true);
     useEffect(() => {
         if (!initialRender) { //prevent double callback
-            JSON.parse(getCookie("userData")).cart.forEach(product => {
-                getProduct(JSON.parse(product).productId, JSON.parse(product).quantity);
-            })
+            const userData = JSON.parse(getCookie("userData"));
+            if (userData && userData.cart) {
+                userData.cart.forEach(product => {
+                    const parsedProduct = JSON.parse(product);
+                    getProduct(parsedProduct.productId, parsedProduct.quantity);
+                });
+            }
         } else {
             setInitialRender(false);
         }
@@ -261,21 +244,16 @@ const Cart = () => {
                     <div className="cart-flex">
                         <div className="cart-cards" style={{ opacity: itemCount === 0 ? 0 : 1 }}>
 
-                            {/* <div className="cart-card-main">
-                                <div className="cart-card-main-left">
-                                    <Image src="/profileheadsetimg.png" sizes="100vw" width={0} height={0} style={{width: "90px", height: "90px"}}></Image>
-                                </div>
-                                <div className="cart-card-main-middle">
-                                    <Link href="/signin">JanSport Right Pack Backpack - Travel, Work, or Laptop Bookbag with Leather Bottom, Black</Link>
-                                    <div className="cartQty">
-                                        <label>Quantity: </label>
-                                        <input className="qtyInput" type='number' min={1} required></input><p><strong>$27.99</strong></p>
-                                    </div>
-                                </div>
-                                <div className="cart-card-main-right">
-                                    <button>Delete</button>
-                                </div>
-                            </div> */}
+                            {cartData.map(product => (
+                                <CartCard
+                                    key={product.productId}
+                                    id={product.id}
+                                    name={product.name}
+                                    price={product.price}
+                                    qty={0}
+                                    images={product.images}
+                                />
+                            ))}
 
                         </div>
                         <div className="checkout-info">

@@ -2,10 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShop } from '@fortawesome/free-solid-svg-icons';
 
-const Product = () => {
+import { getCookie, setCookie } from '@/app/utils/cookies';
+
+const Product = ({params}) => {
+    const router = useRouter();
+    const productId = params.id;
+
     const [qty, setQty] = useState(0);
     const [imgIndex, setImgIndex] = useState(0);
     const [productObj, setProductObj] = useState({
@@ -17,36 +23,9 @@ const Product = () => {
         images: [],
     });
 
-    function getCookie(name) {
-        var nameEQ = name + "=";
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i];
-            while (cookie.charAt(0) === ' ') {
-                cookie = cookie.substring(1, cookie.length);
-            }
-            if (cookie.indexOf(nameEQ) === 0) {
-                return cookie.substring(nameEQ.length, cookie.length);
-            }
-        }
-        return null;
-    }
-
-    function setCookie(name, value, days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
-        }
-        document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    }
-
     const getProduct = async() => {
         try {
-            const productId = window.location.href.split("?id=")[1].toString();
-            const url = `/api?type=getproductbyid&productId=${productId}`;
-
+            const url = `/api/products/${productId}`;
             const response = await fetch(url, {
                 method: "GET",
                 headers: {
@@ -54,16 +33,19 @@ const Product = () => {
                 }
             })
 
-            if (response.ok) {
-                const responseData = await response.json();
-                setProductObj(responseData);
+            if (!response.ok) {
+                throw new Error("No product acquisition response.");
+            }
+
+            const responseData = await response.json();
+            if (responseData.success === true && responseData.product) {
+                setProductObj(responseData.product);
             } else {
-                console.log("Acquiring Product Failed");
-                window.location.href = "/catalogue?search=all"
+                router.push("/catalogue?search=all");
             }
         } catch (error) {
             console.log("Error occured when acquiring product:", error);
-            window.location.href = "/catalogue?search=all";
+            router.push("/catalogue?search=all");
         }
     }
 
@@ -71,46 +53,45 @@ const Product = () => {
         event.preventDefault();
         if (!getCookie("userData")) { //If user is not signed in for adding to cart
             window.sessionStorage.setItem("to-add-to-cart", window.location.search.split("?id=")[1]);
-            window.location.href = "/signin";
+            router.push("/signin");
             return;
         }
 
         try {
-            const url = "/api?type=addtocart";
+            const url = "/api/users/cart";
 
             const response = await fetch(url, {
-                method: "POST",
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     id: JSON.parse(getCookie("userData")).id,
-                    product: window.location.search.split("?id=")[1],
+                    product: productId,
                     quantity: qty
                 })
             })
 
-            if (response.ok) {
-                const responseData = await response.json();
-                setCookie("userData", JSON.stringify(responseData), 1);
-                window.location.href = "/cart";         
+            if (!response.ok) {
+                throw new Error("Adding to cart failed.");
+            }
+
+            const responseData = await response.json();
+            if (responseData.success === true && responseData.user) {
+                setCookie("userData", JSON.stringify(responseData.user), 1);
+                router.push("/cart");
             } else {
-                console.log("Add To Cart Failed");
+                router.push("/catalogue?search=all");
             }
         } catch (error) {
             console.log("Error occured when adding to cart:", error)
         }
     }
 
-    const [initialRender, setInitialRender] = useState(true);
+    //Mount product info on page render
     useEffect(() => {
-        if (!initialRender) { //prevent double callback
-            getProduct();
-        } else {
-            setInitialRender(false);
-        }
-    }, [initialRender]);
-
+        getProduct();
+    }, []);
 
     return (
         <main>

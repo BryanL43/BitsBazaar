@@ -2,11 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useTheme } from './ThemeProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faCircleHalfStroke, faCartShopping, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { useRouter } from 'next/navigation'
+
+import { useTheme } from './ThemeProvider';
+import { getCookie, deleteCookie } from '../utils/cookies';
 
 const Navbar = () => {
+    const router = useRouter()
     const { toggleTheme } = useTheme();
 
     const [itemCount, setItemCount] = useState(0);
@@ -17,65 +21,45 @@ const Navbar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [searchVal, setSearchVal] = useState("");
 
-    //Cookie Handler:
-    function getCookie(name) {
-        var nameEQ = name + "=";
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i];
-            while (cookie.charAt(0) === ' ') {
-                cookie = cookie.substring(1, cookie.length);
-            }
-            if (cookie.indexOf(nameEQ) === 0) {
-                return cookie.substring(nameEQ.length, cookie.length);
-            }
-        }
-        return null;
-    }
 
-    function deleteCookie(name) {
-        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    }
-
+    //Independent cookie handler so not seperated. Operates under cart dropdown to not have repeated looped updates.
     let previousCookieValue;
 
     function checkCookieChange() {
-        const currentCookieValue = getCookie("userData");
-        if (currentCookieValue !== previousCookieValue) {
-            const userDataString = getCookie("userData");
-            if (userDataString) {
-                const userData = JSON.parse(userDataString);
-                setItemCount(prevItemCount => prevItemCount * 0);
-                userData.cart.forEach(item => {
-                    setItemCount(prevItemCount => prevItemCount + parseInt(JSON.parse(item).quantity));
-                });
-            }
-            previousCookieValue = currentCookieValue;
+        const userDataString = getCookie("userData");
+        if (userDataString && userDataString !== previousCookieValue) {
+            //Render user drop down
+            setIsLoggedIn(true);
+
+            //Render cart drop down
+            const userData = JSON.parse(userDataString);
+            setItemCount(prevItemCount => prevItemCount * 0);
+            userData.cart.forEach(item => {
+                setItemCount(prevItemCount => prevItemCount + parseInt(JSON.parse(item).quantity));
+            });
+            previousCookieValue = userDataString;
         }
     }
 
     //Initial DOM Loaded data acquisition
-    const [initialRender, setInitialRender] = useState(true);
     useEffect(() => {
-        if (!initialRender) { //prevent double callback
-            const userDataString = getCookie("userData");
-            if (userDataString) {
-                previousCookieValue = getCookie("userData");
-                setIsLoggedIn(true);
-                const userData = JSON.parse(userDataString);
-                userData.cart.forEach(item => {
-                    setItemCount(prevItemCount => prevItemCount + parseInt(JSON.parse(item).quantity));
-                });
-            } else {
-                setIsLoggedIn(false);
-            }
+        const userDataString = getCookie("userData");
+        if (userDataString) {
+            previousCookieValue = getCookie("userData");
+            setIsLoggedIn(true);
+            const userData = JSON.parse(userDataString);
+            userData.cart.forEach(item => {
+                setItemCount(prevItemCount => prevItemCount + parseInt(JSON.parse(item).quantity));
+            });
         } else {
-            setInitialRender(false);
+            setIsLoggedIn(false);
         }
-    }, [initialRender]);
+    }, []);
 
+    //Drop down handlers
     const handleUserDropDown = () => {
         setIsCartDropOpen("none");
+        checkCookieChange();
         setIsUserDropOpen(`${isUserDropOpen === "none" ? "block" : "none"}`);
     }
 
@@ -87,15 +71,15 @@ const Navbar = () => {
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
-            window.location.href = "/catalogue?search=" + searchVal;
+            router.push("/catalogue?search=" + searchVal)
         }
     };
-    
+
     return (
         <nav className="navBar">
             <Link href="/"><img src='/logo.png' style={{ height: '34px' }} alt="BitBazaar Logo" /></Link>
             <input className="searchBar" type="text" placeholder="Search" autoComplete="off" value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyDown={handleKeyDown} />
-            <Link id="searchIcon" href="/catalogue" onClick={() => {window.location.href = "/catalogue?search=" + searchVal}}><FontAwesomeIcon icon={faMagnifyingGlass} /></Link>
+            <Link id="searchIcon" href="/catalogue" onClick={() => {router.push("/catalogue?search=" + searchVal)}}><FontAwesomeIcon icon={faMagnifyingGlass} /></Link>
             <button id="themeToggleBtn" onClick={toggleTheme}>
                 <FontAwesomeIcon icon={faCircleHalfStroke} />
             </button>
@@ -119,7 +103,7 @@ const Navbar = () => {
                     )}
                     {isLoggedIn && (
                         <React.Fragment>
-                            <Link id="dropDown-A" href="/profile" onClick={() => {window.location.href = '/profile';}}>
+                            <Link id="dropDown-A" href="/profile">
                                 <h5>Your Profile</h5>
                                 <p>Edit your account or see your orders.</p>
                             </Link>

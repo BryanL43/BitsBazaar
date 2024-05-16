@@ -4,13 +4,14 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { useRouter } from 'next/navigation'
+
+import { register } from '../utils/auth';
 
 const Register = () => {
-    //Password visibility toggle handler
+    const router = useRouter()
+
     const [pwdVis, setPwdVis] = useState(false);
-    const togglePwdVis = () => {
-        setPwdVis(prevVisible => !prevVisible);
-    };
 
     //Password strength handler
     const [password, setPassword] = useState('');
@@ -53,18 +54,6 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [registerNoteText, setRegisterNoteText] = useState("Passwords must be at least 8 characters in length and contain 1 upper case letter, 1 lower case letter, 1 number, and 1 special character.");
 
-    const handleFirstNameChange = (event) => {
-        setFirstName(event.target.value);
-    };
-
-    const handleLastNameChange = (event) => {
-        setLastName(event.target.value);
-    };
-
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
-    };
-
     const validateRegistrationForm = () => {
         if (!firstName || !lastName || !email || !password) {
             setRegisterNoteText("Please fill in all fields.");
@@ -94,30 +83,16 @@ const Register = () => {
         event.preventDefault(); // Prevent default form submission
         if (validateRegistrationForm()) {
             try {
-                const url = "/api?type=register";
-
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        password: password
-                    })
-                })
-
-                if (response.ok) {
-                    console.log("Registeration Successful!");
-                } else {
-                    console.log("Registeration failed");
+                const responseData = await register(firstName, lastName, email, password);
+                if (responseData.success === true) {
+                    router.push("/signin");
+                }
+                if (responseData.error) {
+                    setRegisterNoteText(responseData.error);
                 }
             } catch (error) {
-                console.log("Error occured during registeration:", error)
+                console.log("Error occurred during registeration:", error);
             }
-            document.querySelector(".signin-form").submit();
         }
     };
 
@@ -128,14 +103,14 @@ const Register = () => {
                     <h1>Create Your Account</h1>
                     <p id="alrHaveAccP">Already have an account? <Link href="/signin">Sign In</Link></p>
                     <div className="nameBars-container">
-                        <input id="firstNameBar" type="text" placeholder="First Name" autoComplete="off" value={firstName} onChange={handleFirstNameChange} required />
-                        <input id="lastNameBar" type="text" placeholder="Last Name" autoComplete="off" value={lastName} onChange={handleLastNameChange} required />
+                        <input id="firstNameBar" type="text" placeholder="First Name" autoComplete="off" value={firstName} onChange={(e) => {setFirstName(e.target.value)}} required />
+                        <input id="lastNameBar" type="text" placeholder="Last Name" autoComplete="off" value={lastName} onChange={(e) => {setLastName(e.target.value)}} required />
                     </div>
-                    <form className="signin-form" action="/signin" method="POST" onSubmit={registerFormSubmission}>
-                        <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={handleEmailChange} required />
+                    <form className="signin-form" action="/register" method="POST" onSubmit={registerFormSubmission}>
+                        <input id="emailBar" type="email" placeholder="Email Address" autoComplete="off" value={email} onChange={(e) => {setEmail(e.target.value)}} required />
                         <div className="password-container">
                             <input id="passwordBar" type={pwdVis ? "text" : "password"} placeholder="Password" value={password} onChange={handlePasswordChange} required />
-                            <button id="passwordVis" type="button" onClick={togglePwdVis}>
+                            <button id="passwordVis" type="button" onClick={() => {setPwdVis(prevVisible => !prevVisible)}}>
                                 <FontAwesomeIcon icon={pwdVis ? faEyeSlash : faEye} />
                             </button>
                         </div>

@@ -9,7 +9,7 @@ const inter = Inria_Sans({ subsets: ["latin"], weight: ["300", "400", "700"] });
 
 export const metadata = {
   title: "BitsBazaar",
-  description: "E-commerce site for PC parts.",
+  description: "E-commerce site for PC, Laptops, Parts, and Accessories.",
 };
 
 export default function RootLayout({ children }) {
