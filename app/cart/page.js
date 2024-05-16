@@ -204,7 +204,8 @@ const Cart = () => {
 
             const responseData = await response.json();
             if (responseData.success === true && responseData.product) {
-                setCartData(prevCartData => [...prevCartData, responseData.product]);
+                const productWithQuantity = { ...responseData.product, quantity: qnt };
+                setCartData(prevCartData => [...prevCartData, productWithQuantity]);
                 setSubtotal(prevSubtotal => prevSubtotal + parseFloat(responseData.product.price) * qnt);
                 setItemCount(prevItemCount => prevItemCount + parseInt(qnt));
             }
@@ -250,7 +251,7 @@ const Cart = () => {
                                     id={product.id}
                                     name={product.name}
                                     price={product.price}
-                                    qty={0}
+                                    qty={product.quantity}
                                     images={product.images}
                                 />
                             ))}
