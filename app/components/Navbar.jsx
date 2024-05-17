@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useReducer } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faCircleHalfStroke, faCartShopping, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
@@ -13,8 +13,8 @@ import { getCookie, deleteCookie } from '../utils/cookies';
 const Navbar = () => {
     const router = useRouter()
     const { toggleTheme } = useTheme();
-
-    const [itemCount, setItemCount] = useState(0);
+    const [itemCount, setItemCount] = useState(0)
+    const [ignored, forceUpdate] = useReducer(x => x + 1, 0); //Force re-render due to some state undesired behavior
 
     //Handle Drop Down Buttons
     const [isUserDropOpen, setIsUserDropOpen] = useState("none");
@@ -31,6 +31,7 @@ const Navbar = () => {
         if (userDataString && userDataString !== previousCookieValue.current) {
             //Render user drop down
             setIsLoggedIn(true);
+            forceUpdate();
 
             //Render cart drop down
             const userData = JSON.parse(userDataString);
