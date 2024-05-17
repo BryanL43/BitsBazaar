@@ -68,7 +68,18 @@ const Cart = () => {
 
     const handleRemoveFromCart = (productId, deletedQuantity) => {
         forceUpdate();
-        const updated = cartData.filter(item => item.id !== productId && item.quantity !== deletedQuantity);
+
+        let found = false;
+        let updated = [];
+
+        cartData.forEach(item => {
+            if (!found && item.id === productId && parseInt(item.quantity) === deletedQuantity) { //Deleted a cart item where there are multiple same item and quantity check
+                found = true; 
+            } else {
+                updated.push(item);
+            }
+        });
+
         setCartData(updated);
     }
 
@@ -90,7 +101,7 @@ const Cart = () => {
 
                             {cartData.map(product => (
                                 <CartCard
-                                    key={product.productId}
+                                    key={Math.floor(Math.random() * Number.MAX_SAFE_INTEGER) + 1} //To resolve silent error, but serves no purpose to functionality.
                                     id={product.id}
                                     name={product.name}
                                     price={product.price}
