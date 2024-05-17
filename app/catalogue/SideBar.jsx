@@ -32,32 +32,30 @@ const SideBar = ({ searchParams }) => {
 
     //Initial load for states
     useEffect(() => {
-        const newFilt = { ...filt };
-        Object.keys(newFilt).forEach(key => {
-            newFilt[key] = searchParams.filter === key;
+        setFilt(prevFilt => {
+            const newFilt = { ...prevFilt };
+            Object.keys(newFilt).forEach(key => {
+                newFilt[key] = searchParams.filter === key;
+            });
+            return newFilt;
         });
-        setFilt(newFilt);
-        
-        let priceRevert;
-        if (searchParams.price === "0-99") {
-            priceRevert = "Less than $100";
-        } else if (searchParams.price == "100-200") {
-            priceRevert = "$100 - $200";
-        } else if (searchParams.price == "201-300") {
-            priceRevert = "$201 - $300";
-        } else if (searchParams.price == "301-400") {
-            priceRevert = "$301 - $400";
-        } else if (searchParams.price == "401-500") {
-            priceRevert = "$401 - $500";
-        } else if (searchParams.price == "500-99999") {
-            priceRevert = "More than $500";
-        }
-
-        const newPrice = { ...price };
-        Object.keys(newPrice).forEach(key => {
-            newPrice[key] = priceRevert === key;
+    
+        const priceMap = {
+            "0-99": "Less than $100",
+            "100-200": "$100 - $200",
+            "201-300": "$201 - $300",
+            "301-400": "$301 - $400",
+            "401-500": "$401 - $500",
+            "500-99999": "More than $500"
+        };
+    
+        setPrice(prevPrice => {
+            const newPrice = { ...prevPrice };
+            Object.keys(newPrice).forEach(key => {
+                newPrice[key] = priceMap[searchParams.price] === key;
+            });
+            return newPrice;
         });
-        setPrice(newPrice);
     }, [searchParams]);
 
     const filterApplied = (sub, checked) => {
@@ -72,30 +70,16 @@ const SideBar = ({ searchParams }) => {
             price: searchParams.price ? searchParams.price : ""
         };
 
-        let minPrice;
-        let maxPrice;
-        if (searchParams.price === "Less than $100") {
-            minPrice = 0;
-            maxPrice = 99;
-        } else if (searchParams.price == "$100 - $200") {
-            minPrice = 100;
-            maxPrice = 200;
-        } else if (searchParams.price == "$201 - $300") {
-            minPrice = 201;
-            maxPrice = 300;
-        } else if (searchParams.price == "$301 - $400") {
-            minPrice = 301;
-            maxPrice = 400;
-        } else if (searchParams.price == "$401 - $500") {
-            minPrice = 401;
-            maxPrice = 500;
-        } else if (searchParams.price == "More than $500") {
-            minPrice = 500;
-            maxPrice = 99999;
-        } else {
-            minPrice = 0;
-            maxPrice = 99999;
-        }
+        const priceMap = {
+            "Less than $100": [0, 99],
+            "$100 - $200": [100, 200],
+            "$201 - $300": [201, 300],
+            "$301 - $400": [301, 400],
+            "$401 - $500": [401, 500],
+            "More than $500": [500, 99999]
+        };
+        
+        const [minPrice, maxPrice] = priceMap[searchParams.price] || [0, 99999];
 
         let newURL = "/catalogue?search=" + searchParams.search;
 

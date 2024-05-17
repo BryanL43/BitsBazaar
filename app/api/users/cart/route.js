@@ -61,3 +61,33 @@ export async function PUT(req) {
         return NextResponse.error("Error occurred when adding to cart", 500);
     }
 }
+
+//Update cart API Handler
+export async function PATCH(req) {
+    try {
+        const body = await req.json();
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id: body.user.id
+            }
+        });
+
+        if (!user) {
+            return NextResponse.json({ success: false, error: "User is not found." });
+        }
+
+        await prisma.user.update({
+            where: {
+                id: body.user.id
+            },
+            data: {
+                cart: body.user.cart
+            }
+        });
+        return NextResponse.json({});
+    } catch (error) {
+        console.error("Error occurred when updating user's cart:", error);
+        return NextResponse.error("Error occurred when updating user's cart", 500);
+    }
+}

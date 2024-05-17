@@ -1,7 +1,8 @@
 "use client"
 import { useRouter } from 'next/navigation'
+import Image from 'next/image';
 
-export default async function Home() {
+export default function Home() {
   const router = useRouter()
 
   return (
@@ -13,7 +14,8 @@ export default async function Home() {
           <button onClick={() => router.push("/catalogue?search=all")}>Shop Now</button>
         </div>
 
-        <img id="slideImg" src='laptop1.jpeg'></img>
+        {/* <img id="slideImg" src='laptop1.jpeg'></img> */}
+        <Image id="slideImg" width={300} height={300} src="/laptop1.jpeg" alt="Landing page laptop image"></Image>
       </div>
     </main>
   );

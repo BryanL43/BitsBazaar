@@ -14,7 +14,7 @@ const Product = ({id, name, price, detail, images}) => {
 
     return (
         <div key={id} className='items-card'>
-            <Image src={images[0]} sizes="100vw" width={0} height={0} style={{ maxWidth: "95%", maxHeight: "224px" }} alt={name}></Image>
+            <Image src={images[0]} sizes="100vw" width={0} height={0} style={{ maxWidth: "95%", maxHeight: "224px" }} alt={name} onClick={() => redirect(`/product/${id}`)}></Image>
             <div className="items-card-text-content">
                 <Link href="/catalogue">{name}</Link>
                 

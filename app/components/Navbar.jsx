@@ -1,10 +1,11 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faCircleHalfStroke, faCartShopping, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image';
 
 import { useTheme } from './ThemeProvider';
 import { getCookie, deleteCookie } from '../utils/cookies';
@@ -23,29 +24,30 @@ const Navbar = () => {
 
 
     //Independent cookie handler so not seperated. Operates under cart dropdown to not have repeated looped updates.
-    let previousCookieValue;
+    const previousCookieValue = useRef(null);
 
     function checkCookieChange() {
         const userDataString = getCookie("userData");
-        if (userDataString && userDataString !== previousCookieValue) {
+        if (userDataString && userDataString !== previousCookieValue.current) {
             //Render user drop down
             setIsLoggedIn(true);
 
             //Render cart drop down
             const userData = JSON.parse(userDataString);
-            setItemCount(prevItemCount => prevItemCount * 0);
+            setItemCount(0);
             userData.cart.forEach(item => {
                 setItemCount(prevItemCount => prevItemCount + parseInt(JSON.parse(item).quantity));
             });
-            previousCookieValue = userDataString;
+            previousCookieValue.current = userDataString;
         }
     }
 
     //Initial DOM Loaded data acquisition
     useEffect(() => {
+        setItemCount(0); //Prevent double render logic error
         const userDataString = getCookie("userData");
         if (userDataString) {
-            previousCookieValue = getCookie("userData");
+            previousCookieValue.current = getCookie("userData");
             setIsLoggedIn(true);
             const userData = JSON.parse(userDataString);
             userData.cart.forEach(item => {
@@ -77,7 +79,7 @@ const Navbar = () => {
 
     return (
         <nav className="navBar">
-            <Link href="/"><img src='/logo.png' style={{ height: '34px' }} alt="BitBazaar Logo" /></Link>
+            <Link href="/"><Image src="/logo.png" width={132} height={34} alt="BitBazaar Logo"></Image></Link>
             <input className="searchBar" type="text" placeholder="Search" autoComplete="off" value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyDown={handleKeyDown} />
             <Link id="searchIcon" href="/catalogue" onClick={() => {router.push("/catalogue?search=" + searchVal)}}><FontAwesomeIcon icon={faMagnifyingGlass} /></Link>
             <button id="themeToggleBtn" onClick={toggleTheme}>

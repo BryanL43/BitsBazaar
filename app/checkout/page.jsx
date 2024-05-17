@@ -1,9 +1,14 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
+import { getCookie, setCookie } from '../utils/cookies';
 
 const Checkout = () => {
+    const router = useRouter();
+
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
 
@@ -20,34 +25,9 @@ const Checkout = () => {
         default: false
     });
 
-    function getCookie(name) {
-        var nameEQ = name + "=";
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i];
-            while (cookie.charAt(0) === ' ') {
-                cookie = cookie.substring(1, cookie.length);
-            }
-            if (cookie.indexOf(nameEQ) === 0) {
-                return cookie.substring(nameEQ.length, cookie.length);
-            }
-        }
-        return null;
-    }
-
-    function setCookie(name, value, days) {
-        var expires = "";
-        if (days) {
-            var date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = "; expires=" + date.toUTCString();
-        }
-        document.cookie = name + "=" + (value || "") + expires + "; path=/";
-    }
-
     const getProduct = async(prodId, qnt) => {
         try {
-            const url = `/api?type=getproductbyid&productId=${prodId}`;
+            const url = `/api/products/`+prodId;
 
             const response = await fetch(url, {
                 method: "GET",
@@ -58,7 +38,7 @@ const Checkout = () => {
 
             if (response.ok) {
                 const responseData = await response.json();
-                setSubtotal(prevSubtotal => prevSubtotal + parseFloat(responseData.price) * qnt);
+                setSubtotal(prevSubtotal => prevSubtotal + parseFloat(responseData.product.price) * qnt);
                 setItemCount(prevItemCount => prevItemCount + parseInt(qnt));
             } else {
                 console.log("Acquiring Product Failed");
@@ -84,7 +64,7 @@ const Checkout = () => {
                     getProduct(JSON.parse(product).productId, JSON.parse(product).quantity);
                 })
             } else {
-                window.location.href = "/signin";
+                router.push("/signin");
             }
         } else {
             setInitialRender(false);
@@ -93,10 +73,10 @@ const Checkout = () => {
 
     const checkoutapi = async() => {
         try {
-            const url = "/api?type=checkout";
+            const url = "/api/users/checkout";
 
             const response = await fetch(url, {
-                method: "POST",
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -107,7 +87,7 @@ const Checkout = () => {
 
             if (response.ok) {
                 await response.json();
-                window.location.href = "/orders"
+                router.push("/profile");
             } else {
                 console.log("Check Out Failed");
             }

@@ -1389,6 +1389,7 @@ header {
     width: 95%;
     height: 224px;
     margin: 10px;
+    cursor: pointer;
 }
 
 .items-card-text-content {

@@ -3,8 +3,10 @@
 import React from 'react'
 import Link from 'next/link';
 import { getCookie } from '../utils/cookies';
+import { useRouter } from 'next/navigation';
 
 const InfoEditPg = ({ closePages, pageChange }) => {
+    const router = useRouter();
 
     //React cannot read on DOM level from fragmented files
     const handlePageChange = (page) => {
@@ -52,7 +54,7 @@ const InfoEditPg = ({ closePages, pageChange }) => {
                     <div className="info-card-padding">
                         <h1><strong>Password</strong></h1>
                         <p>**********</p>
-                        <button onClick={() => { window.location.href = '/forgotpassword'; }}>Edit</button>
+                        <button onClick={() => router.push('/forgotpassword')}>Edit</button>
                     </div>
                 </li>
             </ul>
