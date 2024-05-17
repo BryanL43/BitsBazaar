@@ -53,7 +53,7 @@ const Product = ({ params }) => {
     const addToCart = async (event) => {
         event.preventDefault();
         if (!getCookie("userData")) { //If user is not signed in for adding to cart
-            window.sessionStorage.setItem("to-add-to-cart", window.location.search.split("?id=")[1]);
+            window.sessionStorage.setItem("to-add-to-cart", window.location.href.split("/product/")[1]);
             router.push("/signin");
             return;
         }
