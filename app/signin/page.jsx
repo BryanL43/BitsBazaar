@@ -35,7 +35,7 @@ const SignInMenu = () => {
                 setCookie("userData", JSON.stringify(responseData.user), 1); //Expire time of 1 day
 
                 if (window.sessionStorage.getItem("to-add-to-cart")) {
-                    router.push("/product?id=" + window.sessionStorage.getItem("to-add-to-cart"));
+                    router.push("/product/" + window.sessionStorage.getItem("to-add-to-cart"));
                     window.sessionStorage.removeItem("to-add-to-cart");
                 } else {
                     router.push("/catalogue?search=all");
