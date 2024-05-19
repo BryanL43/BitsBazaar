@@ -52,6 +52,28 @@ export async function POST(req) {
                 // }).catch(error => {
                 //     console.error("There was a problem sending reset email:", error);
                 // })
+                
+                try {
+                    const response = await fetch('https://bitsbazaar.vercel.app/api/email', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: body.email,
+                            randomCode: randomCode
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Sending email failed!");
+                    }
+            
+                    await response.json(); //Not returning anything as we need to return the bottom data
+                } catch (error) {
+                    console.error('Error during code acquisition:', error);
+                    throw error;
+                }
 
                 return NextResponse.json({ success: true, email: body.email });
             } catch (error) {
