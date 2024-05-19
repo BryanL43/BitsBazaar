@@ -82,7 +82,7 @@ const Profile = () => {
             setCurrEmail(userData.email);
             setIsDataExist(true);
             
-            if (window.location.search.split("?")[1] === "address") {
+            if (window.location.search.split("?")[1] === "address") { //Redirect to address subpage if /profile?address
                 gotoPage("addressPage");
                 history.replaceState(null, null, window.location.pathname);
             }

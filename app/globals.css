@@ -7,6 +7,7 @@
     --accent: #6758f1;
     --accent-reverse: #1d0da5;
     --search-icon: #978eea;
+    --warning: #590a0f;
 }
 
 :root[data-theme="dark"] {
@@ -18,6 +19,7 @@
     --accent: #1d0da5;
     --accent-reverse: #6758f1;
     --search-icon: #fbfbfd;
+    --warning: #EE4B2B;
 }
 
 main {
@@ -2019,4 +2021,12 @@ header {
     width: 20%;
     display: flex;
     flex-direction: column;
+}
+
+#noAddressIcon {
+    display: block;
+    margin: auto;
+    width: 50%;
+    height: 50%;
+    color: var(--warning);
 }

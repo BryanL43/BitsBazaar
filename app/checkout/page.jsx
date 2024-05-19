@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
 import { getCookie, setCookie } from '../utils/cookies';
 
@@ -15,6 +17,7 @@ const Checkout = () => {
     const [subtotal, setSubtotal] = useState(0.0);
     const [itemCount, setItemCount] = useState(0);
 
+    const [foundAddress, setFoundAddress] = useState(false);
     const [addAddressObj, setAddAddressObj] = useState({
         country_reg: "",
         phone_num: "",
@@ -25,9 +28,9 @@ const Checkout = () => {
         default: false
     });
 
-    const getProduct = async(prodId, qnt) => {
+    const getProduct = async (prodId, qnt) => {
         try {
-            const url = `/api/products/`+prodId;
+            const url = `/api/products/` + prodId;
 
             const response = await fetch(url, {
                 method: "GET",
@@ -56,9 +59,13 @@ const Checkout = () => {
                 const userData = JSON.parse(userDataString);
                 setFirstName(userData.firstName);
                 setLastName(userData.lastName);
-
-                const defaultAddress = userData.addresses.find(address => JSON.parse(address).default === "true");
-                setAddAddressObj(JSON.parse(defaultAddress))
+                if (JSON.parse(userDataString).addresses[0]) {
+                    setFoundAddress(true);
+                    const defaultAddress = userData.addresses.find(address => JSON.parse(address).default === "true");
+                    setAddAddressObj(JSON.parse(defaultAddress))
+                } else {
+                    setFoundAddress(false);
+                }
 
                 JSON.parse(getCookie("userData")).cart.forEach(product => {
                     getProduct(JSON.parse(product).productId, JSON.parse(product).quantity);
@@ -71,7 +78,7 @@ const Checkout = () => {
         }
     }, [initialRender]);
 
-    const checkoutapi = async() => {
+    const checkoutapi = async () => {
         try {
             const url = "/api/users/checkout";
 
@@ -91,20 +98,24 @@ const Checkout = () => {
             } else {
                 console.log("Check Out Failed");
             }
-        } catch(error) {
+        } catch (error) {
             console.log("Error occured when checking out:", error);
         }
     }
 
     const checkedout = () => {
-        const userData = JSON.parse(getCookie("userData"))
-        userData.cart.forEach(item => {
-            userData.orderlog.push(JSON.stringify({item, date: new Date()}));
-        })
-        userData.cart = [];
+        if (foundAddress) {
+            const userData = JSON.parse(getCookie("userData"))
+            userData.cart.forEach(item => {
+                userData.orderlog.push(JSON.stringify({ item, date: new Date() }));
+            })
+            userData.cart = [];
 
-        setCookie("userData", JSON.stringify(userData), 1);
-        checkoutapi();
+            setCookie("userData", JSON.stringify(userData), 1);
+            checkoutapi();
+        } else {
+            alert("Please add a delivery address to checkout!");
+        }
     }
 
     return (
@@ -114,25 +125,33 @@ const Checkout = () => {
                     <h1>Checkout</h1>
 
                     <div className="address-grid-container">
-                    <div className="address-card">
-                        <ul>
-                            <li><p><strong>{firstName + " " + lastName}</strong></p></li>
-                            <li><p>{addAddressObj["address"]}</p></li>
-                            <li><p>{addAddressObj["city"] + ", " + addAddressObj["state"] + " " + addAddressObj["zip_code"]}</p></li>
-                            <li><p>{addAddressObj["country_reg"]}</p></li>
-                            <li><p>Phone number: {addAddressObj["phone_num"]}</p></li>
-                        </ul>
-                        <div className="address-bottom-bar"><Link href='/profile?address'>Change address</Link></div>
-                    </div>
+                        {foundAddress ? (
+                            <div className="address-card">
+                                <ul>
+                                    <li><p><strong>{firstName + " " + lastName}</strong></p></li>
+                                    <li><p>{addAddressObj["address"]}</p></li>
+                                    <li><p>{addAddressObj["city"] + ", " + addAddressObj["state"] + " " + addAddressObj["zip_code"]}</p></li>
+                                    <li><p>{addAddressObj["country_reg"]}</p></li>
+                                    <li><p>Phone number: {addAddressObj["phone_num"]}</p></li>
+                                </ul>
+                                <div className="address-bottom-bar"><Link href='/profile?address'>Change address</Link></div>
+                            </div>
+                        ) : (
+                            <div className="address-card">
+                                <FontAwesomeIcon icon={faCircleExclamation} id="noAddressIcon" />
+                                <div className="address-bottom-bar"><Link href='/profile?address'>Add delivery address</Link></div>
+                            </div>
+                        )}
+
                     </div>
 
                     <div className='payment-method'>
                         <p>Payment Method</p>
                         <label>Card Number:</label> <br></br>
-                        <input type='text' className='cardHolder'></input><br></br> 
+                        <input type='text' className='cardHolder'></input><br></br>
                         <label>Card Holder Name:</label> <br></br>
-                        <input type='text' className='cardHolder'></input><br></br> 
-                        <label>Card Expiration Date:</label><br></br> 
+                        <input type='text' className='cardHolder'></input><br></br>
+                        <label>Card Expiration Date:</label><br></br>
                         <input type='text' placeholder="month" className='exp'></input>
                         <input type='text' placeholder="year" className='exp'></input>
                         <input type='text' placeholder="3-digit CVV" className='exp'></input>
@@ -149,7 +168,7 @@ const Checkout = () => {
                 </div>
 
             </div>
-        </main>                  
+        </main>
     )
 }
 

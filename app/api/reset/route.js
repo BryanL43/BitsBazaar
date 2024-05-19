@@ -32,30 +32,30 @@ export async function POST(req) {
                 });
                 await newCode;
 
-                return NextResponse.json({success: true, email: body.email});
+                //Working email but I'm limited to extreme small amount of api usage.
+                (async function () {
+                    const { data, error } = await resend.emails.send({
+                        from: 'Acme <onboarding@resend.dev>',
+                        // from: 'Acme <no-reply@bitsbazaar.com>', This will be added once I verify the vercel domain
+                        to: [body.email],
+                        subject: "BitsBazaar One-Time Reset Token",
+                        html: `<strong>${randomCode}</strong>`
+                    });
+
+                    if (error) {
+                        return console.error({ error });
+                    }
+
+                    console.log({ data });
+                })();
+
+                return NextResponse.json({ success: true, email: body.email });
             } catch (error) {
                 console.error("Error occurred during reset code creation:", error);
                 return NextResponse.error("Error occurred during reset code creation", 500);
             }
-            
-            /* Working email but I'm limited to extreme small amount of api usage.
-            (async function () {
-                const { data, error } = await resend.emails.send({
-                    from: 'Acme <onboarding@resend.dev>',
-                    // from: 'Acme <no-reply@bitsbazaar.com>', This will be added once I verify the vercel domain
-                    to: [email],
-                    subject: "This is a Test",
-                    html: "<strong>Assume this is your reset token.</strong>"
-                });
-              
-                if (error) {
-                  return console.error({ error });
-                }
-              
-                console.log({ data });
-              })();*/
         } else {
-            return NextResponse.json({success: false, error: "Not Found"});
+            return NextResponse.json({ success: false, error: "Not Found" });
         }
     } catch (error) {
         console.error("Error occurred during finding email:", error);
@@ -66,7 +66,7 @@ export async function POST(req) {
 //Reset Password Handler
 export async function PUT(req) {
     try {
-        const {email, newPassword } = await req.json();
+        const { email, newPassword } = await req.json();
 
         //Find user by email
         const user = await prisma.user.findUnique({
@@ -89,7 +89,7 @@ export async function PUT(req) {
             }
         })
 
-        return NextResponse.json({success: true});
+        return NextResponse.json({ success: true });
     } catch (error) {
         console.error("Error occurred during password change:", error);
         return NextResponse.error("Error occurred during password change", 500);
