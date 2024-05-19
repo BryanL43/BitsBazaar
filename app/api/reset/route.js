@@ -32,27 +32,28 @@ export async function POST(req) {
                 await newCode;
 
                 //Working email sender but I'm limited to extreme small amount of api usage.
-                (async function () {
-                    const res = await fetch('https://api.resend.com/emails', {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${resend_api_key}`,
-                        },
-                        body: JSON.stringify({
-                            from: 'Acme <onboarding@resend.dev>',
-                            to: [body.email],
-                            subject: "BitsBazaar One-Time Reset Token",
-                            html: `<strong>${randomCode}</strong>`
-                        })
+                fetch('https://api.resend.com/emails', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${resend_api_key}`,
+                    },
+                    body: JSON.stringify({
+                        from: 'Acme <onboarding@resend.dev>',
+                        to: [body.email],
+                        subject: "BitsBazaar One-Time Reset Token",
+                        html: `<strong>${randomCode}</strong>`
                     })
-
-                    if (res.ok) {
-                        console.log("Successfully sent email.");
-                    } else {
-                        console.log("Failed sending email");
+                }).then(res => {
+                    if (!res.ok) {
+                        return NextResponse.error("Unable to send reset code email.", 500);
                     }
-                })();
+                    return res.json();
+                }).then(data => {
+                    console.log(data);
+                }).catch(error => {
+                    console.error("There was a problem sending reset email:", error);
+                })
 
                 return NextResponse.json({ success: true, email: body.email });
             } catch (error) {
