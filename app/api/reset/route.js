@@ -28,33 +28,10 @@ export async function POST(req) {
                     }
                 });
                 await newCode;
-
-                //Working email sender but I'm limited to extreme small amount of api usage.
-                // fetch('https://api.resend.com/emails', {
-                //     method: "POST",
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //         'Authorization': `Bearer ${resend_api_key}`,
-                //     },
-                //     body: JSON.stringify({
-                //         from: 'Acme <onboarding@resend.dev>',
-                //         to: [body.email],
-                //         subject: "BitsBazaar One-Time Reset Token",
-                //         html: `<strong>${randomCode}</strong>`
-                //     })
-                // }).then(res => {
-                //     if (!res.ok) {
-                //         return NextResponse.error("Unable to send reset code email.", 500);
-                //     }
-                //     return res.json();
-                // }).then(data => {
-                //     console.log(data);
-                // }).catch(error => {
-                //     console.error("There was a problem sending reset email:", error);
-                // })
                 
+                //Working email sender
                 try {
-                    const response = await fetch('https://bitsbazaar.vercel.app/api/email', {
+                    const response = await fetch(req.headers.get('origin') + "/api/email", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
