@@ -1,7 +1,7 @@
 import prisma from "@/prisma/Client";
 import { NextResponse } from "next/server";
 
-const resend_api_key = "re_GMWC3jMX_92c9tR4ex1ZYY8Prmbu22bre";
+const resend_api_key = process.env.RESEND_API_KEY;
 
 //Forgot Password send code handler
 export async function POST(req) {
