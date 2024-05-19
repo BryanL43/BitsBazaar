@@ -83,6 +83,14 @@ const Cart = () => {
         setCartData(updated);
     }
 
+    const handleCheckOut = () => {
+        if (cartData.length > 0) {
+            router.push("/checkout");
+        } else {
+            alert("No items in cart. Start browsing and add items.");
+        }
+    }
+
     return (
         <main>
             <div className="cart-screen">
@@ -116,7 +124,7 @@ const Cart = () => {
                         </div>
                         <div className="checkout-info">
                             <p>Subtotal ({itemCount} item): <strong>${subtotal.toFixed(2)}</strong></p>
-                            <button onClick={() => router.push("/checkout")}>Proceed to checkout</button>
+                            <button onClick={handleCheckOut}>Proceed to checkout</button>
                         </div>
                     </div>
                 </div>

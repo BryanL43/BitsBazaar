@@ -67,9 +67,13 @@ const Checkout = () => {
                     setFoundAddress(false);
                 }
 
-                JSON.parse(getCookie("userData")).cart.forEach(product => {
+                JSON.parse(userDataString).cart.forEach(product => {
                     getProduct(JSON.parse(product).productId, JSON.parse(product).quantity);
                 })
+
+                if (JSON.parse(userDataString).cart.length <= 0) { //No cart item then redirect back to cart
+                    router.push("/cart");
+                }
             } else {
                 router.push("/signin");
             }
