@@ -16,10 +16,10 @@ This is a mock website e-commerce website that sells PC parts, laptops, accessor
 ## Extra technical details:
 
 - Resend API to send reset token to user's email.
-- Resource and memory efficient that was consistently managed through development using network tab of console.
+- Resource and memory efficient that was consistently managed throughout development using network tab of console.
 - Fast traversal through pages.
 - API tested with Postman.
-
+- Auto expire reset code after 5 minutes.
 
 Deployed website: https://bitsbazaar.vercel.app/
 

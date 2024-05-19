@@ -1,8 +1,7 @@
 import prisma from "@/prisma/Client";
 import { NextResponse } from "next/server";
-import { Resend } from 'resend';
 
-const resend = new Resend("re_GMWC3jMX_92c9tR4ex1ZYY8Prmbu22bre");
+const resend_api_key = "re_GMWC3jMX_92c9tR4ex1ZYY8Prmbu22bre";
 
 //Forgot Password send code handler
 export async function POST(req) {
@@ -32,21 +31,27 @@ export async function POST(req) {
                 });
                 await newCode;
 
-                //Working email but I'm limited to extreme small amount of api usage.
+                //Working email sender but I'm limited to extreme small amount of api usage.
                 (async function () {
-                    const { data, error } = await resend.emails.send({
-                        from: 'Acme <onboarding@resend.dev>',
-                        // from: 'Acme <no-reply@bitsbazaar.com>', This will be added once I verify the vercel domain
-                        to: [body.email],
-                        subject: "BitsBazaar One-Time Reset Token",
-                        html: `<strong>${randomCode}</strong>`
-                    });
+                    const res = await fetch('https://api.resend.com/emails', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${resend_api_key}`,
+                        },
+                        body: JSON.stringify({
+                            from: 'Acme <onboarding@resend.dev>',
+                            to: [body.email],
+                            subject: "BitsBazaar One-Time Reset Token",
+                            html: `<strong>${randomCode}</strong>`
+                        })
+                    })
 
-                    if (error) {
-                        return console.error({ error });
+                    if (res.ok) {
+                        console.log("Successfully sent email.");
+                    } else {
+                        console.log("Failed sending email");
                     }
-
-                    console.log({ data });
                 })();
 
                 return NextResponse.json({ success: true, email: body.email });
