@@ -104,7 +104,6 @@ const Profile = () => {
         try {
             const responseData = await forgotpwd(JSON.parse(getCookie("userData")).email); //Recycled the same function as it does the exact same thing. (check if email exist then create a reset code)
             if (responseData.success === true) {
-                console.log("Successfully sent verification code");
                 gotoPage('codeVerify');
             } else {
                 console.log("Error when reading response");

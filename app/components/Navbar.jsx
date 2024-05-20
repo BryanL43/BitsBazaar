@@ -28,6 +28,12 @@ const Navbar = () => {
 
     function checkCookieChange() {
         const userDataString = getCookie("userData");
+        if (!userDataString) {
+            setIsLoggedIn(false);
+            forceUpdate();
+            setItemCount(0);
+            previousCookieValue.current = null;
+        }
         if (userDataString && userDataString !== previousCookieValue.current) {
             //Render user drop down
             setIsLoggedIn(true);

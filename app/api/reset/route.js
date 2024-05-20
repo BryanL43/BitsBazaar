@@ -1,5 +1,6 @@
 import prisma from "@/prisma/Client";
 import { NextResponse } from "next/server";
+const bcrypt = require("bcrypt");
 
 //Forgot Password send code handler
 export async function POST(req) {
@@ -31,6 +32,7 @@ export async function POST(req) {
                 
                 //Working email sender
                 try {
+                    console.log(body.email, randomCode);
                     const response = await fetch(req.headers.get('origin') + "/api/email", {
                         method: "POST",
                         headers: {
@@ -83,12 +85,13 @@ export async function PUT(req) {
         }
 
         //Update password
+        const hashedPwd = await bcrypt.hash(newPassword, 10);
         await prisma.user.update({
             where: {
                 email: email
             },
             data: {
-                password: newPassword
+                password: hashedPwd
             }
         })
 
