@@ -31,28 +31,28 @@ export async function POST(req) {
                 await newCode;
                 
                 //Working email sender
-                // try {
-                //     console.log(body.email, randomCode);
-                //     const response = await fetch(req.headers.get('origin') + "/api/email", {
-                //         method: "POST",
-                //         headers: {
-                //             "Content-Type": "application/json"
-                //         },
-                //         body: JSON.stringify({
-                //             email: body.email,
-                //             randomCode: randomCode
-                //         })
-                //     });
+                try {
+                    console.log(body.email, randomCode);
+                    const response = await fetch(req.headers.get('origin') + "/api/email", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: body.email,
+                            randomCode: randomCode
+                        })
+                    });
 
-                //     if (!response.ok) {
-                //         throw new Error("Sending email failed!");
-                //     }
+                    if (!response.ok) {
+                        throw new Error("Sending email failed!");
+                    }
             
-                //     await response.json(); //Not returning anything as we need to return the bottom data
-                // } catch (error) {
-                //     console.error('Error during code acquisition:', error);
-                //     throw error;
-                // }
+                    await response.json(); //Not returning anything as we need to return the bottom data
+                } catch (error) {
+                    console.error('Error during code acquisition:', error);
+                    throw error;
+                }
 
                 return NextResponse.json({ success: true, email: body.email });
             } catch (error) {
