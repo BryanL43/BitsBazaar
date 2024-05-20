@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import prisma from "@/prisma/Client";
+const bcrypt = require("bcrypt");
 
 //Signin REST API
 export async function POST(req) {
@@ -20,8 +21,8 @@ export async function POST(req) {
         if (!user) {
             return NextResponse.json({ success: false, error: "User not found" });
         }
-
-        if (password != user.password) {
+        const pwdMatch = await bcrypt.compare(password, user.password);
+        if (!pwdMatch) {
             return NextResponse.json({ success: false, error: "Password is incorrect" });
         }
 

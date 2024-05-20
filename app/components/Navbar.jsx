@@ -48,7 +48,6 @@ const Navbar = () => {
         setItemCount(0); //Prevent double render logic error
         const userDataString = getCookie("userData");
         if (userDataString) {
-            previousCookieValue.current = getCookie("userData");
             setIsLoggedIn(true);
             const userData = JSON.parse(userDataString);
             userData.cart.forEach(item => {
@@ -56,6 +55,7 @@ const Navbar = () => {
             });
         } else {
             setIsLoggedIn(false);
+            previousCookieValue.current = null;
         }
     }, []);
 
@@ -82,7 +82,7 @@ const Navbar = () => {
         <nav className="navBar">
             <Link href="/"><Image src="/logo.png" width={132} height={34} alt="BitBazaar Logo"></Image></Link>
             <input className="searchBar" type="text" placeholder="Search" autoComplete="off" value={searchVal} onChange={(e) => setSearchVal(e.target.value)} onKeyDown={handleKeyDown} />
-            <Link id="searchIcon" href="/catalogue" onClick={() => {router.push("/catalogue?search=" + searchVal)}}><FontAwesomeIcon icon={faMagnifyingGlass} /></Link>
+            <Link id="searchIcon" href="/catalogue" onClick={() => { router.push("/catalogue?search=" + searchVal) }}><FontAwesomeIcon icon={faMagnifyingGlass} /></Link>
             <button id="themeToggleBtn" onClick={toggleTheme}>
                 <FontAwesomeIcon icon={faCircleHalfStroke} />
             </button>
@@ -90,7 +90,7 @@ const Navbar = () => {
                 <button id="userBtn" onClick={handleUserDropDown}>
                     <FontAwesomeIcon icon={faUser} />
                 </button>
-                <div className="userDropDown-content" style={{display: `${isUserDropOpen}`}}>
+                <div className="userDropDown-content" style={{ display: `${isUserDropOpen}` }}>
                     <div id="userDropDownOpaque" onClick={handleUserDropDown}></div>
                     {!isLoggedIn && (
                         <React.Fragment>
@@ -110,7 +110,15 @@ const Navbar = () => {
                                 <h5>Your Profile</h5>
                                 <p>Edit your account or see your orders.</p>
                             </Link>
-                            <Link id="dropDown-A" href="/signin" onClick={() => {handleUserDropDown(); setIsLoggedIn(false); deleteCookie("userData"); window.sessionStorage.removeItem("to-add-to-cart"); window.sessionStorage.removeItem("quantity")}}>
+                            <Link id="dropDown-A" href="/signin" onClick={() => {
+                                handleUserDropDown();
+                                setIsLoggedIn(false);
+                                setItemCount(0);
+                                deleteCookie("userData");
+                                window.sessionStorage.removeItem("to-add-to-cart");
+                                window.sessionStorage.removeItem("quantity")
+                                previousCookieValue.current = null;
+                            }}>
                                 <h5>Sign Out</h5>
                                 <p>Sign out of current account.</p>
                             </Link>
@@ -122,7 +130,7 @@ const Navbar = () => {
                 <button id="cartBtn" onClick={handleCartDropDown}>
                     <FontAwesomeIcon icon={faCartShopping} />
                 </button>
-                <div className="cartDropDown-content" style={{display: `${isCartDropOpen}`}}>
+                <div className="cartDropDown-content" style={{ display: `${isCartDropOpen}` }}>
                     <div id="cartDropDownOpaque" onClick={handleCartDropDown}></div>
                     <Link id="dropDown-B" href="/cart">
                         <h5>Your BitsBazaar Carts</h5>

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -18,8 +18,7 @@ const CartCard = ({ id, name, price, qty, images, setSubtotal, setItemCount, rem
         setItemCount(val);
     }
 
-    //Switch to PATCH, DELETE
-    const updateCart = async() => {
+    const updateCart = async () => {
         try {
             const url = "/api/users/cart";
             const response = await fetch(url, {
@@ -38,7 +37,7 @@ const CartCard = ({ id, name, price, qty, images, setSubtotal, setItemCount, rem
             } else {
                 console.log("Updating Cart Failed");
             }
-        } catch(error) {
+        } catch (error) {
             console.log("Error occured when updating user's cart:", error);
         }
         return false;
@@ -71,11 +70,11 @@ const CartCard = ({ id, name, price, qty, images, setSubtotal, setItemCount, rem
         }
     }
 
-    const qtyHandler = (val) => {
-        if (val < 1) {
+    const qtyHandler = () => {
+        if (cardQty < 1) {
             setCardQty(1);
         } else {
-            setCardQty(val);
+            setCardQty(cardQty);
             const userData = JSON.parse(getCookie("userData"));
             const cartData = userData.cart.map(JSON.parse);
 
@@ -86,10 +85,10 @@ const CartCard = ({ id, name, price, qty, images, setSubtotal, setItemCount, rem
                 const previousQuantity = parseInt(cartData[productIndex].quantity);
 
                 //Update the quantity of the product
-                cartData[productIndex].quantity = val;
+                cartData[productIndex].quantity = cardQty;
 
                 //Recalculate subtotal
-                const quantityChange = val - previousQuantity;
+                const quantityChange = cardQty - previousQuantity;
                 setSubtotal(prevSubtotal => parseFloat((prevSubtotal + (parseFloat(price) * quantityChange)).toFixed(2)));
 
                 //Update the cookie with the new cart data
@@ -100,7 +99,7 @@ const CartCard = ({ id, name, price, qty, images, setSubtotal, setItemCount, rem
 
                 updateCart();
 
-                //Disable input for a short period to prevent api spam
+                //Cooldown for updating
                 const qtyInputEl = document.querySelector('.qtyInput');
                 qtyInputEl.disabled = true;
                 setTimeout(() => {
@@ -113,13 +112,13 @@ const CartCard = ({ id, name, price, qty, images, setSubtotal, setItemCount, rem
     return (
         <div className="cart-card-main">
             <div className="cart-card-main-left">
-                <Image src={images[0]} sizes="100vw" width={0} height={0} style={{width: "90px", height: "90px"}} alt={name}></Image>
+                <Image src={images[0]} sizes="100vw" width={0} height={0} style={{ width: "90px", height: "90px" }} alt={name}></Image>
             </div>
             <div className="cart-card-main-middle">
-                <Link href={"/product/"+id}>{name}</Link>
+                <Link href={"/product/" + id}>{name}</Link>
                 <div className="cartQty">
                     <label>Quantity: </label>
-                    <input className="qtyInput" type='number' min={1} value={cardQty} onChange={(e) => {qtyHandler(e.target.value)}} required></input><p><strong>${price}</strong></p>
+                    <input className="qtyInput" type='number' min={1} value={cardQty} onChange={(e) => { setCardQty(e.target.value) }} onBlur={(e) => { qtyHandler() }} required></input><p><strong>${price}</strong></p>
                 </div>
             </div>
             <div className="cart-card-main-right">

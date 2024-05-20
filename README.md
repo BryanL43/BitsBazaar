@@ -20,6 +20,7 @@ This is a mock website e-commerce website that sells PC parts, laptops, accessor
 - Fast traversal through pages.
 - API tested with Postman.
 - Auto expire reset code after 5 minutes.
+- Hashed passwords.
 
 Deployed website: https://bitsbazaar.vercel.app/
 

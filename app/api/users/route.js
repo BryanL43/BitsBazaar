@@ -1,5 +1,6 @@
 import prisma from "@/prisma/Client";
 import { NextResponse } from "next/server";
+const bcrypt = require("bcrypt");
 
 //Registeration handler
 export async function POST(req) {
@@ -24,8 +25,15 @@ export async function POST(req) {
             return NextResponse.json({ success: false, error: `Email ${body.email} is already taken.` });
         }
 
+        const hashedPwd = await bcrypt.hash(body.password, 10);
+        
+        const newUser = {
+            ...body,
+            password: hashedPwd
+        }
+
         //Create new user
-        await prisma.user.create({ data: body });
+        await prisma.user.create({ data: newUser });
 
         return NextResponse.json({ success: true })
     } catch (error) {
