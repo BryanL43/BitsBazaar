@@ -9,7 +9,7 @@ import { faXmark, faCircleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { getCookie, deleteCookie } from '../utils/cookies';
 import { changeEmail } from '../utils/user';
 
-const CodeVerifyPg = ({ newEmail, sendCode }) => {
+const CodeVerifyPg = ({ oldEmail, newEmail, sendCode }) => {
     const router = useRouter();
 
     const codeInputs = useRef([]);
@@ -80,7 +80,7 @@ const CodeVerifyPg = ({ newEmail, sendCode }) => {
             <div className="verify-container">
                 <h1>Verify One-Time Code</h1>
                 <form className="verify-form" onSubmit={verifyFormSubmission}>
-                    <p>Enter the one-time code we sent to <br></br><strong>{JSON.parse(getCookie("userData")).email}</strong></p>
+                    <p>Enter the one-time code we sent to <br></br><strong>{oldEmail}</strong></p>
                     {isCodeNotFound && (
                         <div className="emailNotFound">
                             <FontAwesomeIcon icon={faCircleExclamation} id="emailNotFoundIcons" />

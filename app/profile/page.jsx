@@ -199,7 +199,7 @@ const Profile = () => {
                     <React.Fragment><ChangeEmailPg currEmail={currEmail} sendCode={sendCode} newEmail={newEmail} setNewEmail={setNewEmail} /></React.Fragment>
                 )}
                 {openStates['codeVerify'] && ( //Open code verification page
-                    <React.Fragment><CodeVerifyPg newEmail={newEmail} sendCode={sendCode} /></React.Fragment>
+                    <React.Fragment><CodeVerifyPg oldEmail={currEmail} newEmail={newEmail} sendCode={sendCode} /></React.Fragment>
                 )}
                 {openStates['addressPage'] && ( //Render address subpage
                     <React.Fragment><AddressPg closePages={closeAllSubPages} pageChange={gotoPage} setAddAddressObj={setAddAddressObj} setIEdit_Add={setIEdit_Add} /></React.Fragment>
