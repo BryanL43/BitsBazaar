@@ -80,7 +80,7 @@ const CodeVerifyPg = ({ newEmail, sendCode }) => {
             <div className="verify-container">
                 <h1>Verify One-Time Code</h1>
                 <form className="verify-form" onSubmit={verifyFormSubmission}>
-                    <p>Enter the one-time code we sent to <br></br><strong>{newEmail}</strong></p>
+                    <p>Enter the one-time code we sent to <br></br><strong>{JSON.parse(getCookie("userData")).email}</strong></p>
                     {isCodeNotFound && (
                         <div className="emailNotFound">
                             <FontAwesomeIcon icon={faCircleExclamation} id="emailNotFoundIcons" />
